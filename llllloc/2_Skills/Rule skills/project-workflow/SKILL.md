@@ -14,16 +14,16 @@ The workflow is a project of its own: `~/Desktop/Claude/llllloc_workflow/`. What
 ## 2. WHERE THINGS LIVE
 | What | Where |
 |---|---|
-| GitHub, skills only (6 Nov 2026, his words) | repo `123loc321/llllloc`, branch `main`, holds only the plugin: `llllloc/2_Skills/`, `llllloc/1_Core rule/`, `.claude-plugin/`, `.agents/`, `AGENTS.md`, `CLAUDE.md`, `README.md` (`.gitignore` lists them). A session pulls at start (hook). A skill change pushes the moment it is written (`llllloc:task-skill-creator` DELIVER). Everything else stays on the Mac |
-| The core rule | `llllloc/1_Core rule/Core Rule.md`, copied into `AGENTS.md` by `brain_check.py`; `CLAUDE.md` loads `AGENTS.md` every session |
+| GitHub, skills only (6 Nov 2026, his words) | repo `123loc321/llllloc`, branch `main`, holds only the plugin: `llllloc/2_Skills/`, `llllloc/0_Core rule/`, `.claude-plugin/`, `.agents/`, `AGENTS.md`, `CLAUDE.md`, `README.md` (`.gitignore` lists them). A session pulls at start (hook). A skill change pushes the moment it is written (`llllloc:task-skill-creator` DELIVER). Everything else stays on the Mac |
+| The core rule | `llllloc/0_Core rule/Core Rule.md`, copied into `AGENTS.md` by `brain_check.py`; `CLAUDE.md` loads `AGENTS.md` every session |
 | Every skill | the `llllloc` plugin, synced by claude.ai from GitHub as `llllloc:<name>`. Master in `llllloc/2_Skills/<group>/<skill>/` with its `Old/` versions, listed in `.claude-plugin/marketplace.json` |
 | Memory | `llllloc/9_Memory/` (`autoMemoryDirectory` in the brain's `.claude/settings.local.json`, written per Mac by `setup_mac.py`), `MEMORY.md` is the index |
-| Hooks (6 Nov 2026) | inside the `llllloc` plugin entry in `.claude-plugin/marketplace.json`, scripts in `llllloc/1_Core rule/hooks/`. Never also in a settings file, or they fire twice |
+| Hooks (6 Nov 2026) | inside the `llllloc` plugin entry in `.claude-plugin/marketplace.json`, scripts in `llllloc/0_Core rule/hooks/`. Never also in a settings file, or they fire twice |
 | Books, videos, frames, installers, Old versions | the Mac folder only, backed up by the Drive copy. The media repo `123loc321/llllloc-media` is no longer used (6 Nov 2026) |
 | Backup, new Mac, rebuild (6 Nov 2026) | Google Drive `*llllloc_System_Full backup` (map row "Brain Drive backups"), one-way copy by `llllloc/8_Scheduled tasks/Drive backup/drive_backup.sh`, once a week by the scheduled task `llllloc-weekly-drive-backup` (Mondays about 12:20), never at `end` (6 Nov 2026, his words). Each backup writes `BACKUP-STAMP.json` (beside the backup script, 7 Nov 2026) first (`brain_stamp.py`: which copy is newer, never overwrite a newer Mac copy). New Mac or account (7 Nov 2026): AGENTS.md "First session" runs `SETUP.md`; a pasted Drive link runs that folder's `START HERE.md`. The shareable copy `*llllloc_System_Template` (no memory, maps, client names, accounts, books or videos; skills load from the folder): `template_build.py` beside the backup script, first run `--dry-run` |
-| The brain check | `llllloc/1_Core rule/brain_check.py`, run at every `end` |
+| The brain check | `llllloc/0_Core rule/brain_check.py`, run at every `end` |
 | The maps | `llllloc/3_Project maps/` |
-| Connector installers, newest only | `llllloc/0_MCP/<Program>/` (was `2_MCP`, 7 Nov 2026), older in `Old/` |
+| Connectors: every MCP, plugin, extension, browser tool and online connector (7 Nov 2026, his words) | `llllloc/1_Connectors/<group>/<Connector>/`: groups `1_Apps`, `2_Browsers and web`, `3_Online services`, `4_My own apps`, `5_Claude add-ons`. Each folder: a `README.md` card (what, where set, version, skill, new Mac) and the newest installer, older in `Old/`. A new connector gets its folder and card the same turn |
 | Templates | `llllloc/7_Templates/`: PROJECT-TEMPLATE, PROJECT-TEMPLATE_CODE, client-storyboard-deck, `deck-shell/deck-shell.md`, render-preview |
 | Timed tasks | `llllloc/8_Scheduled tasks/Outside updates/` |
 | Lessons about models and programs | `llllloc/4_Lessons/Prompts/`, `llllloc/4_Lessons/Programs/` |

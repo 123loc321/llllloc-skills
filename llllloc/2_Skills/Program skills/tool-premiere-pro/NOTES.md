@@ -6,3 +6,4 @@
 - 29 Oct 2026: Mac-first for the Code tab (round 77). Cloud paths, device tools, Remote Control handovers and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.
 - 30 Oct 2026 round 84: no-nest rule in MUST HOLD and SAFETY; unnest_sequence banned (drops keyframes).
 - 261107: brain tidy: moved paths updated (0_MCP, 4_Versions/Core rule, research cache folders).
+- 261107: connectors folder is llllloc/1_Connectors/<group>/<Connector>/ (his words: all connectors in one folder).

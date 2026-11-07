@@ -27,7 +27,7 @@ URL = MINE.get("upstream", "https://github.com/123loc321/llllloc-skills.git")
 HOME_DIR = os.path.expanduser(f"~/Library/Application Support/{PREFIX}/upstream")
 CLONE, STATE = os.path.join(HOME_DIR, "repo"), os.path.join(HOME_DIR, "state.json")
 swap = mapper(PREFIX, MINE.get("github_user", "")) if MINE else (lambda t: t)
-PLUGIN_PARTS = ("llllloc/2_Skills/", "llllloc/1_Core rule/", ".claude-plugin/", "AGENTS.md", "CLAUDE.md", "README.md")
+PLUGIN_PARTS = ("llllloc/2_Skills/", "llllloc/0_Core rule/", ".claude-plugin/", "AGENTS.md", "CLAUDE.md", "README.md")
 
 
 def git(*a, check=True):

@@ -122,12 +122,12 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" git-pull",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" git-pull",
                 "timeout": 20
               },
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" core-rule",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" core-rule",
                 "timeout": 10
               }
             ]
@@ -137,7 +137,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" after-compact",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" after-compact",
                 "timeout": 20
               }
             ]
@@ -148,7 +148,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" stop-check",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" stop-check",
                 "timeout": 20
               }
             ]
@@ -160,7 +160,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" delete-guard",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" delete-guard",
                 "timeout": 20
               }
             ]
@@ -170,7 +170,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" skills-guard",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" skills-guard",
                 "timeout": 20
               }
             ]
@@ -180,7 +180,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" research-guard",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" research-guard",
                 "timeout": 20
               }
             ]
@@ -192,7 +192,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" chmod-command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/llllloc_hooks.py\" chmod-command",
                 "timeout": 20
               }
             ]
@@ -202,7 +202,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/impeccable/impeccable_hook.py\"",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/0_Core rule/hooks/impeccable/impeccable_hook.py\"",
                 "timeout": 90
               }
             ]

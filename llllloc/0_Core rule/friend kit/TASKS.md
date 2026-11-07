@@ -2,7 +2,7 @@
 
 `SETUP.md` step 6 creates these three with the scheduled-tasks tool (`create_scheduled_task`). Before each call, fill in:
 `{BRAIN}` = the full path of this brain folder, `{P}` = the prefix in MINE.json (llllloc when the copy was not renamed),
-`{KIT}` = `{BRAIN}/{P}/1_Core rule/friend kit`, `{BACKUP}` = the backup folder picked in step 5 (skip task 1 when none).
+`{KIT}` = `{BRAIN}/{P}/0_Core rule/friend kit`, `{BACKUP}` = the backup folder picked in step 5 (skip task 1 when none).
 Each block below is the whole prompt. The tasks run while the Claude app is open. A missed run starts at the next launch.
 
 ## 1. Weekly backup
@@ -25,7 +25,7 @@ Everything a run delivers goes into ~/Desktop/Scheduled tasks_Daily outside chec
 1. Run: python3 -I "{BRAIN}/{P}/8_Scheduled tasks/Outside updates/check_outside_updates.py" "~/Desktop/Scheduled tasks_Daily outside check/<YYYY-MM-DD>/" (write the real date and the full Desktop path).
    It copies every outside skill 1 to 1 from its repo into {P}/2_Skills/Outside skills/<name>/, moves the old copy to Outside skills/_DELETE/, rebuilds the plugin list and writes REPORT.md.
 2. For each UPDATED or NEW outside skill, read its changelog or commits and write one plain line on what changed. A change that would break a rule of this system (an interview before work, a skill that turns itself on in every session) gets a WARNING line.
-3. Run python3 -I "{BRAIN}/{P}/1_Core rule/brain_check.py". Fix any FAIL, then run it again.
+3. Run python3 -I "{BRAIN}/{P}/0_Core rule/brain_check.py". Fix any FAIL, then run it again.
 4. When the brain folder has a .git: git add -A, commit "Daily outside check <date>", git push origin main (refused: git pull --rebase origin main, then push, never --force).
 5. Connectors: list each newer version from REPORT.md with its release page link. Never download or install anything.
 6. Reply in simple English: what updated, one line each, or "Nothing new today."

@@ -1,6 +1,6 @@
 """brain_check.py: proves the llllloc brain is whole (6 Nov 2026). Runs at every `end` (llllloc:end STEP 6).
 
-  python3 -I "<brain folder>/llllloc/1_Core rule/brain_check.py"
+  python3 -I "<brain folder>/llllloc/0_Core rule/brain_check.py"
 
 Prints PASS, WARN, FAIL or FIXED lines. Exit code 1 when any FAIL is left.
 The one thing it fixes by itself: the core rule copy inside AGENTS.md.
@@ -70,7 +70,7 @@ for g in {g for g in folders.values()}:
 say("WARN" if dead else "PASS", f"links that leave a skill folder: {len(dead)} dead" + "".join(f"\n      {x}" for x in dead[:8]))
 
 # 2. AGENTS.md carries the core rule word for word (other AIs never follow @ imports).
-core = open(os.path.join(BRAIN, "llllloc/1_Core rule/Core Rule.md"), encoding="utf-8").read().strip()
+core = open(os.path.join(BRAIN, "llllloc/0_Core rule/Core Rule.md"), encoding="utf-8").read().strip()
 ap = os.path.join(BRAIN, "AGENTS.md")
 agents = open(ap, encoding="utf-8").read()
 m = re.search(r"(<!-- CORE RULE COPY START[^\n]*-->\n)(.*?)(\n<!-- CORE RULE COPY END -->)", agents, re.S)
@@ -130,7 +130,7 @@ say("FAIL" if twice else "PASS", "no llllloc hook also in a settings file" + (f"
 # 5. Old names left in live rule files (history files are skipped).
 old = re.compile(r"anthropic-skills:llllloc|(?<![\w/.-])llllloc-(?:task|tool|project|references)-[a-z-]+")
 found = []
-for root in ["llllloc/1_Core rule", "llllloc/2_Skills", "llllloc/3_Project maps", "llllloc/7_Templates"]:  # memory notes keep their history
+for root in ["llllloc/0_Core rule", "llllloc/2_Skills", "llllloc/3_Project maps", "llllloc/7_Templates"]:  # memory notes keep their history
     for dp, dn, fn in os.walk(os.path.join(BRAIN, root)):
         dn[:] = [d for d in dn if d not in SKIP]
         for f in fn:
@@ -172,7 +172,7 @@ leaked = [l for l in git("ls-files").splitlines() if "/_DELETE/" in "/" + l]
 say("FAIL" if leaked else "PASS", f"_DELETE files on GitHub: {len(leaked)}" + ("".join(f"\n      {x}" for x in leaked[:8]))
     + (": git rm --cached is blocked, use git update-index --force-remove" if leaked else ""))
 # GitHub holds only the plugin (6 Nov 2026, his words): these must go online...
-for p in [".claude-plugin/marketplace.json", "AGENTS.md", "llllloc/1_Core rule/Core Rule.md", "llllloc/1_Core rule/hooks/llllloc_hooks.py"]:
+for p in [".claude-plugin/marketplace.json", "AGENTS.md", "llllloc/0_Core rule/Core Rule.md", "llllloc/0_Core rule/hooks/llllloc_hooks.py"]:
     ignored = subprocess.run(["git", "-C", BRAIN, "check-ignore", "-q", p]).returncode == 0
     say("FAIL" if ignored else "PASS", f"git keeps {p}" if not ignored else f".gitignore hides {p}")
 # ...and these must stay on the Mac.

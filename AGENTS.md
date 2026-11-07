@@ -2,13 +2,13 @@
 
 This folder holds the rules, skills, maps and notes of **llllloc**, a video, motion and design studio run by Loc. Any AI app (Claude, ChatGPT, Codex, Cursor, Copilot, Gemini, DeepSeek) reads this file first.
 
-**Where things live (6 Nov 2026, his words: "skill on github, the rest in my mac, then google drive as 2nd backup").** The Mac folder `~/Desktop/Claude` is the main place and holds everything. The GitHub repo `123loc321/llllloc`, branch `main`, holds only the llllloc plugin: `llllloc/2_Skills/`, `llllloc/1_Core rule/` (core rule and hooks), `.claude-plugin/`, `.agents/` and this file. A session pulls them when it starts, a skill change is pushed at once. The Google Drive folder `*llllloc_System_Full backup` holds a one-way copy of the whole folder (`llllloc/8_Scheduled tasks/Drive backup/drive_backup.sh`). A cloud session sees only the skills, never memory or maps, and never pushes straight to `main`: it proposes a branch or a pull request. Friends get a cleaned copy of the plugin from the PUBLIC repo `123loc321/llllloc-skills` (marketplace `llllloc-skills`), refreshed every Monday by `llllloc/8_Scheduled tasks/Drive backup/shared_repo_push.py` (7 Nov 2026). Never add that marketplace on his own Macs: every skill would show twice. A friend makes the copy their own with `SETUP.md` PART B (their name in place of llllloc, their own GitHub, Drive backup, weekly tasks), then sees Loc's changes each Tuesday and picks what to take (`llllloc/1_Core rule/friend kit/`).
+**Where things live (6 Nov 2026, his words: "skill on github, the rest in my mac, then google drive as 2nd backup").** The Mac folder `~/Desktop/Claude` is the main place and holds everything. The GitHub repo `123loc321/llllloc`, branch `main`, holds only the llllloc plugin: `llllloc/2_Skills/`, `llllloc/0_Core rule/` (core rule and hooks), `.claude-plugin/`, `.agents/` and this file. A session pulls them when it starts, a skill change is pushed at once. The Google Drive folder `*llllloc_System_Full backup` holds a one-way copy of the whole folder (`llllloc/8_Scheduled tasks/Drive backup/drive_backup.sh`). A cloud session sees only the skills, never memory or maps, and never pushes straight to `main`: it proposes a branch or a pull request. Friends get a cleaned copy of the plugin from the PUBLIC repo `123loc321/llllloc-skills` (marketplace `llllloc-skills`), refreshed every Monday by `llllloc/8_Scheduled tasks/Drive backup/shared_repo_push.py` (7 Nov 2026). Never add that marketplace on his own Macs: every skill would show twice. A friend makes the copy their own with `SETUP.md` PART B (their name in place of llllloc, their own GitHub, Drive backup, weekly tasks), then sees Loc's changes each Tuesday and picks what to take (`llllloc/0_Core rule/friend kit/`).
 
 ## First session on a new Mac or account (7 Nov 2026)
 His words: "when i switch to another claude account i can just pick the claude folder on my desktop and you will auto understand what to do". A first session shows one of two signs: your skill list has no `llllloc:router`, or the session start printed "this Mac is not set up for this brain folder yet". Then, before the job: say so in one line, follow `SETUP.md` in this folder, then do the job. He pasted a Google Drive link instead: read `START HERE.md` at the top of that Drive folder and follow it. It never overwrites a newer Mac copy.
 
 ## Read in this order
-1. The core rule below. It wins over everything else. Its master file is `llllloc/1_Core rule/Core Rule.md`.
+1. The core rule below. It wins over everything else. Its master file is `llllloc/0_Core rule/Core Rule.md`.
 2. The router: `llllloc:router` in Claude, or the file `llllloc/2_Skills/Workflow skills/router/SKILL.md`. It says which skill a task needs.
 3. The skill the router names, then only the files that skill points to.
 4. `llllloc/3_Project maps/`: where every project, folder and app lives on the Mac.
@@ -34,8 +34,8 @@ English is his second language and he does not code. Use simple everyday words, 
 ## What is where
 | Folder | What it holds |
 |---|---|
-| `llllloc/0_MCP/` | notes on each app connector, the installers, and the connector checklist for a new account |
-| `llllloc/1_Core rule/` | the core rule, the hook scripts, `brain_check.py`, `setup_mac.py`, `brain_stamp.py` (which copy is newer), `friend kit/` (a friend's rename, backup, weekly check of Loc's updates, task prompts) |
+| `llllloc/0_Core rule/` | the core rule, the hook scripts, `brain_check.py`, `setup_mac.py`, `brain_stamp.py` (which copy is newer), `friend kit/` (a friend's rename, backup, weekly check of Loc's updates, task prompts) |
+| `llllloc/1_Connectors/` | every connector, MCP, plugin and browser tool that links Claude to another app or website, grouped `1_Apps`, `2_Browsers and web`, `3_Online services`, `4_My own apps`, `5_Claude add-ons`: one folder each with a `README.md` card and its installer if any; on top the connector checklist and the friends' install guide |
 | `SETUP.md`, `setup.command`, `RESTORE.md` | set up a new Mac or account (PART A) or a friend's own copy (PART B), rebuild after a loss (Mac and Drive only) |
 | `llllloc/2_Skills/<group>/<skill>/SKILL.md` | every skill (Agent Skills format) |
 | `llllloc/3_Project maps/` | paths of every project and app |
@@ -53,7 +53,7 @@ Every file sits in a named folder (7 Nov 2026, his words: "organize like i have 
 
 Everything outside the plugin folders stays on the Mac only, with the Drive copy as its backup. `_DELETE` folders never leave the Mac. The old media repo `123loc321/llllloc-media` is no longer used (kept, not deleted).
 
-<!-- CORE RULE COPY START: brain_check.py copies llllloc/1_Core rule/Core Rule.md here. Edit the master, never this copy. -->
+<!-- CORE RULE COPY START: brain_check.py copies llllloc/0_Core rule/Core Rule.md here. Edit the master, never this copy. -->
 # llllloc — CORE RULE (V33, 6 Nov 2026)
 This file wins over every other instruction in this project. Job rules live in `llllloc:project-creatives`, `-code`, `-workflow` and `llllloc:task-sending-files`.
 

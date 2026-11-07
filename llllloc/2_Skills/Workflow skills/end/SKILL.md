@@ -116,7 +116,7 @@ In the reply, the review is six lines at most: what was cut, what was added, whe
 ## STEP 6 — DELIVER THE HANDOFF, THEN SAVE TO GITHUB (6 Nov 2026, his words: GitHub is the master)
 
 1. The handoff is already on the Mac (STEP 2). Send it as a file card with `SendUserFile`, plus its full Mac path (`llllloc:task-sending-files`).
-2. Run the brain check: `python3 -I "$HOME/Desktop/Claude/llllloc/1_Core rule/brain_check.py"`. A FAIL line: fix it, then run it again.
+2. Run the brain check: `python3 -I "$HOME/Desktop/Claude/llllloc/0_Core rule/brain_check.py"`. A FAIL line: fix it, then run it again.
 3. In the brain folder: `git add -A`, commit `End: <Project>, <what this thread did>`, `git push origin main`. A refused push: `git pull --rebase origin main`, then push again. Never `--force`.
 3b. GitHub holds only the plugin, so `git add -A` sends skill files only (`.gitignore`). The Drive backup is weekly, by its own scheduled task, never here (6 Nov 2026, his words).
 4. Check: `git status -sb` shows `main...origin/main` with nothing ahead. The reply says `GitHub: pushed <short hash>`, or why not. Skills reach every account when the `llllloc` plugin syncs.

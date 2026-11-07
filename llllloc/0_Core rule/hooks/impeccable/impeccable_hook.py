@@ -42,7 +42,7 @@ def say(text):
 
 def skill_dir():
     # 6 Nov 2026: impeccable is copied daily from pbakaus/impeccable into the brain (Outside skills).
-    # Found from this file, so it works in the plugin cache and on any Mac: .../llllloc/1_Core rule/hooks/impeccable/
+    # Found from this file, so it works in the plugin cache and on any Mac: .../llllloc/0_Core rule/hooks/impeccable/
     here = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "2_Skills", "Outside skills", "impeccable")
     if os.path.isfile(os.path.join(here, "scripts", "impeccable")):
         return here

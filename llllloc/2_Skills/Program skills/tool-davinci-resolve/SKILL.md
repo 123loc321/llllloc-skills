@@ -65,9 +65,9 @@ The tree itself and the grade steps: `llllloc:task-colorist` `davinci-tree.md`. 
 
 ## SETUP AND FAILURES
 
-- Install facts, the two install faults and their fixes: `llllloc/0_MCP/DaVinci Resolve/NOTES_davinci-resolve-mcp_4.15.3_2026-10-25.md`. In short: Resolve Studio 21.1.1 with External scripting = Local, server 4.15.3 in `~/Library/Application Support/davinci-resolve-mcp`, config key `davinci-resolve`. Run any setup with Claude quit (Cmd+Q), or Claude writes its old config back.
+- Install facts, the two install faults and their fixes: `llllloc/1_Connectors/1_Apps/DaVinci Resolve/NOTES_davinci-resolve-mcp_4.15.3_2026-10-25.md`. In short: Resolve Studio 21.1.1 with External scripting = Local, server 4.15.3 in `~/Library/Application Support/davinci-resolve-mcp`, config key `davinci-resolve`. Run any setup with Claude quit (Cmd+Q), or Claude writes its old config back.
 - The MCP down: ask him to open Resolve and check Preferences, System, General, External scripting using = Local. Then `npx davinci-resolve-mcp@4.15.3 setup` only on his yes.
-- Every call that fails, lies or is missing goes in one dated block, newest on top, in `llllloc/0_MCP/DaVinci Resolve/Notes/MCP-FAILURES-LOG.md` (make it the first time): tool, what failed, what Claude saw, the workaround, the fix to try. Read it before a Resolve job. A listed failure is never retried blind.
+- Every call that fails, lies or is missing goes in one dated block, newest on top, in `llllloc/1_Connectors/1_Apps/DaVinci Resolve/Notes/MCP-FAILURES-LOG.md` (make it the first time): tool, what failed, what Claude saw, the workaround, the fix to try. Read it before a Resolve job. A listed failure is never retried blind.
 
 ## REPLY
 

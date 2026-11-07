@@ -10,3 +10,5 @@ llllloc:task-workflow-update is now llllloc:task-workflow-best-practices (the ro
 - 261106: GitHub row = skills only; media row and backup row now point to the Drive copy (his words).
 - 261106: Drive backup row: weekly task llllloc-weekly-drive-backup, never at end (his words).
 - 261107: brain tidy: paths to 0_MCP, 4_Versions/Core rule, deck-shell folder; house rule (his words).
+- 261107: core rule folder renamed 1_Core rule -> 0_Core rule (his words: core rule listed first).
+- 261107: connectors folder is llllloc/1_Connectors/<group>/<Connector>/ (his words: all connectors in one folder).

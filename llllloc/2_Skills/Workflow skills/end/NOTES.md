@@ -12,3 +12,4 @@ STEP 5: when learn ran in the thread, WRAP-UP and the STEP 3 workflow lesson are
 - 261106: STEP 6 3b saves the media repo (media.py save).
 - 261106: STEP 6 3b = Drive backup script instead of media.py save; GitHub holds only the plugin (his words).
 - 261106: STEP 6 3b: no Drive backup at end, it is weekly (his words).
+- 261107: core rule folder renamed 1_Core rule -> 0_Core rule (his words: core rule listed first).

@@ -117,10 +117,10 @@ def main():
         s = open(ag, encoding="utf-8").read()
         note = (f"\n**Owner: {a.name}** (set {datetime.date.today():%d %b %Y}). This system started as a copy of Loc's llllloc. "
                 f"In these files \"he\", \"his\" and \"Loc\" mean the owner of this folder, {a.name}, until you rewrite them. "
-                f"Loc's newest updates are checked weekly (`{a.prefix}/1_Core rule/friend kit/check_upstream.py`): you pick what to take.\n")
+                f"Loc's newest updates are checked weekly (`{a.prefix}/0_Core rule/friend kit/check_upstream.py`): you pick what to take.\n")
         s = s.replace("\n", "\n" + note, 1) if "**Owner:" not in s else s
         open(ag, "w", encoding="utf-8").write(s)
-        kit = os.path.join(BRAIN, a.prefix, "1_Core rule", "friend kit")
+        kit = os.path.join(BRAIN, a.prefix, "0_Core rule", "friend kit")
         json.dump({"name": a.name, "prefix": a.prefix, "github_user": a.github_user, "from": FROM, "upstream": UPSTREAM,
                    "date": datetime.date.today().isoformat()}, open(os.path.join(kit, "MINE.json"), "w"), indent=2)
     print(f"{'trial: ' if a.dry_run else ''}{texts} files rewritten, {renames} files and folders renamed, {links} links remade. "
