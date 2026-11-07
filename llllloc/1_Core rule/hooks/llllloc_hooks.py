@@ -301,7 +301,8 @@ def git_pull(data):
     if os.path.realpath(os.path.expanduser(amd)) != os.path.realpath(os.path.join(brain, "llllloc", "9_Memory")):
         print("llllloc: this Mac is not set up for this brain folder yet. Before the job, say so in one line and follow SETUP.md.")
     if not os.path.isdir(os.path.join(brain, ".git")):
-        print("llllloc: local copy with no GitHub link, so the skills load from this folder. Nothing to pull.")
+        print("llllloc: local copy with no GitHub link, nothing to pull. The skills come from the llllloc plugin that "
+              "SETUP.md turned on: the shared GitHub repo 123loc321/llllloc-skills (auto-update), or this folder.")
         return
     def git(*a):
         return subprocess.run(["git", "-C", brain, *a], capture_output=True, text=True, timeout=15)

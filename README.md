@@ -18,12 +18,12 @@ The skills work best inside the llllloc folder, which holds the rules, the empty
 In a Claude Code session, type these two lines one after the other:
 
 ```
-/plugin marketplace add 123loc321/llllloc-skills
+/plugin marketplace add https://github.com/123loc321/llllloc-skills.git
 /plugin install llllloc@llllloc-skills
 ```
 
 Then open `/plugin`, go to Marketplaces, pick `llllloc-skills` and turn on auto-update.
-No GitHub SSH key on your Mac? Add `"CLAUDE_CODE_PLUGIN_PREFER_HTTPS": "1"` under `"env"` in `~/.claude/settings.json` first. The setup in the full copy does this for you.
+You need no GitHub account: the repo is public.
 
 ## Good to know
 
