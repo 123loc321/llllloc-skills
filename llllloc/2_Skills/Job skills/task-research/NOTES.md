@@ -15,3 +15,4 @@ REACH rewritten: Ego Lite on his Mac replaces the Opera connector, OpenCLI and A
 2026-10-31 | research check | Research line allowed on prompt replies. Prompt revision floor 1 to 3 searches on its new question.
 - 5 Nov 2026: ego-reach.md Perplexity step 1, Deep Research now sits in the / menu (Mac cleanup thread).
 2026-11-06 | ego-reach.md section 5: the + menu route, real mouse click, under 2 minutes means not Deep Research, Session options Export as Markdown, heredoc polling.
+- 261107: brain tidy: moved paths updated (0_MCP, 4_Versions/Core rule, research cache folders).

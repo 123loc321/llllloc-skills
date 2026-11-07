@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """brain_stamp.py: which copy of the brain is newer, the Mac folder or the Google Drive backup (7 Nov 2026).
 
-  python3 -I brain_stamp.py write            write <brain>/BACKUP-STAMP.json (the weekly Drive backup runs this first)
+  python3 -I brain_stamp.py write            write <brain>/llllloc/8_Scheduled tasks/Drive backup/BACKUP-STAMP.json (the weekly Drive backup runs this first)
   python3 -I brain_stamp.py show             print this folder's facts
   python3 -I brain_stamp.py compare <file>   compare a stamp from Drive with this folder, print MAC NEWER, DRIVE NEWER or SAME
 
 Facts: when the stamp was made, on which Mac, the file count, a fingerprint of every path and size,
 the newest file change, and the last git commit (its date comes from the commit, not from file times,
-so it stays right after a download). Skips what the backup skips: _DELETE, .git, .git-media,
+so it stays right after a download). Skips what the backup skips: _DELETE, .git,
 .claude/worktrees, node_modules, .DS_Store, keys, and the stamp itself.
 His rule (6 Nov 2026): never overwrite a newer Mac copy. When the verdict is not clear, ask him.
 """
 import datetime, hashlib, json, os, socket, subprocess, sys
 
 BRAIN = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-STAMP = os.path.join(BRAIN, "BACKUP-STAMP.json")
-SKIP_DIRS = {"_DELETE", ".git", ".git-media", "node_modules", "__pycache__"}
+STAMP = os.path.join(BRAIN, "llllloc", "8_Scheduled tasks", "Drive backup", "BACKUP-STAMP.json")
+SKIP_DIRS = {"_DELETE", ".git", "node_modules", "__pycache__"}
 SKIP_ENDS = (".DS_Store", ".env", ".mcp-token", ".pem", ".key", "BACKUP-STAMP.json")
 
 

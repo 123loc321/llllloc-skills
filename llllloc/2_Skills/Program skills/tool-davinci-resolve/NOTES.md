@@ -1,1 +1,2 @@
 - 27 Oct 2026 (a client grade V3.0 thread): new GRADE TREE section: no node API, CopyGrades across timelines then put values back, ApplyGradeFromDRX fails, groups, SetCDL/SetLUT with RefreshLUTList, ExportCurrentFrameAsStill, a modal window blocks every UI call, render steps with sharpening check.
+- 261107: brain tidy: moved paths updated (0_MCP, 4_Versions/Core rule, research cache folders).

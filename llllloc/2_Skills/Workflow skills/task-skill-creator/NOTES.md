@@ -6,3 +6,4 @@
 - 29 Oct 2026: Mac-first for the Code tab (round 75). Cloud paths, save cards and device tools replaced by Mac paths and the Desktop round folder. His yes in the migration session.
 - 30 Oct 2026 (round 80): skills also go out as file cards; tested Code tab facts; core V31 wording.
 - 261106: DELIVER step 6: push the moment the skill is written, never left for end (his words).
+- 261107: brain tidy: moved paths updated (0_MCP, 4_Versions/Core rule, research cache folders).

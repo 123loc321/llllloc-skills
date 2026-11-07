@@ -23,7 +23,7 @@ import datetime, json, os, shutil, subprocess, sys
 
 BRAIN = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 HOME = os.path.expanduser("~")
-GIT = {"source": {"source": "git", "url": "https://github.com/123loc321/llllloc.git"}, "autoUpdate": True}
+LOC = "llll" + "loc"  # Loc's plugin name, written so a friend's rename (make_it_mine.py) leaves it alone
 SHARED_URL = "https://github.com/123loc321/llllloc-skills.git"  # public, no account needed (his pick, 7 Nov 2026)
 SHARED = {"source": {"source": "git", "url": SHARED_URL}, "autoUpdate": True}
 
@@ -55,14 +55,17 @@ def answers(*cmd):
 
 
 def pick_source():
-    """(marketplace name, source entry, words for the report)."""
+    """(marketplace name, source entry, words for the report).
+    A git copy (his Macs, or a friend's own repo after SETUP.md): its own GitHub origin. A copy with no .git: Loc's
+    public shared repo, but only while it is still named llllloc. Else, or offline, or --local: this folder."""
+    name = MP.get("name", "llllloc-brain")
     if "--local" not in sys.argv:
         if os.path.isdir(os.path.join(BRAIN, ".git")):
-            if answers("-C", BRAIN, "ls-remote", "-q", "origin", "HEAD"):
-                return "llllloc-brain", GIT, "GitHub 123loc321/llllloc (auto-update on)"
-        elif answers("ls-remote", "-q", SHARED_URL, "HEAD"):
+            url = subprocess.run(["git", "-C", BRAIN, "remote", "get-url", "origin"], capture_output=True, text=True).stdout.strip()
+            if url and answers("-C", BRAIN, "ls-remote", "-q", "origin", "HEAD"):
+                return name, {"source": {"source": "git", "url": url}, "autoUpdate": True}, f"GitHub {url} (auto-update on)"
+        elif PLUGIN == LOC and answers("ls-remote", "-q", SHARED_URL, "HEAD"):
             return "llllloc-skills", SHARED, "the shared GitHub repo 123loc321/llllloc-skills (auto-update on)"
-    name = json.load(open(os.path.join(BRAIN, ".claude-plugin", "marketplace.json"))).get("name", "llllloc-brain")
     return name, {"source": {"source": "directory", "path": BRAIN}}, f"this folder ({tilde(BRAIN)})"
 
 
@@ -78,11 +81,12 @@ if not os.path.isfile(idx):
 print(f"settings: {tilde(local)} -> memory {d['autoMemoryDirectory']}")
 
 # 2. Skill links for other AI apps.
-mp = json.load(open(os.path.join(BRAIN, ".claude-plugin", "marketplace.json")))
+MP = json.load(open(os.path.join(BRAIN, ".claude-plugin", "marketplace.json")))
+PLUGIN = MP["plugins"][0]["name"]
 ag = os.path.join(BRAIN, ".agents", "skills")
 os.makedirs(ag, exist_ok=True)
 made = 0
-for rel in mp["plugins"][0].get("skills", []):
+for rel in MP["plugins"][0].get("skills", []):
     name = os.path.basename(rel.rstrip("/"))
     link = os.path.join(ag, name)
     if not os.path.lexists(link) and os.path.isfile(os.path.join(BRAIN, rel, "SKILL.md")):
@@ -98,12 +102,14 @@ if "--brain-only" not in sys.argv:
     u = load(user)
     name, market, where = pick_source()
     known, enabled = u.setdefault("extraKnownMarketplaces", {}), u.setdefault("enabledPlugins", {})
-    for other in ("llllloc-brain", "llllloc-skills"):
-        if other != name and f"llllloc@{other}" in enabled:
-            enabled[f"llllloc@{other}"] = False  # one plugin copy only
-            known.pop(other, None)
+    mine = f"{PLUGIN}@{name}"
+    for key in list(enabled):  # one copy only: Loc's plugin or an older copy of this one is turned off
+        if key != mine and key.split("@")[0] in {PLUGIN, LOC} and enabled[key]:
+            enabled[key] = False
+            if key.split("@")[1] in {"llllloc-brain", "llllloc-skills", name}:
+                known.pop(key.split("@")[1], None)
     known[name] = market
-    enabled[f"llllloc@{name}"] = True
+    enabled[mine] = True
     u["skillListingBudgetFraction"] = 0.03
     if os.path.realpath(BRAIN) not in {os.path.realpath(os.path.expanduser(p)) for p in ("~/llllloc", "~/Desktop/Claude")}:
         u.setdefault("env", {})["LLLLLOC_BRAIN"] = BRAIN  # the hooks look in those two places, else here

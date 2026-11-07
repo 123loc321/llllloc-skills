@@ -78,7 +78,7 @@ Proof and scores: `/Volumes/CREATIVE #1/261106_llllloc_Blender Bake-off/*_PROJEC
 - Blender 5.2.2 LTS at `/Applications/Blender.app`. The add-on needs Blender 5.1 or newer.
 - Add-on `mcp` 1.0.3 in `~/Library/Application Support/Blender/5.2/extensions/user_default/mcp`. Auto Start is on by default.
 - Server `~/.blender-mcp/venv/bin/blender-mcp`, entry `blender` in the Claude app config. A config change needs a Claude app restart.
-- Installers, notes and the update steps: `llllloc/2_MCP/Blender/README.md`.
+- Installers, notes and the update steps: `llllloc/0_MCP/Blender/README.md`.
 - Trap: installing the add-on from the command line while Blender is open does not stick. Blender writes its old settings back on quit. Turn it on in Preferences instead.
 - The `_for_cli` tools open a .blend in a background Blender. They need no bridge and never touch his open scene. Use them to read a file he has not opened.
 

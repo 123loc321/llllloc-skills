@@ -5,7 +5,7 @@ description: "How Claude works on his Adobe Premiere Pro edits through the Premi
 
 # llllloc:tool-premiere-pro
 
-The mechanics of driving his Premiere Pro edit through the `MCP_for_Adobe_Premiere_Pro` tools. Craft lives in `llllloc:task-motion` and `llllloc:task-design`. Subtitles and sound design are always done in Premiere (18 Oct 2026): the rules live in `llllloc:task-vo-to-srt-subtitle` ALWAYS IN PREMIERE and `llllloc:task-sound-design` ALWAYS IN PREMIERE. How the MCP behaves (frame-snapped marks, scale values, audio routing, false "no placement" errors): `llllloc/4_Lessons/Programs/Premiere Pro/README.md`, plus only the one other file in that folder that matches the job (16 Oct 2026, his words: read only the lesson that is needed). What the MCP fails at: `llllloc/2_MCP/Premiere Pro/Notes/MCP-FAILURES-LOG.md`. Read both before any placement.
+The mechanics of driving his Premiere Pro edit through the `MCP_for_Adobe_Premiere_Pro` tools. Craft lives in `llllloc:task-motion` and `llllloc:task-design`. Subtitles and sound design are always done in Premiere (18 Oct 2026): the rules live in `llllloc:task-vo-to-srt-subtitle` ALWAYS IN PREMIERE and `llllloc:task-sound-design` ALWAYS IN PREMIERE. How the MCP behaves (frame-snapped marks, scale values, audio routing, false "no placement" errors): `llllloc/4_Lessons/Programs/Premiere Pro/README.md`, plus only the one other file in that folder that matches the job (16 Oct 2026, his words: read only the lesson that is needed). What the MCP fails at: `llllloc/0_MCP/Premiere Pro/Notes/MCP-FAILURES-LOG.md`. Read both before any placement.
 
 ## MUST HOLD ON EVERY PLACEMENT (9 Oct 2026)
 
@@ -161,7 +161,7 @@ Check: `export_frame` on one note over the busiest picture. The box reads and no
 JOB: every Premiere MCP call that fails, lies, or is missing is written down, so he can fix the MCP later.
 Steps:
 1. During the job, keep a list: tool, what failed, what Claude saw, the workaround, the fix to try.
-2. At the end of the job, add one dated block, newest on top, with the project and the sequence, to `~/Desktop/Claude/llllloc/2_MCP/Premiere Pro/Notes/MCP-FAILURES-LOG.md` (moved 16 Oct 2026). Request that folder once if it is not connected.
+2. At the end of the job, add one dated block, newest on top, with the project and the sequence, to `~/Desktop/Claude/llllloc/0_MCP/Premiere Pro/Notes/MCP-FAILURES-LOG.md` (moved 16 Oct 2026). Request that folder once if it is not connected.
 3. Read the log before a Premiere job. A listed failure is never retried blind: use its workaround.
 Output: one line in the reply: the count of new failures and the log path.
 Check: every error and every "unavailable" tool of the job has a row.

@@ -68,7 +68,7 @@ ask for that one picture rather than guessing at a look.
 ## SOURCES
 
 - llllloc's own document, "The Perplexity Research Method", 5 Sep 2026 — saved in the brain.
-- `how-to-keep-an-agent-workflow-fast.md`, this folder — near-duplicates are the biggest
+- `llllloc_workflow/2_Research cache/workflow/how-to-keep-an-agent-workflow-fast.md` — near-duplicates are the biggest
   cause of a rule being ignored, so most of the document was deliberately not copied.
 
 ## THE RECEIPT MUST BE CHECKABLE — ADDED 6 SEPTEMBER 2026

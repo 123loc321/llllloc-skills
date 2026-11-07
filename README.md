@@ -4,16 +4,16 @@ The skills of **llllloc**, the Claude workflow of Loc's video, motion and design
 
 This repo is a read-only copy. It is refreshed once a week, and Claude Code picks up the new version by itself.
 
-## Set it up (best way: the full shared copy)
+## Set it up (best way: make it your own)
 
-The skills work best inside the llllloc folder, which holds the rules, the empty memory and the maps they use.
+The skills work best inside the llllloc folder, which holds the rules, an empty memory and the maps they use.
 
 1. Get the shared `Claude` folder from the Google Drive link Loc sent you. Put it on your Desktop.
 2. In the Claude desktop app, open the Code tab and start a new session in that folder.
-3. Type `set me up`. Claude runs the setup. It turns on this plugin from this repo, with auto-update on.
-4. Start a new session in the same folder. Done.
+3. Type `set me up`. Claude asks your name and a name for your own system, renames everything to it, and sets up your own GitHub repo, a Google Drive backup, the weekly tasks and your apps.
+4. Every Tuesday Claude lists what Loc changed here. You pick what to take into your own system.
 
-## Only the plugin
+## Only the plugin, Loc's names, his updates by themselves
 
 In a Claude Code session, type these two lines one after the other:
 
@@ -27,6 +27,6 @@ You need no GitHub account: the repo is public.
 
 ## Good to know
 
-- Your own edits to the skills inside your folder do not load while this plugin is on. To use your own versions, run the setup with `--local`: `python3 -I "llllloc/1_Core rule/setup_mac.py" --local`. Auto-update then stops.
+- With this route you cannot change the skills: they come from this repo. To change them, make the system your own (above).
 - Some skills say "commit and push to GitHub". That is Loc's own repo. You cannot push here, and you do not need to.
 - Docs: [Claude Code plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces).

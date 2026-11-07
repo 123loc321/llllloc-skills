@@ -5,3 +5,4 @@
 ## 2026-10-17 rename
 llllloc:task-workflow-update is now llllloc:task-workflow-best-practices (the routine check-up). llllloc-workflow-review is now llllloc:task-workflow-update (the big upgrade). His words: "I want to name this workflow update instead". Old copy in Old/261017_before_rename/.
 - 29 Oct 2026: Mac-first for the Code tab (round 75). Cloud paths, save cards and device tools replaced by Mac paths and the Desktop round folder. His yes in the migration session.
+- 261107: brain tidy: moved paths updated (0_MCP, 4_Versions/Core rule, research cache folders).

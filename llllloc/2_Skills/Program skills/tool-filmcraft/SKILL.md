@@ -68,7 +68,7 @@ His bin tree is the same in AE, Premiere, Cavalry, DaVinci and FilmCraft: `lllll
 ## SETUP AND FAILURES
 
 - Installed 26 Oct 2026 on his yes: `/Applications/FilmCraft.app` (signed and notarized, Learning Machines LLC) and `~/.local/bin/filmcraft-cli`, from github.com/storytold/filmcraft releases. An update only on his word.
-- Every call that fails, lies or is missing goes in one dated block, newest on top, in `llllloc/2_MCP/FilmCraft/Notes/FAILURES-LOG.md` (make it the first time): command, what failed, what Claude saw, the workaround. Read it before a FilmCraft job. A listed failure is never retried blind.
+- Every call that fails, lies or is missing goes in one dated block, newest on top, in `llllloc/0_MCP/FilmCraft/Notes/FAILURES-LOG.md` (make it the first time): command, what failed, what Claude saw, the workaround. Read it before a FilmCraft job. A listed failure is never retried blind.
 
 ## REPLY
 

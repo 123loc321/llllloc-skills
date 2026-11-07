@@ -20,19 +20,20 @@ The workflow is a project of its own: `~/Desktop/Claude/llllloc_workflow/`. What
 | Memory | `llllloc/9_Memory/` (`autoMemoryDirectory` in the brain's `.claude/settings.local.json`, written per Mac by `setup_mac.py`), `MEMORY.md` is the index |
 | Hooks (6 Nov 2026) | inside the `llllloc` plugin entry in `.claude-plugin/marketplace.json`, scripts in `llllloc/1_Core rule/hooks/`. Never also in a settings file, or they fire twice |
 | Books, videos, frames, installers, Old versions | the Mac folder only, backed up by the Drive copy. The media repo `123loc321/llllloc-media` is no longer used (6 Nov 2026) |
-| Backup, new Mac, rebuild (6 Nov 2026) | Google Drive `*llllloc_System_Full backup` (map row "Brain Drive backups"), one-way copy by `llllloc/8_Scheduled tasks/Drive backup/drive_backup.sh`, once a week by the scheduled task `llllloc-weekly-drive-backup` (Mondays about 12:20), never at `end` (6 Nov 2026, his words). Each backup writes `BACKUP-STAMP.json` first (`brain_stamp.py`: which copy is newer, never overwrite a newer Mac copy). New Mac or account (7 Nov 2026): AGENTS.md "First session" runs `SETUP.md`; a pasted Drive link runs that folder's `START HERE.md`. The shareable copy `*llllloc_System_Template` (no memory, maps, client names, accounts, books or videos; skills load from the folder): `template_build.py` beside the backup script, first run `--dry-run` |
+| Backup, new Mac, rebuild (6 Nov 2026) | Google Drive `*llllloc_System_Full backup` (map row "Brain Drive backups"), one-way copy by `llllloc/8_Scheduled tasks/Drive backup/drive_backup.sh`, once a week by the scheduled task `llllloc-weekly-drive-backup` (Mondays about 12:20), never at `end` (6 Nov 2026, his words). Each backup writes `BACKUP-STAMP.json` (beside the backup script, 7 Nov 2026) first (`brain_stamp.py`: which copy is newer, never overwrite a newer Mac copy). New Mac or account (7 Nov 2026): AGENTS.md "First session" runs `SETUP.md`; a pasted Drive link runs that folder's `START HERE.md`. The shareable copy `*llllloc_System_Template` (no memory, maps, client names, accounts, books or videos; skills load from the folder): `template_build.py` beside the backup script, first run `--dry-run` |
 | The brain check | `llllloc/1_Core rule/brain_check.py`, run at every `end` |
 | The maps | `llllloc/3_Project maps/` |
-| Connector installers, newest only | `llllloc/2_MCP/<Program>/`, older in `Old/` |
-| Templates | `llllloc/7_Templates/`: PROJECT-TEMPLATE, PROJECT-TEMPLATE_CODE, client-storyboard-deck, deck-shell.md |
+| Connector installers, newest only | `llllloc/0_MCP/<Program>/` (was `2_MCP`, 7 Nov 2026), older in `Old/` |
+| Templates | `llllloc/7_Templates/`: PROJECT-TEMPLATE, PROJECT-TEMPLATE_CODE, client-storyboard-deck, `deck-shell/deck-shell.md`, render-preview |
 | Timed tasks | `llllloc/8_Scheduled tasks/Outside updates/` |
-| Dated copies of the core rule | `llllloc/0_Instructions/` |
 | Lessons about models and programs | `llllloc/4_Lessons/Prompts/`, `llllloc/4_Lessons/Programs/` |
 | Lessons about the workflow | `llllloc_workflow/1_Lessons/Lessons_Workflow.md` |
 | Universal research | `llllloc/5_Research cache/` |
 | Research about Claude itself | `llllloc_workflow/2_Research cache/` |
-| Handoffs, plans, versions, old reports, backups, trash | `llllloc_workflow/0_Handoffs/` (newest 3, older in `Old/`), `3_Plans/`, `4_Versions/`, `5_Old reports/`, `6_Backups/`, `_DELETE/` |
+| Handoffs, plans, versions, old reports, backups, trash | `llllloc_workflow/0_Handoffs/` (newest 3, older in `Old/`), `3_Plans/`, `4_Versions/` (`Core rule/Core Rule_V<nn>_<date>.md`, the one home of old core rule versions, 7 Nov 2026), `5_Old reports/`, `6_Backups/`, `_DELETE/` |
 | His exact words | `llllloc_workflow/1_Lessons/Your words.md` |
+
+THE BRAIN'S HOUSE RULE (7 Nov 2026, his words: "organize like i have ocd, everything file must be in its place inside a folder"). Numbered folders `N_Name`, one number each. A folder holds on top only its index or map files; every other file sits in a named subfolder. History folders (`3_Plans`, `5_Old reports`, `6_Backups`) hold one dated folder per event, `YYYY-MM-DD_What`. Old copies go in `Old/`, unwanted files in `_DELETE/<YYYY-MM-DD>_<what>/`, never loose. History files keep their old paths. Check before a reply that wrote in the brain: `ls` the folder, no loose file.
 
 ## 3. UPDATING A RULE
 - A rule lives in one file, the one that owns its subject. Every other file points to it. A rule about a program lives in that program's skill, prompts in `llllloc:task-prompt`, design in `llllloc:task-design`, motion in `llllloc:task-motion`, skills in `llllloc:task-skill-creator`, the task rules in the project skills, the always-on rules in the core.

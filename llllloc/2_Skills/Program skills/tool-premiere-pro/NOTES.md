@@ -5,3 +5,4 @@
 - 25 Oct 2026: shared bin tree (his words: same bin panel structure across AE, PR, DaVinci, Cavalry). Round 55. New section 4b BINS AND VERSIONS replaces the Checkpoint bin rule (archive to **_EXPORT/<Video>/OLD VERSIONS/V<n>/).
 - 29 Oct 2026: Mac-first for the Code tab (round 77). Cloud paths, device tools, Remote Control handovers and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.
 - 30 Oct 2026 round 84: no-nest rule in MUST HOLD and SAFETY; unnest_sequence banned (drops keyframes).
+- 261107: brain tidy: moved paths updated (0_MCP, 4_Versions/Core rule, research cache folders).
