@@ -1,0 +1,5 @@
+- 22 Oct 2026: new skill, made from the Plasticity MCP install and live test thread. 6805 characters.
+- 22 Oct 2026 v2: built from the installed skill (5527 chars; the round 44 master, 6805 chars, is in Old/221022_v1). Added his rule: every new version starts as a duplicate, edit only the copies (top rule 7, HIS RULES, checklist step 5). 6210 chars.
+- v3 22 Oct 2026: his rule, never hide old versions; copies go one slot right, all versions visible in a row.
+- v4 22 Oct 2026: MORE TOOLS fixed (catalog ignores the search word, known tool names), TRAPS section from the RB06 job.
+- 29 Oct 2026: Mac-first for the Code tab (round 76). Cloud paths, device tools, the To Mac pipeline and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.

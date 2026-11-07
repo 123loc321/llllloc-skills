@@ -1,0 +1,4 @@
+- 17 Oct 2026 round 16: new, split from llllloc:references FILM read; PySceneDetect plus fade detector, ASL and MSL, cutting rate, J and L cut offsets, structure as time ranges, Salt and Murch and ad-structure sources.
+
+- 2026-10-17 07:16 UTC: legal caps removed on his words ("i dont want it to be limit by any legal rules"). Client and own material (logo, face, product, footage, code, copy) goes in as given; an outside reference gives its mechanism, its content comes in when he says so. Old copy in Old/261017_before_legal_removal/.
+- 28 Oct 2026: shot finder upgrade. TransNetV2 1.0.5 (cpu) runs beside PySceneDetect adaptive; keep the union, eye-check cuts only one tool found. Test on WESTPOINT_MANIFESTO_V4 (87 s): 29 shared cuts to the frame, TransNetV2 alone lost 3 of 33 hard cuts, PySceneDetect alone lost 8 of 8 dissolves and added 7 false cuts.

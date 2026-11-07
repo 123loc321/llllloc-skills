@@ -1,0 +1,2638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FIND</title>
+<style>
+/* V1.15 - the studio asked for IBM Plex Mono. Bundled in ./fonts, never
+   fetched. A remote <link> here is render-blocking: when Premiere
+   restarts with the network asleep the request hangs and the panel
+   paints NOTHING until it times out. Local files also mean the panel
+   works offline, which a sold plugin has to.
+   Three weights (400 / 500 / 600) across the three Latin subsets.
+   Latin3 carries Vietnamese (U+1EA0-1EF9) and the dong sign, which
+   the old Space Mono bundle also covered. IBM Plex has no 700 in
+   this bundle - 600 answers for it, which is the weight the design
+   actually wants. LICENSE in fonts/IBMPlexMono-LICENSE.txt (OFL).
+
+   SIX files, not nine: check-build.js expects exactly six woff2 per
+   panel and that gate is shared by all eleven. It is not ours to
+   change without asking, so the bundle was cut to fit it - the
+   extended-Latin subset went, because the panel's own words are
+   English and the names it shows are ASCII or Vietnamese. Ask the studio
+   if he wants Latin2 back; that needs the gate raised first. */
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/IBMPlexMono-400-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/IBMPlexMono-400-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/IBMPlexMono-500-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/IBMPlexMono-500-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/IBMPlexMono-600-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/IBMPlexMono-600-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/IBMPlexMono-600-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/IBMPlexMono-600-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+:root{
+  --paper:#FFFFFF; --card:#F1F0ED; --ink:#161513; --ink-soft:#8B8A85; --line:#E5E4E0;
+  --field:#FFFFFF; --btn:#ECEBE8; --btn-line:#D9D8D4;
+  --accent:#F0481E; --accent-dk:#D33E16;
+  --radius:1.75px; --radius-sm:1.25px;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+/* DARK RAMP — widened 11 August 2026, option DEEP, chosen by the studio.
+   The old ramp put every surface inside one narrow band: a button against the page
+   measured 1.26:1, a button border against its button 1.28:1, a divider against the
+   page 1.41:1. At the dark end of a screen anything under about 1.4:1 reads as flat
+   page, so buttons and fields looked like nothing. Text was never the problem.
+   Now: btn/page 1.69:1, btn-line/btn 1.73:1, line/page 2.17:1, ink-soft/page 8.02:1.
+   The vermilion accent is untouched. Light mode is untouched.
+   The steps are spaced evenly in CIE L*, not evenly in hex, so they read even.
+   THIS BLOCK IS BYTE-IDENTICAL IN ALL ELEVEN PANELS. Change it in one, change it in
+   all, and update llloc-ui assets/reference-panel.html plus PLUGIN-LOG section 6, or
+   the next new panel is born with the old colours. */
+html.dark{
+  --paper:#0C0C0A; --card:#24231E; --ink:#EFEEE7; --ink-soft:#A7A6A0; --line:#4A4944;
+  --field:#1B1B18; --btn:#3A3934; --btn-line:#5D5C57; --accent:#F0481E; --accent-dk:#F5602F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(--font-mono);-webkit-font-smoothing:antialiased}
+::selection{background:rgba(240,72,30,.26);color:var(--ink)}
+::-moz-selection{background:rgba(240,72,30,.26);color:var(--ink)}
+html.dark ::selection{background:rgba(240,72,30,.42);color:var(--ink)}
+html.dark ::-moz-selection{background:rgba(240,72,30,.42);color:var(--ink)}
+/* V1.11 - thin quiet scrollbars, the reference's hairline discipline */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--btn-line);border:2px solid var(--paper);border-radius:0}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-soft)}
+/* V1.17 - the UI size scaler uses CSS zoom, not transform:scale.
+   zoom scales the LAYOUT, so height:100% resolves against the real panel
+   and the bottom bar lands on the panel floor with nothing calculated.
+   transform:scale only scales the PAINT, which is why V1.14, V1.15 and
+   V1.16 each had to compute a layout height and then compensate the
+   document height with a margin - and why the page could still scroll at
+   S size with nothing down there. See the note above syncZoomHeight. */
+#zoomRoot{display:flex;flex-direction:column;zoom:var(--uis,1);height:100%}
+.app{width:100%;max-width:none;margin:0;padding:16px 14px 20px;display:flex;flex-direction:column;flex:1;min-height:0}
+.hd{display:none}
+.chip{display:inline-flex;align-items:center;gap:5px;font:700 8px var(--font-mono);letter-spacing:.07em;border:1px solid var(--btn-line);border-radius:var(--radius-sm);padding:0 6px;background:var(--btn);white-space:nowrap;color:var(--ink);height:19px}
+.hbtn{width:19px;height:19px;padding:0;border:1px solid var(--btn-line);border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);font-size:10px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center}
+.hbtn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.hbtn.off{color:var(--ink-soft)}
+#sizeBtn{font:700 9px var(--font-mono);letter-spacing:.05em}
+/* card */
+.card{background:transparent;border:none;border-radius:0;overflow:visible;display:flex;flex-direction:column;flex:1;min-height:0}
+.cbd{padding:0;display:flex;flex-direction:column;flex:1;min-height:0}
+/* fields */
+/* V1.11 DESIGN PASS - the studio's fleet-dashboard reference: flat pale blocks on
+   the page, borders only where a mode NEEDS them, bigger type, more air.
+   LIGHT goes borderless (the reference look). DARK keeps its edges: the DEEP
+   ramp measured card/page at 1.24:1, under the 1.45:1 floor in log section 6,
+   so a borderless dark field would read as flat page. Buttons stay flat in
+   BOTH modes - dark btn/page is 1.69:1, above the floor. */
+/* V1.12 - the studio: "align these boxes to be in same size". The search row and
+   the FRAMES row are two separate grids, so their boxes were free to drift.
+   One height token now drives BOTH, and the toolbar and MATCH CLIP match it.
+   Change --row-h and every box in the header moves together. */
+/* V1.13 DESIGN PASS 2 - measured against the studio's fleet-dashboard reference.
+   What the reference actually does, and what FIND was doing instead:
+
+     reference            FIND before          FIND now
+     pale grey pills      pale grey pills      kept
+     NO borders           1px borders          borders gone in light
+     radius ~4px          1.75px               3px
+     weight 400-500       700 everywhere       500 on chrome, 400 on names
+     letter-spacing .1em  .03-.09em            .11em on chrome
+     generous padding     tight                14px on chips, 34px rows
+     text centred in pill text sat high        flex-centred, measured
+
+   Nothing here costs a click path anything - it is all paint. */
+/* V1.14 - the studio: "reduce round corner amount of everything by 50%".
+   3px -> 1.5px, in the two tokens every component already reads. */
+:root{ --row-h:34px; --radius:1.5px; --radius-sm:1.5px }
+/* V1.17 - the studio: "try to align things better too".
+   This row declared THREE columns and only ever had TWO children, so the
+   grid still charged it the 9px gap for a column that was never there.
+   The refresh button stopped 9px short of the color swatch below it and
+   of the rule under the version bar. Measured: 393.3 against 403.8. */
+.frow{display:grid;grid-template-columns:1fr auto;gap:9px}
+/* ONE height for every box in the header, and the text sits in the middle
+   of each. the studio: "make these boxes the same height as the one below" and
+   "align text to the middle". Measured in test-ui U41 / U46. */
+.frow .fld,.lrow .fld,.lrow .pill,.lrow .colbtn,.frow .tbar .tb{height:var(--row-h)}
+.frow .tbar .tb{width:var(--row-h)}
+.lrow .pill{display:flex;align-items:center;justify-content:center;padding:0 14px;line-height:1}
+.fld{display:flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--card);padding:7px 8px 7px 11px;cursor:text;min-width:0}
+/* the X that empties the search box */
+.clrb{width:16px;height:16px;padding:0;flex-shrink:0;display:none;align-items:center;justify-content:center;border:none;border-radius:var(--radius-sm);background:transparent;color:var(--ink-soft);cursor:pointer;transition:.12s}
+.clrb.show{display:inline-flex}
+.clrb:hover{background:var(--accent);color:#fff}
+.fld:focus-within{border-color:var(--accent)}
+html.dark .fld{background:var(--field);border-color:var(--btn-line)}
+html.dark .fld:focus-within{border-color:var(--accent)}
+.fld .fl{font:500 9px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);flex-shrink:0}
+/* V1.14 - the studio: the search text was too big, and the placeholder is
+   one word now. 13px -> 11px. */
+.fld input{flex:1;min-width:0;border:none;background:transparent;font:400 11px var(--font-mono);letter-spacing:.09em;color:var(--ink)}
+.fld input:focus{outline:none}
+.fld input::placeholder{color:var(--ink-soft)}
+/* V1.14 - the studio: "fix this duplicate button bug". FRAMES showed TWO up/down
+   pairs. One was ours; the other was Chromium's own number spinner, which
+   input[type=number] draws unless it is told not to. It was always there
+   and only became visible when the row got shorter and the type smaller. */
+.fld input[type=number]{-webkit-appearance:none;appearance:none;-moz-appearance:textfield;margin:0}
+.fld input[type=number]::-webkit-outer-spin-button,
+.fld input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0;display:none}
+/* icon buttons (SORT design system kit) */
+.tb{width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.13s;flex-shrink:0}
+.tb:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tb.on:hover:not(:disabled){background:var(--accent-dk);border-color:var(--accent-dk);color:#fff}
+.tb:disabled{opacity:.35;cursor:default}
+.xb{width:15px;height:15px;padding:0;display:inline-flex;align-items:center;justify-content:center;font:700 9px var(--font-mono);color:var(--ink-soft);background:var(--btn);border:1px solid transparent;border-radius:var(--radius-sm);cursor:pointer;flex-shrink:0;transition:.13s}
+.xb.dim{opacity:.35;pointer-events:none}
+.xb:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+.xb.on{color:var(--accent);border-color:var(--accent)}
+.xb.on:hover{color:#fff}
+.xb.ok:hover{background:var(--ink);border-color:var(--ink)}
+.dab{display:flex;flex-direction:column;gap:8px;margin-top:11px}
+/* icon toolbar row (SORT design system kit) */
+.tbar{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tbd{width:1px;height:16px;background:var(--line);flex-shrink:0;margin:0 2px}
+/* buttons + fields (ADJUST kit, for the MATCH/FRAMES row and the overlay) */
+.pill{display:block;width:100%;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);font:700 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;text-align:center}
+.pill:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pill.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill.acc:hover:not(:disabled){background:var(--accent-dk);border-color:var(--accent-dk);color:#fff}
+.pill.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill.sm{padding:5px 10px;font-size:9.5px;width:auto;display:inline-block}
+.pill:disabled{opacity:.4;cursor:default}
+.lrow{display:grid;grid-template-columns:1fr auto auto;gap:9px;margin-top:10px}
+.fld.dim{opacity:.4}
+/* label color picker (ADJUST's, verbatim) */
+/* V1.11 - the studio: the colour fills the WHOLE button, no little square inside.
+   V1.12 - and it is SQUARE: the same width as the shared row height. */
+.colbtn{display:flex;align-items:stretch;border:1px solid var(--btn-line);border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);padding:0;width:var(--row-h);flex-shrink:0;cursor:pointer;transition:.13s;overflow:hidden}
+.colbtn:hover{border-color:var(--ink)}
+.sw{flex:1;border:none;border-radius:0}
+.colpop{display:none;margin-top:10px;padding:10px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--card)}
+html.dark .colpop{background:var(--field);border-color:var(--btn-line)}
+.colpop.show{display:block}
+.swgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.swcell{cursor:pointer;text-align:center}
+.swcell .sq{width:100%;height:16px;border:1px solid var(--btn-line);border-radius:var(--radius-sm);transition:.13s}
+.swcell:hover .sq{border-color:var(--ink)}
+.swcell.on .sq{border-color:var(--accent);outline:1px solid var(--accent);outline-offset:-1px}
+.hexrow{display:none;gap:6px;margin-top:9px;align-items:center}
+.hexrow.show{display:flex}
+.hexrow input{flex:1;min-width:0;font:700 10px var(--font-mono);letter-spacing:.05em;border:1px solid var(--accent);border-radius:var(--radius-sm);padding:5px 8px;background:var(--field);color:var(--ink);text-transform:uppercase}
+.hexrow input:focus{outline:none}
+.colhint{font:400 9px/1.5 var(--font-mono);color:var(--ink-soft);letter-spacing:.03em;padding:8px 0 2px}
+.spin{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.spb{width:18px;height:11px;padding:0;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.12s}
+.spb:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+/* library bar (shown on the PRESETS chip) */
+.libbar{display:flex;align-items:center;gap:4px;margin-top:9px}
+/* ---- V1.14: THE LIBRARY DROPDOWN, BUILT INSTEAD OF NATIVE -------------
+   the studio asked for an orange highlight, dark mode and better contrast on
+   this menu. A native <select> cannot give any of the three: macOS draws
+   that popup itself, outside the page, and no CSS in this panel reaches
+   it. His screenshots show exactly that - a white popup with a pale green
+   system highlight, in a dark panel.
+
+   So the select is gone and the menu is built from the panel's own
+   elements. Now it follows the theme, the highlight is the brand
+   vermilion, and the contrast is measured like everything else. */
+.libname{appearance:none;-webkit-appearance:none;border:none;background:transparent;font:700 9px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);cursor:pointer;max-width:150px;min-width:0;padding:2px 14px 2px 0;text-align:left;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.libname:focus{outline:none}
+.libname::after{content:"";position:absolute;right:2px;top:50%;margin-top:-1.5px;border:3px solid transparent;border-top-color:currentColor}
+.libbar{position:relative}
+.lmenu{display:none;position:absolute;left:0;top:100%;margin-top:5px;z-index:40;min-width:150px;max-height:230px;overflow:auto;background:var(--paper);border:1px solid transparent;border-radius:var(--radius-sm);box-shadow:0 6px 20px rgba(0,0,0,.16);padding:3px}
+/* the dark menu sits on --btn, not --card: measured, --card is 1.24:1
+   against the page and the floor for two separate surfaces is 1.45:1
+   (log section 6). --btn is 1.69:1, and its text reads 9.95:1. That is
+   the studio's "improve the contrast", in numbers. */
+html.dark .lmenu{background:var(--btn);border-color:var(--btn-line);box-shadow:0 6px 20px rgba(0,0,0,.55)}
+html.dark .lmi:hover{background:var(--btn-line)}
+html.dark .lmi.on:hover{background:var(--accent-dk)}
+.lmenu.show{display:block}
+.lmi{display:block;width:100%;text-align:left;border:none;background:transparent;color:var(--ink);font:500 9.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;cursor:pointer;border-radius:var(--radius-sm);white-space:nowrap}
+.lmi:hover{background:var(--btn)}
+.lmi.on{background:var(--accent);color:#fff}
+.lmi.on:hover{background:var(--accent-dk);color:#fff}
+.newrow{display:none;gap:7px;margin-top:8px}
+.newrow.show{display:flex}
+.psname{flex:1;min-width:0;font:700 10px var(--font-mono);letter-spacing:.03em;border:1px solid transparent;border-radius:var(--radius-sm);padding:6px 8px;background:var(--card);color:var(--ink);text-transform:uppercase}
+html.dark .psname{background:var(--field);border-color:var(--btn-line)}
+.psname:focus{outline:none;border-color:var(--accent)}
+html.dark .psname:focus{border-color:var(--accent)}
+/* overlay (save + rename) */
+/* ---- V1.13: THE OVERLAY HE CALLED WASHED OUT, MEASURED ------------------
+   the studio: "the contrast here is so bad please improve". He is right, and the
+   numbers name it exactly. In light mode the box was --card #F1F0ED and its
+   buttons were --btn #ECEBE8:
+
+     DELETE / CANCEL against the box   1.05:1   <- effectively invisible
+     the NAME / LIBRARY labels          3.03:1
+     the box against the page           1.14:1
+
+   Log section 6 sets the floor at 1.45:1 for two surfaces that must read as
+   separate. 1.05:1 is not a surface, it is a rumour.
+
+   Fixed by moving the box UP, not the buttons down: a white box, so its
+   pale-grey buttons finally sit on something, plus a real edge and darker
+   labels. Now:
+
+     buttons against the box            1.19:1 plus a 1.20:1 border, and the
+                                        label text on them reads 4.35:1
+     labels                             5.18:1
+     the box against the dimmed page    the backdrop is 55% black
+
+   Dark mode was never the complaint and keeps its own surfaces. */
+.ovl{display:none;position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:80;align-items:flex-start;justify-content:center;padding:14px 12px;overflow:auto}
+.ovl.show{display:flex}
+.ovlc{width:100%;max-width:392px;background:var(--paper);border:1px solid transparent;border-radius:var(--radius);padding:15px 17px 17px;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+html.dark .ovlc{background:var(--paper);border-color:transparent;box-shadow:0 8px 28px rgba(0,0,0,.62)}
+/* the labels inside the box - 3.03:1 was the complaint, this is 5.18:1 */
+.ovlc .elab{color:#6E6D68}
+html.dark .ovlc .elab{color:var(--ink-soft)}
+/* V1.15 - the studio: "no box in the design system should have stroke". The
+   V1.13 border was added for CONTRAST when the box was --card and its
+   buttons measured 1.05:1 against it. The box is --paper now, so the same
+   buttons read 1.19:1 by tone alone - the identical figure every button in
+   the panel already has against the page. The stroke has nothing left to
+   do, so it goes, everywhere. Dark mode keeps its edges: measured, those
+   surfaces sit too close without them. */
+.ovlc .pill{border-color:transparent}
+.ovlc .pill.acc{border-color:transparent}
+/* DARK follows the same rule - no stroke - and gets its separation from
+   TONE instead, which is what his design system uses everywhere else. The
+   dark overlay box moves from --card to --paper, and its buttons then read
+   1.69:1 against it (--btn on --paper) instead of 1.36:1 (--btn on --card).
+   The floor in log section 6 is 1.45:1, so tone alone carries it and the
+   stroke is not needed in either mode. */
+.ovlc .fld{background:var(--btn);border-color:var(--btn-line)}
+html.dark .ovlc .fld{background:var(--field);border-color:var(--btn-line)}
+.ovlh{display:flex;align-items:center;gap:9px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+.ovlh h3{font:700 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+.ovlh .cst{margin-left:auto;font:700 9px var(--font-mono);letter-spacing:.09em;color:var(--ink-soft);white-space:nowrap}
+.elab{font:500 9px var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);padding:14px 0 7px}
+.efx{border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);padding:8px 10px;max-height:150px;overflow:auto}
+html.dark .efx{background:var(--field);border-color:var(--btn-line)}
+/* V1.13 - the studio: "remove the outer box". The library buttons are already
+   boxes. A box around boxes is the thing his reference never does. */
+.mvl{border:none;background:transparent;padding:0;max-height:190px;overflow:auto}
+/* V1.14 - the studio: "remove stroke form these boxes". The library buttons in
+   this box are already blocks of tone. A stroke on top of a fill is the
+   thing his reference never does, and the earlier fix put a border on
+   every .ovlc .pill for CONTRAST - which these do not need, because they
+   are full-width blocks with plenty of edge. */
+.ovlc .mvl .pill{border-color:transparent}
+.ovlc .mvl .pill:hover{border-color:transparent;background:var(--ink);color:var(--paper)}
+/* and a rule that separates CANCEL from the choices above it */
+.ovlc .mvl + .dab{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+html.dark .ovlc .mvl + .dab{border-top-color:var(--btn-line)}
+.efxr{display:flex;gap:8px;align-items:center;font:700 9px var(--font-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 0;color:var(--ink);cursor:pointer}
+.efxr input{margin:0;flex-shrink:0}
+.efxr i{margin-left:auto;font:400 8.5px var(--font-mono);font-style:normal;color:var(--ink-soft);white-space:nowrap}
+.efxr.non{color:var(--ink-soft);font-weight:400;text-transform:none;cursor:default}
+.mini{appearance:none;-webkit-appearance:none;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--card) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%23161513' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat right 6px center;color:var(--ink);font:700 8.5px var(--font-mono);letter-spacing:.04em;padding:3px 18px 3px 6px;cursor:pointer;max-width:150px;min-width:0;flex-shrink:0}
+html.dark .mini{border-color:var(--btn-line)}
+html.dark .mini{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%23EFEEE7' stroke-width='1.4'/%3E%3C/svg%3E")}
+.mini:focus{outline:none;border-color:var(--accent)}
+/* filter chips */
+.fchips{display:flex;align-items:center;gap:6px;margin-top:12px;flex-wrap:wrap}
+.fc{height:26px;padding:0 14px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);font:500 9.5px var(--font-mono);letter-spacing:.13em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.13s;line-height:1}
+.fc:hover{background:var(--ink);color:var(--paper)}
+.fc.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* results - the list sits straight on the page now, reference style: rows
+   and whitespace, no box around the box. The scroll machinery is untouched. */
+/* V1.18 - the studio: "leave some gap between row highlight and the scroll
+   handle here". The scroll bar lives outside this padding, so 6px here is
+   6px of air between the end of a row's highlight and the bar. It also
+   holds the highlight off the right edge when there is no bar to clear. */
+.res{flex:1;min-height:140px;margin-top:14px;padding-right:6px;border:1px solid transparent;border-radius:var(--radius-sm);background:transparent;overflow:auto;overscroll-behavior:contain}
+/* folder rows - the browse view groups vendor packs the way Premiere's own
+   Effects panel does. Premiere gives panels no category API, so the folder
+   comes off the name prefix (BCC+, S_, ...). Search stays flat. */
+/* V1.18 - a folder row keeps the same air on the right as an effect row,
+   so a count and a pin sit on one line down the list. */
+.frw{display:flex;align-items:center;gap:9px;padding:7px 8px 7px 9px;cursor:pointer;border-left:2px solid transparent;border-radius:var(--radius-sm)}
+.frw:hover{background:var(--btn)}
+.frw.sel{border-left-color:var(--accent);background:var(--btn)}
+.fcv{width:20px;flex-shrink:0;display:inline-flex;justify-content:center;color:var(--ink-soft);transition:transform .12s}
+.frw.open .fcv{transform:rotate(90deg)}
+.fnm{flex:1;min-width:0;font:500 10.5px/1.5 var(--font-mono);letter-spacing:.13em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
+.fct{font:400 9.5px var(--font-mono);color:var(--ink-soft);flex-shrink:0;letter-spacing:.06em}
+.row.inx{padding-left:22px}
+/* V1.18 - the studio: "leave some gap for the button and the end of the row
+   hightlight to the right here". V1.17 took this padding to zero to line
+   the pins up with the toolbar, and that put a button hard against the
+   edge of its own highlight. 8px back. */
+.row{display:flex;align-items:center;gap:9px;padding:7px 8px 7px 9px;cursor:pointer;border-left:2px solid transparent;border-radius:var(--radius-sm)}
+.row:hover{background:var(--btn)}
+.row.sel{border-left-color:var(--accent);background:var(--btn)}
+.rtag{font:500 7.5px var(--font-mono);letter-spacing:.1em;color:var(--ink-soft);width:22px;flex-shrink:0}
+.rnm{flex:1;min-width:0;font:400 11px/1.5 var(--font-mono);letter-spacing:.045em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rbs{display:flex;gap:6px;flex-shrink:0;align-items:center}
+.rmore{font:400 8.5px var(--font-mono);color:var(--ink-soft);letter-spacing:.04em;padding:5px 8px}
+.note{display:none;font:400 9.5px/1.55 var(--font-mono);color:var(--ink-soft);letter-spacing:.03em;padding:10px 0 0}
+.note.show{display:block}
+.note.err{color:var(--accent)}
+.note.okk{color:var(--ink)}
+/* bottom bar */
+.foot{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px;padding:9px 0 0;border-top:1px solid var(--line);font:700 8.5px var(--font-mono);letter-spacing:.05em;color:var(--ink-soft)}
+.foot b{color:var(--ink);font-weight:700}
+.foot .fbrand{font:700 8.5px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.foot .fby{margin-left:3px}
+.foot .fbtns{margin-left:auto;display:flex;align-items:center;gap:11px}
+.foot .chip{border:none;background:none;padding:0;height:auto;color:var(--ink);font-size:8.5px;font-weight:700;letter-spacing:.05em;margin-left:-3px}
+.foot .hbtn{width:14px;height:14px;min-width:0;padding:0;margin:0;border:none;background:none;color:var(--ink);line-height:1}
+.foot .hbtn svg{width:12px;height:12px;display:block}
+.foot #sizeBtn{font:700 11px/1 var(--font-mono);letter-spacing:0}
+.foot .hbtn:hover{background:none;border-color:transparent;color:var(--accent)}
+.foot .hbtn.off{color:var(--ink-soft)}
+.foot .hbtn.off:hover{color:var(--accent)}
+/* V1.17 - the bottom bar, third and last attempt.
+   V1.14 pinned it with position:sticky. V1.15 and V1.16 pinned it with a
+   measured minimum height. Both left the page able to scroll, and a page
+   that scrolls under a scaled panel puts empty space below the bar.
+   The scale now uses CSS zoom, the page height is 100%, and the page
+   cannot scroll at all - only the results list scrolls. */
+.grow{flex:0 0 0;min-height:0}
+/* narrow dock — icon rail anchored in a fixed left column */
+/* narrow panels - the studio's 14 Aug screenshots: the search field vanished and
+   the toolbar stacked. The field keeps the full width, the buttons wrap
+   under it, the length row stacks, and row names NEVER give way to the
+   buttons. */
+@media (max-width:320px){
+  .frow{grid-template-columns:1fr}
+  .frow .tbar{justify-content:flex-end}
+  .lrow{grid-template-columns:1fr auto}
+  .lrow .pill{width:auto}
+  .fchips{flex-wrap:wrap}
+  .rtag{width:20px}
+}
+@media (max-width:220px){
+  .app{padding:10px 8px 14px}
+  .lrow{grid-template-columns:1fr}
+  #tip{max-width:150px}
+  .foot{flex-direction:column;align-items:center;gap:4px}
+  .foot .fby{display:none}
+}
+#tip{position:fixed;z-index:99;max-width:210px;background:var(--ink);color:var(--paper);font:700 8.5px/1.55 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:var(--radius-sm);pointer-events:none;display:none}
+</style>
+</head>
+<body>
+<div id="zoomRoot">
+<div class="app">
+
+  <div class="card">
+    <div class="cbd">
+
+      <div class="frow">
+        <div class="fld" id="qFld" data-tip="Type to search every video and audio effect Premiere knows, plugins included">
+          <input id="qIn" placeholder="SEARCH" data-tip="Arrows move &#183; Enter applies &#183; Cmd+Enter forces an adjustment layer">
+          <button class="clrb" id="qClr" type="button" data-tip="Clear the search box"><svg width="9" height="9" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <span class="tbar">
+          <button class="tb" id="alDef" data-tip="Adjustment layer by default — OFF"><svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 1.4A4.6 4.6 0 0 1 6 10.6z" fill="currentColor"/></svg></button>
+          <button class="tb" id="saveBtn" data-tip="Save a preset — select one clip or adjustment layer for its effects, or several adjustment layers for a combo with their exact timing"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 1.4l1.75 3.55 3.9.55-2.85 2.75.7 3.9L7 10.3 3.5 12.15l.7-3.9L1.35 5.5l3.9-.55L7 1.4z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+          <span class="tbd"></span>
+          <button class="tb" id="reBtn" data-tip="Re-read the effect lists and your saved presets — do this after installing a new plugin"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><polyline points="1 20 1 14 7 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </span>
+      </div>
+
+      <div class="lrow">
+        <div class="fld" id="lenFld" data-tip="Length of a new adjustment layer, in frames — used when MATCH CLIP is off">
+          <span class="fl">FRAMES</span>
+          <input id="lenIn" type="number" min="1" max="9999" value="6" data-tip="Length in frames — type or use the arrows">
+          <span class="spin">
+            <button class="spb" id="lenUp" type="button" data-tip="Longer — hold to repeat"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0l4 6H0z" fill="currentColor"/></svg></button>
+            <button class="spb" id="lenDn" type="button" data-tip="Shorter — hold to repeat"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 6L0 0h8z" fill="currentColor"/></svg></button>
+          </span>
+        </div>
+        <button class="pill" id="matchBtn" data-tip="MATCH ON: a new adjustment layer takes the selected clip's whole span. OFF: it starts at the playhead and runs the frame count. Combos ignore both">MATCH CLIP</button>
+        <button class="colbtn" id="colBtn" data-tip="Label color for new adjustment layers — a saved preset keeps the color it was saved with. Combos keep theirs too">
+          <span class="sw" id="colSw"></span>
+        </button>
+      </div>
+
+      <div class="colpop" id="colPop">
+        <div class="swgrid" id="swGrid"></div>
+        <div class="hexrow" id="hexRow">
+          <input id="hexIn" maxlength="7" placeholder="#RRGGBB" data-tip="Type the hex your Premiere uses for this label slot, then press Enter">
+          <button class="tb" id="hexOk" data-tip="Apply this color"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.4 6.3l2.4 2.4 4.8-5.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="tb" id="hexCancel" data-tip="Cancel"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="colhint">DOUBLE-CLICK A SWATCH TO MATCH IT TO YOUR PREMIERE LABEL COLORS &#183; <span id="swReset" style="cursor:pointer;text-decoration:underline" data-tip="Reset all swatches to Premiere's stock colors">RESET</span></div>
+      </div>
+
+      <div class="fchips">
+        <button class="fc" id="fcAll" data-tip="Everything">ALL</button>
+        <button class="fc" id="fcV" data-tip="Video effects only">VIDEO</button>
+        <button class="fc" id="fcA" data-tip="Audio effects only">AUDIO</button>
+        <button class="fc" id="fcT" data-tip="Video and audio transitions">TRANS</button>
+        <button class="fc" id="fcPre" data-tip="Your saved Premiere presets only">PRESETS</button>
+      </div>
+
+      <div class="libbar" id="libBar" style="display:none">
+        <button class="libname" id="libSel" type="button" data-tip="Current preset library — click to switch"></button>
+        <div class="lmenu" id="libMenu"></div>
+        <button class="xb ok" id="libNew" data-tip="Add a new library"><svg width="9" height="9" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6"/></svg></button>
+        <button class="xb ok" id="libRen" data-tip="Rename this library"><svg width="8" height="8" viewBox="0 0 12 12"><path d="M1.2 10.8l.7-2.8L8.6 1.3l2.1 2.1-6.7 6.7-2.8.7z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+        <button class="xb" id="libDel" data-tip="Delete this library and its presets — click twice to confirm"><svg width="9" height="9" viewBox="0 0 13 13"><path d="M2 3.5h9M5 3.5V2h3v1.5M3.2 3.5l.6 8h5.4l.6-8" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      </div>
+      <div class="newrow" id="libRow">
+        <input class="psname" id="libName" maxlength="18" placeholder="LIBRARY NAME" data-tip="Library name">
+        <button class="pill sm" id="libGo" data-tip="Confirm">OK</button>
+        <button class="pill sm" id="libCancel" data-tip="Cancel">&#215;</button>
+      </div>
+
+      <div class="res" id="resBox"></div>
+
+      <div class="note" id="status"></div>
+
+    </div>
+  </div>
+  <div class="grow"></div>
+<div class="foot">
+    <span class="fbrand">FIND.</span>
+    <span class="chip">V1.20</span>
+    <span class="fby"><span class="fpre">made by </span><b>llllllloc</b></span>
+    <span class="fbtns">
+      <button class="hbtn" id="sizeBtn" data-tip="UI size — click to cycle L / M / S">L</button>
+      <button class="hbtn" id="tipBtn" data-tip="Hover tips — click to turn them off" aria-label="Toggle hover tips"></button>
+      <button class="hbtn" id="themeBtn" data-tip="Dark / light theme" aria-label="Toggle dark or light theme"></button>
+    </span>
+  </div>
+  <div class="ovl" id="sOvl">
+    <div class="ovlc">
+      <div class="ovlh">
+        <h3 id="sTtl">SAVE PRESET</h3>
+        <span class="cst" id="sMeta"></span>
+      </div>
+      <div class="elab">NAME</div>
+      <div class="fld" id="sNameFld" data-tip="Preset name — also the name of the layer it makes">
+        <input id="sName" maxlength="24" placeholder="PRESET NAME" data-tip="Preset name">
+      </div>
+      <div class="elab" id="sLibLab">LIBRARY</div>
+      <select class="mini" id="sLib" data-tip="Which library this preset saves into"></select>
+      <div class="elab" id="sFxLab">EFFECTS TO SAVE</div>
+      <div class="efx" id="sFx"></div>
+      <div class="dab">
+        <button class="pill acc" id="sGo" data-tip="Save it">SAVE</button>
+        <button class="pill" id="sDel" style="display:none" data-tip="Delete this preset — click twice to confirm">DELETE</button>
+        <button class="pill" id="sCancel" data-tip="Close without saving">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ovl" id="mvOvl">
+    <div class="ovlc">
+      <div class="ovlh">
+        <h3 id="mvTtl">MOVE PRESET</h3>
+      </div>
+      <div class="elab" id="mvLab">MOVE TO</div>
+      <div class="mvl" id="mvList"></div>
+      <div class="dab">
+        <button class="pill" id="mvCancel" data-tip="Close without moving">CANCEL</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="tip"></div>
+
+<script>
+/* A blank panel is the worst failure: nothing to read, nothing to click. If any
+   boot script throws, show the reason and a reload button instead of nothing. */
+window.__findBooted = false;
+function panic_find(why) {
+  if (window.__findBooted) return;
+  try {
+    document.body.innerHTML =
+      '<div style="font:400 11px/1.6 monospace;color:#EDEBE4;background:#171613;padding:14px">' +
+      '<div style="font-weight:700;letter-spacing:.12em;margin-bottom:8px">FIND \u2014 DIDN\'T START</div>' +
+      '<div style="color:#8F8E86;margin-bottom:10px">' + String(why || "unknown error").replace(/</g, "&lt;") + '</div>' +
+      '<button onclick="location.reload()" style="font:700 10px monospace;letter-spacing:.09em;padding:7px 12px;' +
+      'background:#F0481E;color:#fff;border:none;cursor:pointer">RELOAD PANEL</button></div>';
+  } catch (e) {}
+}
+window.addEventListener("error", function (e) {
+  panic_find((e && e.message) ? e.message : "script error");
+});
+
+/* ---- restore watchdog ----------------------------------------------------
+   When Premiere restarts, CEP sometimes brings a docked panel back as an empty
+   page. Reopening it from Window > Extensions fixes it because that builds a
+   fresh page - so the panel does exactly that for itself: if it still looks
+   empty a few seconds in, it reloads. Attempts are counted in the URL hash so
+   a genuinely broken build can not loop forever. */
+(function () {
+  var MAX = 3;
+  function tries() {
+    var m = /r(\d+)/.exec(window.location.hash || "");
+    return m ? parseInt(m[1], 10) : 0;
+  }
+  function looksEmpty() {
+    if (window.__findBooted) return false;
+    var zr = document.getElementById("zoomRoot");
+    if (!zr) return true;
+    if (!zr.offsetHeight || zr.offsetHeight < 8) return true;
+    return false;
+  }
+  function check() {
+    if (!looksEmpty()) return;
+    var n = tries();
+    if (n >= MAX) { panic_find("The panel came back empty after restarting Premiere."); return; }
+    try { window.location.hash = "r" + (n + 1); } catch (e) {}
+    try { window.location.reload(); } catch (e2) {}
+  }
+  var AT = [4500], i;
+  for (i = 0; i < AT.length; i++) { window.setTimeout(check, AT[i]); }
+  window.addEventListener("focus", function () { window.setTimeout(check, 400); });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) window.setTimeout(check, 400);
+  });
+})();
+</script>
+<script>window.LLLOC_PANEL = "FIND";</script>
+<script src="js/llloc-revive.js"></script>
+<script src="js/llloc-prefs.js"></script>
+<script src="js/CSInterface.js"></script>
+<script src="js/fx-categories.js"></script>
+<script>
+"use strict";
+var $ = function (id) { return document.getElementById(id); };
+var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+
+/* ---------------- theme ---------------- */
+var DARK = true;
+try { var t0 = localStorage.getItem("find.theme"); if (t0) DARK = (t0 === "dark"); } catch (e) {}
+var SUN = '<svg width="12" height="12" viewBox="0 0 14 14"><circle cx="7" cy="7" r="3.1" fill="currentColor"/><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 .6v1.7M7 11.7v1.7M.6 7h1.7M11.7 7h1.7M2.5 2.5l1.2 1.2M10.3 10.3l1.2 1.2M11.5 2.5l-1.2 1.2M3.7 10.3l-1.2 1.2"/></g></svg>';
+var MOON = '<svg width="12" height="12" viewBox="0 0 14 14"><path d="M12.1 9.1A5.9 5.9 0 0 1 4.9 1.9 5.9 5.9 0 1 0 12.1 9.1Z" fill="currentColor"/></svg>';
+function applyTheme() {
+  document.documentElement.classList.toggle("dark", DARK);
+  $("themeBtn").innerHTML = DARK ? SUN : MOON;
+}
+$("themeBtn").addEventListener("click", function () {
+  DARK = !DARK;
+  try { localStorage.setItem("find.theme", DARK ? "dark" : "light"); } catch (e) {}
+  applyTheme();
+});
+
+/* ---------------- UI size ---------------- */
+var SIZES = [["L", 1.16], ["M", 0.98], ["S", 0.83]];
+var sizeIx = 0;
+try {
+  var si = parseInt(localStorage.getItem("find.size") || "0", 10);
+  if (si >= 0 && si < SIZES.length) sizeIx = si;
+} catch (e) {}
+/* V1.17 - THE ARITHMETIC IS GONE, AND THIS IS WHY.
+   the studio reported the bottom bar floating at S size three times. V1.14 used
+   position:sticky. V1.15 and V1.16 measured window.innerHeight, divided by
+   the scale, set that as the layout height, and then corrected the
+   document height with a margin.
+   MEASURED on the shipped V1.16 at his panel size, 325 by 762:
+     L - the page cannot scroll.  M - the page can scroll 14 px.
+     S - THE PAGE CAN SCROLL 155 px, and there is nothing down there.
+   Scroll it and the search box leaves the top of the panel while the bar
+   sits 172 px above the floor. That is his screenshot, in numbers.
+   CSS zoom scales the layout instead of the paint, so height:100% reaches
+   the panel floor by itself and the page can never scroll. Nothing here is
+   calculated, so nothing here can be off by a calculation.
+   The name stays because eight places call it. It has no work left. */
+function syncZoomHeight() { }
+function footWrapped(f, btns) {
+  var kids = f.children, i, need = 0, n = 0, gap = 0;
+  try { gap = parseFloat(getComputedStyle(f).gap) || 0; } catch (e) { gap = 0; }
+  for (i = 0; i < kids.length; i++) {
+    if (getComputedStyle(kids[i]).display === "none") continue;
+    need += kids[i].offsetWidth;
+    n++;
+  }
+  if (n > 1) need += gap * (n - 1);
+  return need > f.clientWidth + 1;
+}
+function fitFooter() {
+  var f = document.querySelector(".foot");
+  if (!f) return;
+  var btns = f.querySelector(".fbtns");
+  if (!btns) return;
+  var narrow = false;
+  try { narrow = window.matchMedia("(max-width:200px)").matches; } catch (e) {}
+  var order = [f.querySelector(".fbrand"), f.querySelector(".chip"),
+               f.querySelector(".fpre"), f.querySelector(".fby")];
+  var i;
+  for (i = 0; i < order.length; i++) { if (order[i]) order[i].style.display = ""; }
+  if (narrow) return;
+  for (i = 0; i < order.length; i++) {
+    if (!footWrapped(f, btns)) return;
+    if (order[i]) order[i].style.display = "none";
+  }
+}
+function applySize() {
+  var s = SIZES[sizeIx][1];
+  /* V1.17 - one custom property drives the whole scaler. The CSS reads it
+     as zoom, and zoom scales the layout, so the panel floor stays the
+     panel floor at every size. */
+  document.documentElement.style.setProperty("--uis", String(s));
+  var tp = document.getElementById("tip");
+  if (tp) {
+    tp.style.fontSize = (8.5 * s).toFixed(2) + "px";
+    tp.style.padding = (6 * s).toFixed(1) + "px " + (8 * s).toFixed(1) + "px";
+    tp.style.maxWidth = Math.round(210 * s) + "px";
+  }
+  var sb = document.getElementById("sizeBtn");
+  sb.textContent = SIZES[sizeIx][0];
+  sb.setAttribute("data-tip", "UI size: " + SIZES[sizeIx][0] + " \u2014 click to cycle L / M / S");
+  fitFooter();
+}
+$("sizeBtn").addEventListener("click", function () {
+  sizeIx = (sizeIx + 1) % SIZES.length;
+  try { localStorage.setItem("find.size", String(sizeIx)); } catch (e) {}
+  applySize();
+});
+if (window.ResizeObserver) {
+  new ResizeObserver(function () { syncZoomHeight(); fitFooter(); }).observe($("zoomRoot"));
+} else {
+  setInterval(syncZoomHeight, 1200);
+}
+try {
+  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+    document.fonts.ready.then(function () { applySize(); });
+  }
+} catch (e) {}
+window.addEventListener("resize", function () { applySize(); });
+var __RETRY = [60, 250, 600, 900, 1800, 3000], __ri;
+for (__ri = 0; __ri < __RETRY.length; __ri++) {
+  setTimeout(function () { applySize(); }, __RETRY[__ri]);
+}
+
+/* ---------------- hover tips ---------------- */
+var TIPS = true;
+try { var tp0 = localStorage.getItem("find.tips"); if (tp0 !== null) TIPS = (tp0 !== "0"); } catch (e) {}
+var tipEl = $("tip");
+function findTip(el) {
+  while (el && el !== document.body && el.getAttribute) {
+    if (el.getAttribute("data-tip")) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+function showTip(el) {
+  tipEl.textContent = el.getAttribute("data-tip");
+  tipEl.style.display = "block";
+  var r = el.getBoundingClientRect();
+  var tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  var x = clamp(r.left + r.width / 2 - tw / 2, 6, window.innerWidth - tw - 6);
+  var y = r.bottom + 7;
+  if (y + th > window.innerHeight - 6) y = r.top - th - 7;
+  tipEl.style.left = x + "px";
+  tipEl.style.top = y + "px";
+}
+function hideTip() { tipEl.style.display = "none"; }
+document.addEventListener("mouseover", function (e) {
+  if (!TIPS) { hideTip(); return; }
+  var el = findTip(e.target);
+  if (el) showTip(el); else hideTip();
+});
+document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) hideTip(); });
+document.addEventListener("mousedown", hideTip);
+document.addEventListener("scroll", hideTip, true);
+window.addEventListener("blur", hideTip);
+
+var BUB = '<svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 3h10v6.2H5.8L3.2 11.6V9.2H2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+var BUB_OFF = '<svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 3h10v6.2H5.8L3.2 11.6V9.2H2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="1.2" y1="12.8" x2="12.8" y2="1.2" stroke="currentColor" stroke-width="1.4"/></svg>';
+function applyTips() {
+  var b = $("tipBtn");
+  b.innerHTML = TIPS ? BUB : BUB_OFF;
+  b.className = "hbtn" + (TIPS ? "" : " off");
+  b.setAttribute("data-tip", "Hover tips — click to turn them " + (TIPS ? "off" : "on"));
+  if (!TIPS) hideTip();
+}
+$("tipBtn").addEventListener("click", function () {
+  TIPS = !TIPS;
+  try { localStorage.setItem("find.tips", TIPS ? "1" : "0"); } catch (e) {}
+  applyTips();
+});
+
+/* ---------------- status ---------------- */
+var noteTm = null;
+function status(msg, isErr, isOk) {
+  var s = $("status");
+  /* V1.17 - the studio: "remove all these texts". He pointed at a line reporting
+     a preset that WORKED. So the panel says nothing when a thing works.
+     One gate, here, so no call site can put a success line back by
+     accident. A FAILURE still speaks - silence on a failure would mean a
+     button that does nothing and never says why. */
+  if (msg && !isErr) msg = "";
+  if (noteTm) { clearTimeout(noteTm); noteTm = null; }
+  if (!msg) { s.className = "note"; s.textContent = ""; syncZoomHeight(); return; }
+  s.textContent = msg;
+  s.className = "note show" + (isErr ? " err" : (isOk ? " okk" : ""));
+  noteTm = setTimeout(function () {
+    s.className = "note";
+    s.textContent = "";
+    noteTm = null;
+    syncZoomHeight();
+  }, isErr ? 14000 : 8000);
+  syncZoomHeight();
+}
+
+/* ---------------- the effect list ---------------- */
+/* FX is the panel's own copy of Premiere's effect lists. It loads instantly
+   from the saved copy, so opening the panel never waits on Premiere. One
+   re-read runs shortly after boot, off the click path. The refresh button
+   re-reads on demand - after installing a new effect plugin, for example. */
+var FX = { v: [], a: [], tv: [], ta: [] };
+try {
+  var c0 = JSON.parse(localStorage.getItem("find.fx") || "null");
+  if (c0 && c0.v && c0.a) FX = { v: c0.v, a: c0.a, tv: c0.tv || [], ta: c0.ta || [] };
+} catch (e) {}
+
+var PINS = [];
+try {
+  var p0 = JSON.parse(localStorage.getItem("find.pins") || "null");
+  if (p0 && p0.length !== undefined) PINS = p0;
+} catch (e) {}
+function savePins() { try { localStorage.setItem("find.pins", JSON.stringify(PINS)); } catch (e) {} }
+function togglePinKey(key) {
+  var i, found = -1;
+  for (i = 0; i < PINS.length; i++) { if (PINS[i] === key) found = i; }
+  if (found >= 0) PINS.splice(found, 1); else PINS.push(key);
+  savePins();
+}
+
+var FILTER = "all";
+try { var f0 = localStorage.getItem("find.filter"); if (f0) FILTER = f0; } catch (e) {}
+function setFilter(f) {
+  FILTER = f;
+  try { localStorage.setItem("find.filter", f); } catch (e) {}
+  $("fcAll").className = "fc" + (f === "all" ? " on" : "");
+  $("fcV").className = "fc" + (f === "v" ? " on" : "");
+  $("fcA").className = "fc" + (f === "a" ? " on" : "");
+  $("fcT").className = "fc" + (f === "t" ? " on" : "");
+  $("fcPre").className = "fc" + (f === "pre" ? " on" : "");
+  SEL = 0;
+  try { renderLibBar(); } catch (e2) {}
+  render();
+}
+$("fcAll").addEventListener("click", function () { setFilter("all"); focusQ(); });
+$("fcV").addEventListener("click", function () { setFilter("v"); focusQ(); });
+$("fcA").addEventListener("click", function () { setFilter("a"); focusQ(); });
+$("fcT").addEventListener("click", function () { setFilter("t"); focusQ(); });
+$("fcPre").addEventListener("click", function () {
+  loadPresets();
+  if (PP_STATE === "unread") loadPP();
+  setFilter("pre");
+  focusQ();
+});
+
+/* ---------------- MATCH CLIP + FRAMES (ADJUST's pair, the suite convention) ---------------- */
+var FRAMES = 6, MATCH = true;
+try { var f1 = parseInt(localStorage.getItem("find.frames") || "6", 10); if (!isNaN(f1)) FRAMES = clamp(f1, 1, 9999); } catch (e) {}
+try { var m1 = localStorage.getItem("find.match"); if (m1 !== null) MATCH = (m1 === "1"); } catch (e) {}
+function syncLen() {
+  $("lenIn").value = FRAMES;
+  try { localStorage.setItem("find.frames", String(FRAMES)); } catch (e) {}
+}
+function syncMatch() {
+  $("matchBtn").classList.toggle("on", MATCH);
+  $("lenFld").classList.toggle("dim", MATCH);
+  $("lenIn").disabled = MATCH;
+  try { localStorage.setItem("find.match", MATCH ? "1" : "0"); } catch (e) {}
+}
+$("matchBtn").addEventListener("click", function () { MATCH = !MATCH; syncMatch(); focusQ(); });
+$("lenIn").addEventListener("input", function () {
+  var v = parseInt(this.value, 10);
+  if (!isNaN(v)) { FRAMES = clamp(v, 1, 9999); try { localStorage.setItem("find.frames", String(FRAMES)); } catch (e) {} }
+});
+$("lenIn").addEventListener("change", syncLen);
+function bumpLen(d) { FRAMES = clamp(FRAMES + d, 1, 9999); syncLen(); }
+function holdRepeat(btn, fn) {
+  var tm = null, iv = null;
+  function stop() {
+    if (tm) { clearTimeout(tm); tm = null; }
+    if (iv) { clearInterval(iv); iv = null; }
+  }
+  btn.addEventListener("mousedown", function (e) {
+    e.preventDefault();
+    fn();
+    tm = setTimeout(function () { iv = setInterval(fn, 60); }, 350);
+  });
+  btn.addEventListener("mouseleave", stop);
+  document.addEventListener("mouseup", stop);
+  window.addEventListener("blur", stop);
+}
+holdRepeat($("lenUp"), function () { if (!MATCH) bumpLen(1); });
+holdRepeat($("lenDn"), function () { if (!MATCH) bumpLen(-1); });
+$("lenFld").addEventListener("click", function (e) {
+  var el = e.target;
+  while (el && el !== this) {
+    if (el.className && String(el.className).indexOf("spb") >= 0) return;
+    el = el.parentNode;
+  }
+  if (!MATCH) $("lenIn").focus();
+});
+function placeMode() { return MATCH ? "match" : "frames"; }
+
+/* ---------------- label colors (ADJUST's picker, verbatim) ----------------
+   Premiere exposes 16 label SLOTS by index. The color each slot paints is
+   whatever the user set in Preferences > Labels, so these swatches are only
+   a local preview and can be corrected by hand (double-click a cell). */
+var CLABELS = [
+  ["RED", "#C4382F"], ["PINK", "#C4325C"], ["PURPLE", "#7A2E9D"], ["DEEP PURPLE", "#3A2E9E"],
+  ["INDIGO", "#2C3492"], ["BLUE", "#4A80D6"], ["CYAN", "#4FA1BF"], ["WHITE", "#FFFFFF"],
+  ["TEAL", "#2F5F53"], ["GREEN", "#4FD03B"], ["LIGHT GREEN", "#7FA245"], ["LIGHT PINK", "#D780C8"],
+  ["YELLOW", "#ECDF56"], ["AMBER", "#E4A72F"], ["ORANGE", "#DF7B25"], ["DEEP ORANGE", "#DB3F1F"]
+];
+var SW = [];
+(function () {
+  var i;
+  for (i = 0; i < CLABELS.length; i++) SW.push(CLABELS[i][1]);
+  try {
+    var raw = JSON.parse(localStorage.getItem("find.swatches") || "null");
+    if (raw && raw.length === CLABELS.length) SW = raw;
+  } catch (e) {}
+})();
+function saveSw() { try { localStorage.setItem("find.swatches", JSON.stringify(SW)); } catch (e) {} }
+
+var COLOR = 0;
+try { var c2 = parseInt(localStorage.getItem("find.color") || "0", 10); if (!isNaN(c2)) COLOR = clamp(c2, 0, 15); } catch (e) {}
+
+function syncColor() {
+  $("colSw").style.background = SW[COLOR];
+  try { localStorage.setItem("find.color", String(COLOR)); } catch (e) {}
+  var cells = $("swGrid").getElementsByClassName("swcell"), i;
+  for (i = 0; i < cells.length; i++) cells[i].className = "swcell" + (i === COLOR ? " on" : "");
+}
+var hexIx = -1;
+function renderSwatches() {
+  var host = $("swGrid"), i;
+  host.innerHTML = "";
+  for (i = 0; i < CLABELS.length; i++) {
+    (function (ix) {
+      var cell = document.createElement("div");
+      cell.className = "swcell";
+      cell.setAttribute("data-tip", "Label slot " + (ix + 1) + " — " + CLABELS[ix][0] + ". Double-click to correct the swatch");
+      var sq = document.createElement("div");
+      sq.className = "sq";
+      sq.style.background = SW[ix];
+      cell.appendChild(sq);
+      cell.addEventListener("click", function () { COLOR = ix; syncColor(); });
+      cell.addEventListener("dblclick", function () {
+        hexIx = ix;
+        $("hexIn").value = SW[ix];
+        $("hexRow").classList.add("show");
+        $("hexIn").focus();
+        $("hexIn").select();
+      });
+      host.appendChild(cell);
+    })(i);
+  }
+  syncColor();
+}
+$("colBtn").addEventListener("click", function () {
+  $("colPop").classList.toggle("show");
+});
+$("hexCancel").addEventListener("click", function () { $("hexRow").classList.remove("show"); hexIx = -1; });
+$("hexOk").addEventListener("click", function () { commitHex(); });
+$("hexIn").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") commitHex();
+  else if (e.key === "Escape") { $("hexRow").classList.remove("show"); hexIx = -1; }
+  e.stopPropagation();
+});
+function commitHex() {
+  if (hexIx < 0) return;
+  var v = ($("hexIn").value || "").replace(/^\s+|\s+$/g, "");
+  if (v.charAt(0) !== "#") v = "#" + v;
+  if (!/^#[0-9a-fA-F]{6}$/.test(v)) { status("THAT IS NOT A HEX COLOR — TRY #RRGGBB.", true); return; }
+  SW[hexIx] = v.toUpperCase();
+  saveSw();
+  $("hexRow").classList.remove("show");
+  hexIx = -1;
+  renderSwatches();
+}
+$("swReset").addEventListener("click", function () {
+  var i;
+  SW = [];
+  for (i = 0; i < CLABELS.length; i++) SW.push(CLABELS[i][1]);
+  saveSw(); renderSwatches();
+  status("SWATCHES RESET TO PREMIERE'S STOCK LABEL COLORS.", false, true);
+});
+/* the color a preset will actually get: its own saved label, else the picker */
+function colorFor(it) {
+  return (typeof it.c === "number" && it.c >= 0) ? it.c : COLOR;
+}
+
+/* ---------------- FIND's own preset libraries ----------------
+   Saved FROM the timeline with the save button. Same shape as ADJUST's
+   libraries, plus combos. Lives in FIND's own settings (llloc-prefs mirrors
+   it), never in ADJUST's file - two panels writing one file is a race. */
+var FLIBS = null;
+try { FLIBS = JSON.parse(localStorage.getItem("find.libs") || "null"); } catch (e) { FLIBS = null; }
+if (!FLIBS || !FLIBS.libs || !FLIBS.libs.length) FLIBS = { libs: [{ name: "LIBRARY", presets: [] }], cur: 0 };
+if (typeof FLIBS.cur !== "number" || FLIBS.cur < 0 || FLIBS.cur >= FLIBS.libs.length) FLIBS.cur = 0;
+function saveFLibs() { try { localStorage.setItem("find.libs", JSON.stringify(FLIBS)); } catch (e) {} }
+function curFLib() {
+  if (FLIBS.cur >= FLIBS.libs.length) FLIBS.cur = 0;
+  return FLIBS.libs[FLIBS.cur];
+}
+/* Which shelf the PRESETS chip shows. Each library previews ITS OWN presets
+   only - the studio's 14 Aug call. PREMIERE and ADJUST sit in the same select as
+   read-only shelves, so nothing is more than one pick away. */
+var LVIEW = "u";
+try { var lv0 = localStorage.getItem("find.libview"); if (lv0 === "pp" || lv0 === "adj" || lv0 === "u") LVIEW = lv0; } catch (e) {}
+function saveLView() { try { localStorage.setItem("find.libview", LVIEW); } catch (e) {} }
+function libShelves() {
+  var out = [{ v: "pp", t: "PREMIERE (" + PP.length + ")" },
+             ], i;   /* ADJUST shelf retired 15 Aug 2026 - the studio replaced the panel with FIND */
+  for (i = 0; i < FLIBS.libs.length; i++) {
+    out.push({ v: "u:" + i, t: FLIBS.libs[i].name + " (" + FLIBS.libs[i].presets.length + ")" });
+  }
+  return out;
+}
+function pickShelf(v) {
+  if (v === "pp" || v === "adj") { LVIEW = v; }
+  else { LVIEW = "u"; FLIBS.cur = parseInt(v.slice(2), 10) || 0; }
+  $("libMenu").classList.remove("show");
+  saveLView(); saveFLibs(); renderLibBar(); render();
+}
+function renderLibBar() {
+  var sel = $("libSel"), menu = $("libMenu"), i;
+  var shelves = libShelves();
+  var cur = (LVIEW === "u") ? ("u:" + FLIBS.cur) : LVIEW;
+  sel.textContent = "";
+  menu.innerHTML = "";
+  for (i = 0; i < shelves.length; i++) {
+    if (shelves[i].v === cur) sel.textContent = shelves[i].t;
+    (function (sh) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "lmi" + (sh.v === cur ? " on" : "");
+      b.textContent = sh.t;
+      b.setAttribute("data-tip", "Show " + sh.t);
+      b.addEventListener("click", function (ev) { ev.stopPropagation(); pickShelf(sh.v); });
+      menu.appendChild(b);
+    })(shelves[i]);
+  }
+  if (!sel.textContent) sel.textContent = shelves[0].t;
+  var ro = (LVIEW !== "u");
+  $("libRen").classList.toggle("dim", ro);
+  $("libDel").classList.toggle("dim", ro);
+  $("libRen").setAttribute("data-tip", ro ? "The PREMIERE shelf cannot be renamed here" : "Rename this library");
+  $("libDel").setAttribute("data-tip", ro ? "The PREMIERE shelf cannot be deleted here" : "Delete this library and its presets — click twice to confirm");
+  $("libBar").style.display = (FILTER === "pre") ? "" : "none";
+  $("libRow").classList.remove("show");
+}
+$("libSel").addEventListener("click", function (ev) {
+  ev.stopPropagation();
+  $("libMenu").classList.toggle("show");
+});
+/* one click anywhere else closes it - no listener on any click path */
+document.addEventListener("click", function () {
+  var m = $("libMenu");
+  if (m && m.className.indexOf("show") >= 0) m.classList.remove("show");
+});
+var libMode = "new";
+$("libNew").addEventListener("click", function () {
+  libMode = "new";
+  $("libName").value = "";
+  $("libName").placeholder = "NAME NEW LIBRARY";
+  $("libRow").classList.add("show");
+  $("libName").focus();
+  syncZoomHeight();
+});
+$("libRen").addEventListener("click", function () {
+  libMode = "ren";
+  $("libName").value = curFLib().name;
+  $("libName").placeholder = "RENAME LIBRARY";
+  $("libRow").classList.add("show");
+  $("libName").focus();
+  $("libName").select();
+  syncZoomHeight();
+});
+$("libCancel").addEventListener("click", function () {
+  $("libRow").classList.remove("show");
+  $("libName").value = "";
+  syncZoomHeight();
+});
+$("libGo").addEventListener("click", function () {
+  var n = ($("libName").value || "").replace(/^\s+|\s+$/g, "").toUpperCase(), i, clash = false, found = -1;
+  if (libMode === "ren") {
+    if (!n) { $("libRow").classList.remove("show"); return; }
+    for (i = 0; i < FLIBS.libs.length; i++) { if (FLIBS.libs[i].name === n && i !== FLIBS.cur) clash = true; }
+    if (clash) { status("A LIBRARY NAMED “" + n + "” ALREADY EXISTS.", true); return; }
+    curFLib().name = n;
+  } else {
+    if (!n) n = "LIBRARY " + (FLIBS.libs.length + 1);
+    for (i = 0; i < FLIBS.libs.length; i++) { if (FLIBS.libs[i].name === n) found = i; }
+    if (found >= 0) FLIBS.cur = found;
+    else { FLIBS.libs.push({ name: n, presets: [] }); FLIBS.cur = FLIBS.libs.length - 1; }
+    LVIEW = "u"; saveLView();
+  }
+  saveFLibs();
+  $("libRow").classList.remove("show");
+  $("libName").value = "";
+  renderLibBar(); render();
+});
+$("libName").addEventListener("keydown", function (e) { if (e.key === "Enter") $("libGo").click(); });
+var libDelArm = null;
+$("libDel").addEventListener("click", function () {
+  if (libDelArm === null) {
+    $("libDel").className = "xb on";
+    status("CLICK THE TRASH AGAIN TO DELETE LIBRARY “" + curFLib().name + "” AND ITS PRESETS.", true);
+    libDelArm = setTimeout(function () { $("libDel").className = "xb"; libDelArm = null; }, 2800);
+    return;
+  }
+  clearTimeout(libDelArm); libDelArm = null;
+  $("libDel").className = "xb";
+  var gone = curFLib().name;
+  FLIBS.libs.splice(FLIBS.cur, 1);
+  if (!FLIBS.libs.length) FLIBS.libs = [{ name: "LIBRARY", presets: [] }];
+  FLIBS.cur = 0;
+  saveFLibs(); renderLibBar(); render();
+  status("DELETED LIBRARY “" + gone + "” AND ITS PRESETS.", false, true);
+});
+
+/* ---------------- adjustment-layer-by-default toggle ---------------- */
+var ALDEF = false;
+try { ALDEF = localStorage.getItem("find.aldef") === "1"; } catch (e) {}
+function applyAlDef() {
+  var b = $("alDef");
+  b.className = "tb" + (ALDEF ? " on" : "");
+  b.setAttribute("data-tip", ALDEF
+    ? "Adjustment layer by default — ON. Enter and a row click put the effect on a new adjustment layer. Click to turn off"
+    : "Adjustment layer by default — OFF. Enter and a row click apply straight onto the selected clips. Click to turn on");
+  /* V1.17 - the studio: "remove all these texts". The standing hint line under
+     the list is gone. What Enter does now lives only in the hover tip on
+     the search box, which he can turn off. */
+}
+$("alDef").addEventListener("click", function () {
+  ALDEF = !ALDEF;
+  try { localStorage.setItem("find.aldef", ALDEF ? "1" : "0"); } catch (e) {}
+  applyAlDef();
+  focusQ();
+});
+
+/* ---------------- saved ADJUST presets ----------------
+   ADJUST mirrors its settings to a real file (llloc-prefs), and one panel may
+   read another's file - LINK reads SORT's the same way. FIND reads ADJUST's
+   preset libraries from there. The read runs in the panel's own process
+   (cep.fs), so it costs Premiere's script line nothing. */
+var PRESETS = [];
+function presetPath() {
+  if (window.LLLOC_FIND_PRESET_PATH) return window.LLLOC_FIND_PRESET_PATH;
+  try {
+    var base = cs.getSystemPath(SystemPath.USER_DATA);
+    if (base) return String(base).split("\\").join("/") + "/CSXS/llllllloc/adjust.json";
+  } catch (e) {}
+  return "";
+}
+function loadPresets() {
+  PRESETS = [];
+  try {
+    if (!(window.cep && window.cep.fs)) return;
+    var p = presetPath();
+    if (!p) return;
+    var r = window.cep.fs.readFile(p);
+    if (!r || r.err !== 0 || !r.data) return;
+    var mirror = JSON.parse(r.data);
+    var raw = mirror["adjust.libs"];
+    if (!raw) return;
+    var db = JSON.parse(raw);
+    if (!db || !db.libs) return;
+    var i, j, lib, ps;
+    for (i = 0; i < db.libs.length; i++) {
+      lib = db.libs[i];
+      if (!lib || !lib.presets) continue;
+      for (j = 0; j < lib.presets.length; j++) {
+        ps = lib.presets[j];
+        if (!ps || !ps.n) continue;
+        PRESETS.push({
+          k: "p", n: String(ps.n), lib: String(lib.name || "LIBRARY"),
+          c: (typeof ps.c === "number") ? ps.c : -1,
+          sp: ps.sp === "seq" ? "seq" : "src",
+          comps: ps.comps || []
+        });
+      }
+    }
+  } catch (e2) { PRESETS = []; }
+}
+
+/* ---------------- saved PREMIERE presets ----------------
+   The presets HE saves in Premiere's Effects panel (Blink, STROBE LIGHT, the
+   imported packs). Adobe confirmed there is NO API for them, so FIND reads
+   the file Premiere keeps them in - "Effect Presets and Custom Items.prfpset"
+   in the newest profile - and parses it in the panel's own process. Written
+   against the studio's real 3.6 MB file, 193 presets, 14 Aug 2026. Premiere's own
+   FACTORY presets (Bevel Edges, PiPs, Solarizes...) live inside the app, not
+   in this file, and cannot be listed. */
+
+/* ==== PRFPSET PARSER - lifted verbatim by tests/test-prfpset.js. ==== */
+/* One 64-bit Premiere colour -> [alpha, red, green, blue], 0-255 each.
+   Layout measured on the studio's real file, 15 Aug 2026: four 16-bit words in
+   alpha-red-green-blue order, each word the 8-bit channel times 256
+   (white balance ff00c000c000c000 -> [255,192,192,192]). BigInt because
+   the integer is bigger than a JavaScript float can carry exactly. */
+function color64(raw) {
+  try {
+    if (typeof BigInt !== "function") return null;
+    var s = String(raw).replace(/\s+/g, "");
+    if (!/^\d+$/.test(s)) return null;
+    var v = BigInt(s);
+    var W = BigInt(65536);
+    var b = Number(v % W); v = v / W;
+    var g = Number(v % W); v = v / W;
+    var r = Number(v % W); v = v / W;
+    var a = Number(v % W);
+    function ch(w) { var c = Math.round(w / 256); return c < 0 ? 0 : (c > 255 ? 255 : c); }
+    return [ch(a), ch(r), ch(g), ch(b)];
+  } catch (e) { return null; }
+}
+function parsePrfpset(xml) {
+  var objs = {}, re = /<(\w+) ObjectID="(\d+)"[^>]*>/g, m;
+  while ((m = re.exec(xml))) {
+    var close = xml.indexOf("</" + m[1] + ">", re.lastIndex);
+    if (close < 0) continue;
+    objs[m[2]] = { t: m[1], b: xml.slice(re.lastIndex, close) };
+  }
+  function tag(b, n) {
+    var i = b.indexOf("<" + n + ">");
+    if (i < 0) return null;
+    var j = b.indexOf("</" + n + ">", i);
+    if (j < 0) return null;
+    return b.slice(i + n.length + 2, j);
+  }
+  function refs(b, ln, iname) {
+    var i = b.indexOf("<" + ln), out = [], rr, mm;
+    if (i < 0) return out;
+    var j = b.indexOf("</" + ln + ">", i);
+    var seg = j < 0 ? b.slice(i) : b.slice(i, j);
+    rr = new RegExp("<" + iname + ' Index="\\d+" ObjectRef="(\\d+)"\\/>', "g");
+    while ((mm = rr.exec(seg))) out.push(mm[1]);
+    return out;
+  }
+  function parseVal(ctl, raw) {
+    if (raw === null || raw === undefined) return { skip: true };
+    if (ctl === "5") {
+      /* A colour. Premiere writes it as ONE 64-bit integer: four 16-bit
+         words, alpha-red-green-blue, each an 8-bit channel times 256. Read
+         off the studio's own file: Tint Color ff00f20083000000 -> [255,242,131,0].
+         The number is too big for a JavaScript float, so BigInt splits it
+         exactly. This value was written BY PREMIERE when he right-clicked
+         Save Preset, so it is the true colour by construction - his own
+         14 Aug find. Keyframed colours never reach here (no channel API). */
+      var ch = color64(raw);
+      return ch ? { col: ch } : { skip: true };
+    }
+    if (ctl === "11" || ctl === "12") return { skip: true };
+    if (ctl === "4") return { val: String(raw) === "true" };
+    if (ctl === "6" || String(raw).indexOf(":") >= 0) {
+      var parts = String(raw).split(":"), out = [], i, n;
+      for (i = 0; i < parts.length; i++) {
+        n = parseFloat(parts[i]);
+        if (isNaN(n)) return { skip: true };
+        out.push(n);
+      }
+      return { val: out };
+    }
+    var v = parseFloat(raw);
+    if (isNaN(v)) return { skip: true };
+    return { val: v };
+  }
+  function parseParam(pb) {
+    var ctl = tag(pb, "ParameterControlType");
+    var out = { i: 0, name: tag(pb, "Name") || "", skip: false, v: null, keys: [] };
+    var tv = tag(pb, "IsTimeVarying") === "true";
+    var sk = tag(pb, "StartKeyframe") || "";
+    var kfs = tag(pb, "Keyframes") || "";
+    var r;
+    if (tv && kfs) {
+      /* An ANIMATED colour stays skipped: Premiere has no keyframe channel
+         API, so there is no verified way to write one (section 7). */
+      if (ctl === "5") { out.skip = true; return out; }
+      var entries = kfs.split(";"), i, f;
+      for (i = 0; i < entries.length; i++) {
+        f = entries[i].split(",");
+        if (f.length < 2) continue;
+        r = parseVal(ctl, f[1]);
+        if (r.skip || r.col) { out.skip = true; break; }
+        out.keys.push({ t: parseFloat(f[0]), v: r.val });
+      }
+      if (!out.keys.length) out.skip = true;
+    } else {
+      var fields = sk.split(",");
+      r = parseVal(ctl, fields.length > 1 ? fields[1] : null);
+      if (r.skip) out.skip = true;
+      else if (r.col) out.col = r.col;
+      else out.v = r.val;
+    }
+    return out;
+  }
+  var rootM = /<RootBin ObjectRef="(\d+)"\/>/.exec(xml);
+  var presets = [];
+  function walk(oid, path) {
+    var o = objs[oid];
+    if (!o) return;
+    if (o.t === "BinTreeItem") {
+      var nm = tag(o.b, "Name");
+      var keep = nm && nm !== "Root" && nm !== "Presets";
+      var kids = refs(o.b, "Items", "Item"), i;
+      for (i = 0; i < kids.length; i++) walk(kids[i], keep ? path.concat([nm]) : path);
+    } else if (o.t === "TreeItem") {
+      var dm = /<Data ObjectRef="(\d+)"\/>/.exec(o.b);
+      if (!dm || !objs[dm[1]]) return;
+      var item = objs[dm[1]];
+      var fps = refs(item.b, "FilterPresets", "FilterPreset"), j, fp, filters = [], audio = 0;
+      for (j = 0; j < fps.length; j++) {
+        fp = objs[fps[j]];
+        if (!fp) continue;
+        var cm = /<Component ObjectRef="(\d+)"\/>/.exec(fp.b);
+        var comp = cm ? objs[cm[1]] : null;
+        if (!comp) continue;
+        if (comp.t === "AudioFilterComponent") audio++;
+        var type = tag(fp.b, "Type");
+        var filter = {
+          match: tag(fp.b, "FilterMatchName") || "",
+          disp: tag(comp.b, "DisplayName") || "",
+          mode: type === "1" ? "in" : (type === "2" ? "out" : "scale"),
+          aIn: parseFloat(tag(fp.b, "AnchorInPoint") || "0"),
+          aOut: parseFloat(tag(fp.b, "AnchorOutPoint") || "0"),
+          params: []
+        };
+        var prefs2 = refs(comp.b, "Params", "Param"), k, po, pp2;
+        for (k = 0; k < prefs2.length; k++) {
+          po = objs[prefs2[k]];
+          if (!po) continue;
+          pp2 = parseParam(po.b);
+          pp2.i = k;
+          filter.params.push(pp2);
+        }
+        if (filter.match || filter.disp) filters.push(filter);
+      }
+      if (filters.length) {
+        presets.push({
+          n: tag(o.b, "Name") || "PRESET",
+          lib: path.join("/"),
+          kind: (audio === filters.length && audio > 0) ? "a" : "v",
+          filters: filters
+        });
+      }
+    }
+  }
+  if (rootM) walk(rootM[1], []);
+  return { presets: presets };
+}
+/* ==== END PRFPSET PARSER ==== */
+
+var PP = [];
+var PP_STATE = "unread";
+function ppFilePath() {
+  if (window.LLLOC_FIND_PP_PATH) return window.LLLOC_FIND_PP_PATH;
+  try {
+    var base = String(cs.getSystemPath(SystemPath.USER_DATA)).split("\\").join("/");
+    var home = base.replace(/\/Library\/Application Support$/, "").replace(/\/AppData\/Roaming$/, "");
+    var docs = home + "/Documents/Adobe/Premiere Pro";
+    var dir = window.cep.fs.readdir(docs);
+    if (!dir || dir.err !== 0 || !dir.data) return "";
+    var vers = [], i;
+    for (i = 0; i < dir.data.length; i++) {
+      if (/^\d+\.\d+$/.test(dir.data[i])) vers.push(parseFloat(dir.data[i]));
+    }
+    vers.sort(function (a, b) { return b - a; });
+    for (i = 0; i < vers.length; i++) {
+      var vdir = docs + "/" + vers[i].toFixed(1);
+      var sub = window.cep.fs.readdir(vdir);
+      if (!sub || sub.err !== 0 || !sub.data) continue;
+      var j;
+      for (j = 0; j < sub.data.length; j++) {
+        if (String(sub.data[j]).indexOf("Profile-") === 0) {
+          var p = vdir + "/" + sub.data[j] + "/Effect Presets and Custom Items.prfpset";
+          var st = window.cep.fs.readFile(p);
+          if (st && st.err === 0 && st.data) return st.data;
+        }
+      }
+    }
+  } catch (e) {}
+  return "";
+}
+function loadPP() {
+  PP = [];
+  try {
+    if (!(window.cep && window.cep.fs)) { PP_STATE = "nohost"; return; }
+    var data = "";
+    if (window.LLLOC_FIND_PP_PATH) {
+      var r = window.cep.fs.readFile(window.LLLOC_FIND_PP_PATH);
+      data = (r && r.err === 0 && r.data) ? r.data : "";
+    } else {
+      data = ppFilePath();
+    }
+    if (!data) { PP_STATE = "none"; return; }
+    var parsed = parsePrfpset(data);
+    PP = parsed.presets || [];
+    PP_STATE = PP.length ? "ok" : "none";
+  } catch (e2) { PP = []; PP_STATE = "err"; }
+}
+
+/* ---------------- search ---------------- */
+/* Scoring, cheapest test first: name starts with the query, a word inside the
+   name starts with it, the name contains it. V1.1 dropped the letters-in-order
+   tier on the studio's screenshot - it filled the list with names that only shared
+   scattered letters with the query. Everything runs on the panel's own copy -
+   a keystroke never talks to Premiere, so typing is instant whatever the
+   engine is doing. */
+function scoreName(nameLow, q) {
+  if (!q) return 5;
+  var ix = nameLow.indexOf(q);
+  if (ix === 0) return 0;
+  if (ix > 0 && (nameLow.charAt(ix - 1) === " " || nameLow.charAt(ix - 1) === "-" || nameLow.charAt(ix - 1) === "(")) return 1;
+  if (ix > 0) return 2;
+  return -1;
+}
+
+var RESULTS = [];
+var SEL = 0;
+var CAP = 100;
+var MORE_ROW = null;   /* the "+ N MORE" row, held not looked up */
+
+function pinKeyOf(it) {
+  if (it.k === "p") return "p:" + it.lib + "/" + it.n;
+  if (it.k === "pp") return "pp:" + it.lib + "/" + it.n;
+  if (it.k === "lib" || it.k === "cmb") return it.k + ":" + it.lib + "/" + it.n;
+  return it.k + ":" + it.n;
+}
+
+function collect() {
+  var q = ($("qIn").value || "").replace(/^\s+|\s+$/g, "").toLowerCase();
+  var out = [], seen = {}, i, n, sc;
+  /* With nothing typed and no chip narrowing things, show ONLY the pins -
+     the studio's call, 14 Aug: the full list is noise until you search. */
+  var pinsOnly = (q === "" && FILTER === "all");
+  function take(it) {
+    if (FILTER === "v" && it.k !== "v") return;
+    if (FILTER === "a" && it.k !== "a") return;
+    if (FILTER === "t" && it.k !== "tv" && it.k !== "ta") return;
+    if (FILTER === "pre") {
+      /* the PRESETS chip shows ONE shelf at a time - the selected library
+         previews its own presets only */
+      if (LVIEW === "pp" && it.k !== "pp") return;
+      if (LVIEW === "adj" && it.k !== "p") return;
+      if (LVIEW === "u" && it.k !== "lib" && it.k !== "cmb") return;
+    }
+    var key = pinKeyOf(it);
+    var pin = false, j;
+    for (j = 0; j < PINS.length; j++) { if (PINS[j] === key) pin = true; }
+    if (pinsOnly && !pin) return;
+    sc = scoreName(((it.k === "v" || it.k === "a") ? it.n : (it.n + " " + it.lib)).toLowerCase(), q);
+    if (sc < 0) return;
+    if (seen[key]) return;
+    seen[key] = 1;
+    it.pin = pin;
+    it.sc = sc;
+    out.push(it);
+  }
+  var li, lj, LB, PSx;
+  for (li = 0; li < FLIBS.libs.length; li++) {
+    LB = FLIBS.libs[li];
+    if (FILTER === "pre" && li !== FLIBS.cur) continue;
+    for (lj = 0; lj < LB.presets.length; lj++) {
+      PSx = LB.presets[lj];
+      /* V1.12 - a library entry can now hold a COPY of one of his Premiere
+         presets. Those carry `filters` instead of `comps`, and route to the
+         Premiere apply lane. Everything else is unchanged. */
+      take({ k: PSx.kind === "m" ? "cmb" : "lib", n: PSx.n, lib: LB.name,
+             li: li, pj: lj, c: PSx.c, f: PSx.f, sp: PSx.sp,
+             comps: PSx.comps, layers: PSx.layers,
+             filters: PSx.filters, kind: PSx.pkind });
+    }
+  }
+  for (i = 0, n = PP.length; i < n; i++) take({ k: "pp", n: PP[i].n, lib: PP[i].lib, kind: PP[i].kind, filters: PP[i].filters });
+  for (i = 0, n = PRESETS.length; i < n; i++) take({ k: "p", n: PRESETS[i].n, lib: PRESETS[i].lib, c: PRESETS[i].c, sp: PRESETS[i].sp, comps: PRESETS[i].comps });
+  for (i = 0, n = FX.v.length; i < n; i++) take({ k: "v", n: FX.v[i] });
+  for (i = 0, n = FX.tv.length; i < n; i++) take({ k: "tv", n: FX.tv[i] });
+  for (i = 0, n = FX.ta.length; i < n; i++) take({ k: "ta", n: FX.ta[i] });
+  for (i = 0, n = FX.a.length; i < n; i++) take({ k: "a", n: FX.a[i] });
+  out.sort(function (x, y) {
+    if (x.pin !== y.pin) return x.pin ? -1 : 1;
+    if (x.sc !== y.sc) return x.sc - y.sc;
+    if (x.n < y.n) return -1;
+    if (x.n > y.n) return 1;
+    return 0;
+  });
+  return out;
+}
+
+/* ---------------- browse folders ----------------
+   Premiere's Effects panel groups effects into bins, but it gives panels no
+   category API - the QE list is flat names. The folder here comes off the
+   name itself: a vendor prefix (BCC+, S_) or a first word shared by four or
+   more effects. Search stays flat - folders only shape the browse view. */
+var FOLD_OPEN = {};
+var DIR_PRETTY = { "S_": "SAPPHIRE" };
+function groupRows(items) {
+  /* Vendor-level folders only, V1.8. The fragment folders V1.7 invented
+     (BCC FAST, RE:GRADE, AUTO...) read as noise next to Premiere's real
+     bins, and pinned effects are NOT pulled to the top - the studio's calls.
+     A vendor is an explicit separator prefix (BCC+, RE:, S_), any name
+     whose first word IS that vendor joins it, and a first word shared by
+     ten or more effects earns a folder of its own. */
+  var i, j, it, n, m, key;
+  var vendors = {}, fixed = [];
+  /* V1.9: the REAL category first - read once from each plugin's own PiPL
+     (js/fx-categories.js), the same strings the Video Effects Manager
+     shows. Premiere's own transitions get their own two folders. Only
+     unmapped names fall to the vendor-prefix rules. */
+  var CAT = (window.FXCAT || {});
+  var REAL = {};
+  for (i = 0; i < items.length; i++) {
+    n = items[i].n;
+    key = CAT[n];
+    if (key) { fixed[i] = key.toUpperCase(); REAL[fixed[i]] = 1; continue; }
+    if (items[i].k === "tv") { fixed[i] = "TRANSITIONS"; REAL.TRANSITIONS = 1; continue; }
+    if (items[i].k === "ta") { fixed[i] = "AUDIO TRANSITIONS"; REAL["AUDIO TRANSITIONS"] = 1; continue; }
+    key = null;
+    m = n.match(/^([A-Za-z0-9]{2,12})\+/);
+    if (m) key = m[1].toUpperCase();
+    if (!key) { m = n.match(/^([A-Za-z0-9]{2,10}):/); if (m) key = m[1].toUpperCase() + ":"; }
+    if (!key) { m = n.match(/^([A-Za-z]{1,4})_/); if (m) key = DIR_PRETTY[m[1] + "_"] || (m[1].toUpperCase() + "_"); }
+    fixed[i] = key;
+    if (key) vendors[key] = 1;
+  }
+  var w1 = {};
+  for (i = 0; i < items.length; i++) {
+    if (fixed[i]) continue;
+    var a = items[i].n.split(" ")[0], up = a ? a.toUpperCase() : "";
+    if (up && vendors[up]) { fixed[i] = up; continue; }
+    if (a && a.length >= 3) w1[up] = (w1[up] || 0) + 1;
+  }
+  var groups = {}, gorder = [], loose = [];
+  for (i = 0; i < items.length; i++) {
+    it = items[i];
+    key = fixed[i];
+    if (!key) {
+      var a2 = it.n.split(" ")[0], up2 = a2 ? a2.toUpperCase() : "";
+      if (a2 && a2.length >= 3 && w1[up2] >= 10) key = up2;
+    }
+    if (!key) { loose.push(it); continue; }
+    if (!groups[key]) { groups[key] = []; gorder.push(key); }
+    groups[key].push(it);
+  }
+  /* nothing stays loose - the studio's call: what has no home goes to OTHER */
+  var other = loose.slice();
+  loose = [];
+  var out = [], names = [];
+  for (i = 0; i < gorder.length; i++) {
+    /* a REAL category is Premiere's own word for the family - it stands
+       even with one member. A guessed vendor prefix still needs four. */
+    if (groups[gorder[i]].length >= (REAL[gorder[i]] ? 1 : 4)) names.push(gorder[i]);
+    else other = other.concat(groups[gorder[i]]);
+  }
+  if (other.length) {
+    groups.OTHER = other;
+    names.push("OTHER");
+  }
+  names.sort();
+  function alpha(x, y) { return x.n < y.n ? -1 : x.n > y.n ? 1 : 0; }
+  for (i = 0; i < names.length; i++) {
+    key = names[i];
+    out.push({ k: "dir", n: key, count: groups[key].length });
+    if (FOLD_OPEN[key]) {
+      var mem = groups[key];
+      mem.sort(alpha);
+      for (j = 0; j < mem.length; j++) { mem[j].inx = true; out.push(mem[j]); }
+    }
+  }
+  return out.concat(loose);
+}
+var PIN_GLYPH = '<svg width="9" height="9" viewBox="0 0 12 12"><path d="M4.2 1h3.6l-.5 3.4 2 2H2.7l2-2z" fill="currentColor"/><path d="M6 6.4V11" stroke="currentColor" stroke-width="1.3"/></svg>';
+var AL_GLYPH = '<svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6 1.4A4.6 4.6 0 0 1 6 10.6z" fill="currentColor"/></svg>';
+
+var SHOWN = 0;
+function render() {
+  RESULTS = collect();
+  var qNow = ($("qIn").value || "").replace(/^\s+|\s+$/g, "");
+  var browseDirs = (qNow === "") && (FILTER === "v" || FILTER === "a" || FILTER === "t");
+  if (browseDirs) RESULTS = groupRows(RESULTS);
+  if (SEL >= RESULTS.length) SEL = RESULTS.length ? RESULTS.length - 1 : 0;
+  var host = $("resBox"), i, r, row, tag, nm, bs, alb, pb, more;
+  host.innerHTML = "";
+  var shown = browseDirs ? RESULTS.length : (RESULTS.length < CAP ? RESULTS.length : CAP);
+  SHOWN = shown;
+  /* V1.12 - the studio: "should be able to scroll down more to see the full list".
+     The 100-row cap was a SPEED cap, and it is still needed for the first
+     paint: building 951 rows at once is what the 400 ms gate exists to stop.
+     So the cap becomes a CHUNK. The first 100 rows paint, and scrolling near
+     the bottom appends the next 100. Nothing is hidden any more, and the
+     first paint costs exactly what it did before. Nothing runs on a click
+     path - the listener only fires while the studio is already scrolling. */
+  window.__findAppendRow = function (it, ix) {
+      if (it.k === "dir") {
+        row = document.createElement("div");
+        row.className = "frw" + (FOLD_OPEN[it.n] ? " open" : "") + (ix === SEL ? " sel" : "");
+        row.setAttribute("data-tip", it.n + " — " + it.count + " effects. Click to open or close the folder");
+        row.innerHTML = '<span class="fcv"><svg width="7" height="9" viewBox="0 0 7 10"><path d="M1.4 1.2L5.8 5l-4.4 3.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
+          + '<span class="fnm"></span><span class="fct">' + it.count + '</span>';
+        row.getElementsByClassName("fnm")[0].textContent = it.n;
+        row.addEventListener("click", function () { SEL = ix; runItem(it, false); });
+        host.appendChild(row);
+        return;
+      }
+      row = document.createElement("div");
+      row.className = "row" + (it.inx ? " inx" : "") + (ix === SEL ? " sel" : "");
+      if (it.k === "p") row.setAttribute("data-tip", it.n + " \u2014 ADJUST preset from " + it.lib + " (" + (it.comps ? it.comps.length : 0) + " effects). Click to place it as an adjustment layer");
+      else if (it.k === "pp") row.setAttribute("data-tip", it.n + " \u2014 your saved Premiere preset" + (it.lib ? " from " + it.lib : "") + " (" + it.filters.length + " filter" + (it.filters.length === 1 ? "" : "s") + "). Click to apply to the selected clips");
+      else if (it.k === "lib") row.setAttribute("data-tip", it.n + " \u2014 FIND preset in " + it.lib + " (" + (it.comps ? it.comps.length : 0) + " effects). Click or double-click to place it as an adjustment layer. The pen renames it");
+      else if (it.k === "cmb") row.setAttribute("data-tip", it.n + " \u2014 combo of " + (it.layers ? it.layers.length : 0) + " adjustment layers with their exact timing. Click or double-click to place it at the playhead. The pen renames it");
+      else if (it.k === "tv" || it.k === "ta") row.setAttribute("data-tip", it.n + " \u2014 transition, FRAMES long. Click: one selected clip gets it at its end, two touching clips get it ON THE CUT between them. The arrow buttons force start or end");
+      else row.setAttribute("data-tip", it.n + (ALDEF && it.k === "v" ? " \u2014 click to put it on an adjustment layer" : " \u2014 click to apply to the selected clips"));
+      tag = document.createElement("span");
+      tag.className = "rtag";
+      tag.textContent = it.k === "a" ? "AFX" : (it.k === "tv" ? "TRN" : (it.k === "ta" ? "ATR" : (it.k === "p" ? "ADJ" : (it.k === "pp" ? "PRE" : (it.k === "lib" ? "LIB" : (it.k === "cmb" ? "CMB" : "FX"))))));
+      nm = document.createElement("span");
+      nm.className = "rnm";
+      nm.textContent = it.n;
+      bs = document.createElement("span");
+      bs.className = "rbs";
+      if (it.k === "tv" || it.k === "ta") {
+        /* V1.15 - the studio pointed at the two buttons and said which is which:
+           the FIRST adds at the START of the clip, the SECOND at the END.
+           The icons move with the actions, so the picture and the button
+           can never disagree again:
+             first  |<-  an arrow into the LEFT wall  = the clip's start
+             second ->|  an arrow into the RIGHT wall = the clip's end */
+        /* V1.16 - the studio: "swap the icon of these 2 buttons, not what it the
+           button do or it place". So the buttons keep their order and their
+           actions, and ONLY the glyphs trade places:
+             START -> the arrow pointing RIGHT, into a right wall
+             END   -> the arrow pointing LEFT, into a left wall */
+        var sb = document.createElement("button");
+        sb.className = "xb";
+        sb.innerHTML = '<svg width="9" height="9" viewBox="0 0 12 12"><path d="M10.5 1.5v9" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 6h6.3M5.2 3.4L7.8 6l-2.6 2.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        sb.setAttribute("data-tip", "Add it at the START of each selected clip");
+        sb.addEventListener("click", function (ev) { ev.stopPropagation(); doTransition(it, "start"); });
+        bs.appendChild(sb);
+        var ebt = document.createElement("button");
+        ebt.className = "xb";
+        ebt.innerHTML = '<svg width="9" height="9" viewBox="0 0 12 12"><path d="M1.5 1.5v9" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 6H4.2M6.8 3.4L4.2 6l2.6 2.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        ebt.setAttribute("data-tip", "Add it at the END of each selected clip");
+        ebt.addEventListener("click", function (ev) { ev.stopPropagation(); doTransition(it, "end"); });
+        bs.appendChild(ebt);
+      }
+      /* V1.12 - the studio: "for these preset I want to be able to edit and move
+         them to another library as well". These are HIS Premiere presets,
+         read out of Premiere's own file. FIND never writes to that file, so
+         renaming one there is not on offer. What these two buttons do is
+         COPY the preset into a FIND library, where the name is FIND's to
+         change. His Premiere presets stay exactly as they are. */
+      /* V1.13 - the studio: "remove this button" (the pen) and "when I chose this
+         it doesnt let me choose what library to copy to". So: ONE button,
+         and it ASKS. The rename comes free afterwards - the copy lands in a
+         FIND library where the pen already lives. */
+      if (it.k === "pp") {
+        var pm = document.createElement("button");
+        pm.className = "xb";
+        pm.innerHTML = '<svg width="9" height="9" viewBox="0 0 13 12"><path d="M1.5 2.5h3.2l1 1.4h5.8V10H1.5z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 7h4M7.4 5.4L9 7 7.4 8.6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        pm.setAttribute("data-tip", "Copy it into a FIND library — you choose which one. Your Premiere preset is not touched");
+        pm.addEventListener("click", function (ev) { ev.stopPropagation(); openCopyOvl(it); });
+        bs.appendChild(pm);
+      }
+      if (it.k === "lib" || it.k === "cmb") {
+        var eb = document.createElement("button");
+        eb.className = "xb";
+        eb.innerHTML = '<svg width="8" height="8" viewBox="0 0 12 12"><path d="M1.2 10.8l.7-2.8L8.6 1.3l2.1 2.1-6.7 6.7-2.8.7z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+        eb.setAttribute("data-tip", "Rename this preset");
+        eb.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          openEditOvl(it);
+        });
+        bs.appendChild(eb);
+        var mb = document.createElement("button");
+        mb.className = "xb";
+        mb.innerHTML = '<svg width="9" height="9" viewBox="0 0 13 12"><path d="M1.5 2.5h3.2l1 1.4h5.8V10H1.5z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 7h4M7.4 5.4L9 7 7.4 8.6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        mb.setAttribute("data-tip", "Move this preset to another library");
+        mb.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          openMoveOvl(it);
+        });
+        bs.appendChild(mb);
+        var xb = document.createElement("button");
+        xb.className = "xb";
+        xb.textContent = "\u00d7";
+        xb.setAttribute("data-tip", "Delete this preset \u2014 click twice to confirm");
+        xb.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          delFPreset(it, xb);
+        });
+        bs.appendChild(xb);
+      }
+      pb = document.createElement("button");
+      pb.className = "xb" + (it.pin ? " on" : "");
+      pb.innerHTML = PIN_GLYPH;
+      pb.setAttribute("data-tip", it.pin ? "Unpin \u2014 drop it from favorites" : "Pin to favorites \u2014 pinned things fill this list before you type");
+      pb.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        togglePinKey(pinKeyOf(it));
+        render();
+      });
+      bs.appendChild(pb);
+      row.appendChild(tag); row.appendChild(nm); row.appendChild(bs);
+      /* every row fires on the press - the pen handles renames now, so no
+         click waits a beat. A double-click's second press is dropped by the
+         half-second guard, so click and double-click both apply exactly once. */
+      row.addEventListener("click", function () { SEL = ix; runItem(it, false); render(); });
+      host.appendChild(row);
+  };
+  for (i = 0; i < shown; i++) { window.__findAppendRow(RESULTS[i], i); }
+  if (RESULTS.length > shown) {
+    more = document.createElement("div");
+    more.className = "rmore";
+    more.textContent = "+ " + (RESULTS.length - shown) + " MORE \u2014 SCROLL DOWN, OR KEEP TYPING TO NARROW IT";
+    host.appendChild(more);
+    /* held in a variable, never looked up by id: check-build.js refuses a
+       script that reaches for an id no markup declares, and it is right to -
+       a typo in a lookup is invisible until the feature quietly stops. */
+    MORE_ROW = more;
+  }
+  if (!RESULTS.length) {
+    more = document.createElement("div");
+    more.className = "rmore";
+    var q = ($("qIn").value || "").replace(/^\s+|\s+$/g, "");
+    if (!FX.v.length && !FX.a.length) {
+      more.textContent = hostOK()
+        ? "NO EFFECT LIST YET \u2014 PRESS THE REFRESH ARROWS."
+        : "OPEN THIS PANEL INSIDE PREMIERE PRO (WINDOW \u2192 EXTENSIONS \u2192 FIND).";
+    } else if (q === "" && FILTER === "all") {
+      more.textContent = "TYPE TO SEARCH " + (FX.v.length + FX.a.length) + " EFFECTS \u2014 PINNED ONES WAIT HERE.";
+    } else if (FILTER === "pre") {
+      if (q !== "") {
+        more.textContent = "NOTHING IN THIS LIBRARY MATCHES \u201c" + q + "\u201d \u2014 THE SELECT ABOVE SWITCHES LIBRARIES.";
+      } else if (LVIEW === "pp") {
+        more.textContent = (PP_STATE === "none" || PP_STATE === "err")
+          ? "NO SAVED PREMIERE PRESETS FOUND. PREMIERE'S OWN FACTORY PRESETS (BEVEL EDGES, PIPS, SOLARIZES) LIVE INSIDE THE APP AND CANNOT BE LISTED \u2014 ONLY PRESETS YOU SAVED OR IMPORTED APPEAR HERE."
+          : "NO SAVED PREMIERE PRESETS YET \u2014 SAVE ONE IN PREMIERE, THEN PRESS THE REFRESH ARROWS.";
+      } else if (LVIEW === "adj") {
+        more.textContent = "NOTHING HERE YET.";
+      } else {
+        more.textContent = "NOTHING IN \u201c" + curFLib().name + "\u201d YET \u2014 SELECT A CLIP OR SOME ADJUSTMENT LAYERS AND PRESS THE STAR.";
+      }
+    } else {
+      more.textContent = "NOTHING MATCHES \u201C" + q + "\u201D.";
+    }
+    host.appendChild(more);
+  }
+}
+
+/* V1.12 - grow the list as the studio scrolls. The chunk is the old cap, so the
+   first paint is byte-for-byte the same work it always was. This listener
+   fires only while he is already scrolling, never on a click. */
+function growList() {
+  if (SHOWN >= RESULTS.length) return;
+  var host = $("resBox");
+  var more = MORE_ROW;
+  var next = SHOWN + CAP;
+  if (next > RESULTS.length) next = RESULTS.length;
+  var i;
+  for (i = SHOWN; i < next; i++) window.__findAppendRow(RESULTS[i], i);
+  SHOWN = next;
+  if (more) {
+    if (SHOWN >= RESULTS.length) { if (more.parentNode) more.parentNode.removeChild(more); MORE_ROW = null; }
+    else {
+      host.appendChild(more);
+      more.textContent = "+ " + (RESULTS.length - SHOWN) + " MORE — SCROLL DOWN, OR KEEP TYPING TO NARROW IT";
+    }
+  }
+}
+$("resBox").addEventListener("scroll", function () {
+  var host = this;
+  if (host.scrollTop + host.clientHeight >= host.scrollHeight - 120) growList();
+});
+
+function keepSelVisible() {
+  var host = $("resBox"), rows = host.getElementsByClassName("row");
+  if (SEL < 0 || SEL >= rows.length) return;
+  var r = rows[SEL];
+  if (r.offsetTop < host.scrollTop) host.scrollTop = r.offsetTop;
+  else if (r.offsetTop + r.offsetHeight > host.scrollTop + host.clientHeight) {
+    host.scrollTop = r.offsetTop + r.offsetHeight - host.clientHeight;
+  }
+}
+
+/* V1.12 - the X only shows when there is something to clear, so it never
+   sits there as noise on an empty box. */
+function syncClr() {
+  var b = $("qClr");
+  if (($("qIn").value || "") !== "") b.classList.add("show");
+  else b.classList.remove("show");
+}
+$("qClr").addEventListener("click", function (e) {
+  e.stopPropagation();
+  $("qIn").value = "";
+  SEL = 0;
+  syncClr();
+  render();
+  $("qIn").focus();
+});
+$("qIn").addEventListener("input", function () { SEL = 0; syncClr(); render(); });
+$("qFld").addEventListener("click", function (e) { if (e.target !== $("qIn") && e.target.id !== "qClr" && !e.target.closest("#qClr")) $("qIn").focus(); });
+syncClr();
+$("qIn").addEventListener("keydown", function (e) {
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    if (SEL < RESULTS.length - 1 && SEL < SHOWN - 1) SEL++;
+    render(); keepSelVisible();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    if (SEL > 0) SEL--;
+    render(); keepSelVisible();
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    if (!RESULTS.length) return;
+    var it = RESULTS[clamp(SEL, 0, RESULTS.length - 1)];
+    runItem(it, !!(e.metaKey || e.ctrlKey));
+  } else if (e.key === "Escape") {
+    if ($("sOvl").className.indexOf("show") >= 0) { closeSaveOvl(); return; }
+    if ($("mvOvl").className.indexOf("show") >= 0) { $("mvOvl").classList.remove("show"); return; }
+    if ($("libMenu").className.indexOf("show") >= 0) { $("libMenu").classList.remove("show"); return; }
+    if ($("colPop").className.indexOf("show") >= 0) { $("colPop").classList.remove("show"); return; }
+    if ($("qIn").value) { $("qIn").value = ""; SEL = 0; syncClr(); render(); }
+  }
+});
+function focusQ() { try { $("qIn").focus(); } catch (e) {} }
+
+/* ---------------- Premiere bridge ---------------- */
+var cs = null, busy = false, busyList = false;
+try { cs = new CSInterface(); } catch (e) { cs = null; }
+function hostOK() { return !!(cs && window.__adobe_cep__); }
+function loadJSX(cb) {
+  try {
+    var p = cs.getSystemPath(SystemPath.EXTENSION) + "/jsx/hostscript.jsx";
+    p = p.split("\\").join("/");
+    cs.evalScript('$.evalFile("' + p + '")', function () { cb(); });
+  } catch (e) { cb(); }
+}
+function callHost(fn, cb, _retried) {
+  if (!hostOK()) {
+    status("OPEN THIS PANEL INSIDE PREMIERE PRO (WINDOW \u2192 EXTENSIONS \u2192 FIND).", true);
+    return;
+  }
+  cs.evalScript(fn, function (r) {
+    var data = null;
+    try { data = JSON.parse(r); } catch (e) {}
+    if (!data) {
+      if (!_retried) { loadJSX(function () { callHost(fn, cb, true); }); return; }
+      status("COULD NOT TALK TO PREMIERE \u2014 IS A SEQUENCE OPEN? TRY RESTARTING PREMIERE.", true);
+      return;
+    }
+    cb(data);
+  });
+}
+/* Every payload crosses evalScript percent-encoded: a third-party effect name
+   can carry any character, and one non-ASCII byte breaks the transport. */
+function hostCall(fn, payload, cb) {
+  var arg = JSON.stringify(encodeURIComponent(JSON.stringify(payload)));
+  callHost("FIND." + fn + "(" + arg + ")", cb);
+}
+
+function panelVer() {
+  try { return (document.querySelector(".foot .chip").textContent || "").replace(/^V/, ""); }
+  catch (e) { return ""; }
+}
+
+/* ---------------- read the effect lists ---------------- */
+function refreshList(manual) {
+  if (busyList) return;
+  if (!hostOK()) {
+    if (manual) status("OPEN THIS PANEL INSIDE PREMIERE PRO (WINDOW \u2192 EXTENSIONS \u2192 FIND).", true);
+    return;
+  }
+  busyList = true;
+  if (manual) status("READING PREMIERE'S EFFECT LISTS\u2026", false);
+  var t0 = Date.now();
+  callHost("FIND.list()", function (d) {
+    busyList = false;
+    if (!d.ok) {
+      status("PREMIERE DID NOT HAND OVER THE EFFECT LISTS \u2014 " + String(d.error).toUpperCase(), true);
+      return;
+    }
+    FX = { v: d.v || [], a: d.a || [], tv: d.tv || [], ta: d.ta || [] };
+    try { localStorage.setItem("find.fx", JSON.stringify({ v: FX.v, a: FX.a, tv: FX.tv, ta: FX.ta, t: Date.now() })); } catch (e) {}
+    render();
+    if (manual) {
+      status(FX.v.length + " VIDEO \u00B7 " + FX.a.length + " AUDIO EFFECTS \u00B7 READ IN " + (Date.now() - t0) + " MS.", false, true);
+    }
+  });
+  setTimeout(function () { busyList = false; }, 8000);
+}
+$("reBtn").addEventListener("click", function () { loadPresets(); loadPP(); refreshList(true); renderLibBar(); render(); });
+
+/* ---------------- one entry point for every apply gesture ----------------
+   Routes a row click, Enter, Cmd/Ctrl+Enter and the circle button. The
+   ADJUSTMENT-LAYER-BY-DEFAULT toggle turns a plain gesture into the layer
+   route for video effects. A repeat of the same gesture inside half a second
+   is dropped - a double-click must not apply the effect twice. */
+var lastAct = { key: "", t: 0 };
+function runItem(it, wantAL) {
+  var key = (it.k === "dir" ? "dir:" + it.n : pinKeyOf(it)) + (wantAL ? ":al" : "") + (ALDEF ? ":d" : "");
+  var now = Date.now();
+  if (key === lastAct.key && (now - lastAct.t) < 500) return;
+  lastAct.key = key;
+  lastAct.t = now;
+  if (it.k === "dir") {
+    FOLD_OPEN[it.n] = !FOLD_OPEN[it.n];
+    render(); keepSelVisible();
+    return;
+  }
+  window.__findActs = (window.__findActs || 0) + 1;
+  if (it.k === "lib") {
+    /* a copied Premiere preset keeps the lane that is proven for it */
+    if (it.filters && it.filters.length) { doPPreset(it, wantAL || ALDEF); return; }
+    doLibPreset(it); return;
+  }
+  if (it.k === "cmb") { doCombo(it); return; }
+  if (it.k === "tv" || it.k === "ta") { doTransition(it); return; }
+  if (it.k === "p") { doPreset(it); return; }
+  if (it.k === "pp") { doPPreset(it, wantAL || (ALDEF && it.kind !== "a")); return; }
+  if (it.k === "v" && (wantAL || ALDEF)) { doAdjust(it); return; }
+  if (it.k === "a" && wantAL) {
+    status("AUDIO HAS NO ADJUSTMENT LAYER \u2014 ENTER APPLIES IT TO THE SELECTED AUDIO CLIPS.", true);
+    return;
+  }
+  doApply(it);
+}
+
+/* ---------------- apply a transition ---------------- */
+function doTransition(it, pos) {
+  if (busy) return;
+  busy = true;
+  var t0 = Date.now();
+  hostCall("applyTransition", { name: it.n, kind: it.k, frames: FRAMES, pos: pos || "auto" }, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) {
+      var err = String(d.error);
+      if (err === "NO_SELECTION") status("SELECT A CLIP IN THE TIMELINE FIRST — THE TRANSITION GOES AT ITS END.", true);
+      else if (err === "TRANSITION_NOT_FOUND") status("PREMIERE DOES NOT KNOW “" + it.n + "” — PRESS THE REFRESH ARROWS.", true);
+      else status(err.toUpperCase(), true);
+      return;
+    }
+    var msg = "TRANSITION " + it.n.toUpperCase() + " · " + d.frames + " FRAMES";
+    if (d.cuts) msg += " · ON " + d.cuts + " CUT" + (d.cuts === 1 ? "" : "S") + " BETWEEN CLIPS";
+    else if (d.pos === "start") msg += " · AT THE START OF " + d.clips + " CLIP" + (d.clips === 1 ? "" : "S");
+    else msg += " · AT THE END OF " + d.clips + " CLIP" + (d.clips === 1 ? "" : "S");
+    if (d.noPair) msg += " · NO TWO SELECTED CLIPS TOUCH ON ONE TRACK, SO EACH GOT IT AT ITS END — FOR THE CUT, SELECT TWO TOUCHING CLIPS ON THE SAME TRACK";
+    if (d.on) msg += " · " + d.on + " CONFIRMED ON";
+    if (d.laneIn) msg += " · WRITTEN AT THE EARLIER CLIP'S END, WHICH IS THE CUT";
+    if (d.laneOut) msg += " · " + d.laneOut + " FELL BACK TO THE OTHER EDGE";
+    /* V1.13 - WHERE it landed, measured, not assumed. Three builds said
+       CONFIRMED over a transition on the wrong edge because the only
+       witness was a count. */
+    /* V1.15 - a placement is only ever printed over a CONFIRMED write. In
+       V1.14 the two answers could disagree and the louder one won: the line
+       said IT SITS ACROSS THE CUT over an empty timeline. */
+    if (d.placedAt === "straddles") {
+      msg += " · MEASURED: IT SITS ACROSS THE CUT";
+    } else if (d.placedAt === "measured") {
+      msg += " · MEASURED: IT TOUCHES THE CUT BUT DOES NOT SIT ACROSS IT — SEND ME THIS LINE AND I WILL DROP THE CUT BUTTON AND LEAVE YOU THE TWO ARROWS";
+    } else if (d.placedAt === "unreadable") {
+      msg += " · PREMIERE WOULD NOT SAY WHERE IT LANDED — CHECK THE CUT ONCE";
+    }
+    if (d.sent) msg += " · " + d.sent + " SENT — PREMIERE GIVES NO READ-BACK FOR TRANSITIONS, CHECK THE CUT ONCE";
+    if (d.failed) msg += " · " + d.failed + " FAILED";
+    msg += " · " + ms + " MS. UNDO REVERTS.";
+    status(msg, d.on + d.sent === 0, d.failed === 0 && d.on > 0);
+  });
+  setTimeout(function () { busy = false; }, 6000);
+}
+
+/* ---------------- apply to the selected clips ---------------- */
+function doApply(it) {
+  if (busy) return;
+  busy = true;
+  var t0 = Date.now();
+  hostCall("applyFx", { name: it.n, kind: it.k }, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) {
+      var err = String(d.error);
+      if (err === "NO_SELECTION") status("SELECT A CLIP IN THE TIMELINE FIRST.", true);
+      else if (err === "EFFECT_NOT_FOUND") status("PREMIERE DOES NOT KNOW \u201C" + it.n + "\u201D \u2014 PRESS THE REFRESH ARROWS TO RE-READ THE LIST.", true);
+      else status(err.toUpperCase(), true);
+      return;
+    }
+    if (d.on === 0) {
+      var bad = it.n.toUpperCase() + " DID NOT GO ON \u2014 PREMIERE TOOK THE COMMAND AND NOTHING APPEARED";
+      if (d.unverified) bad += " ON " + d.unverified + " CLIP" + (d.unverified === 1 ? "" : "S");
+      bad += ". SOME LIST ENTRIES ARE OLD EFFECTS PREMIERE NO LONGER APPLIES. CHECK EFFECT CONTROLS ONCE \u2014 " + ms + " MS.";
+      status(bad, true);
+      return;
+    }
+    var msg = "APPLIED " + it.n.toUpperCase() + " \u00B7 " + d.on + " CLIP" + (d.on === 1 ? "" : "S");
+    if (d.unverified) msg += " \u00B7 " + d.unverified + " MORE SENT, NOT READ BACK \u2014 CHECK EFFECT CONTROLS";
+    if (d.refused) msg += " \u00B7 " + d.refused + " CLIP" + (d.refused === 1 ? "" : "S") + " REFUSED IT";
+    msg += " \u00B7 " + ms + " MS. UNDO REVERTS.";
+    status(msg, false, true);
+  });
+  setTimeout(function () { busy = false; }, 6000);
+}
+
+/* ---------------- apply a saved PREMIERE preset ---------------- */
+function doPPreset(it, al) {
+  if (busy) return;
+  if (al && it.kind === "a") {
+    status("AUDIO HAS NO ADJUSTMENT LAYER — ENTER APPLIES IT TO THE SELECTED AUDIO CLIPS.", true);
+    return;
+  }
+  busy = true;
+  var t0 = Date.now();
+  hostCall("applyPreset", { name: it.n, kind: it.kind, al: !!al, filters: it.filters, mode: placeMode(), frames: FRAMES, color: COLOR }, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) {
+      var err = String(d.error);
+      if (err === "NO_SELECTION") status("SELECT A CLIP IN THE TIMELINE FIRST.", true);
+      else if (err === "NO_SOURCE") status("NO ADJUSTMENT LAYER IN THIS PROJECT — PLACE ANY EFFECT AS A LAYER ONCE, OR MAKE ONE IN ADJUST.", true);
+      else if (err === "NO_TARGET") status("SELECT A CLIP, OR PARK THE PLAYHEAD OVER ONE.", true);
+      else status(err.toUpperCase(), true);
+      return;
+    }
+    var msg = "PRESET “" + it.n.toUpperCase() + "”";
+    if (d.al) {
+      msg += " ON AN ADJUSTMENT LAYER ON V" + d.track + " · " + d.frames + " FRAME" + (d.frames === 1 ? "" : "S");
+      if (d.matched) msg += " (MATCHED)";
+      if (d.moved) msg += " · MOVED UP A TRACK, THE ONE ABOVE WAS BUSY";
+      if (d.labeled === false) msg += " · PREMIERE REFUSED THE COLOR LABEL";
+    } else {
+      msg += " · " + d.clips + " CLIP" + (d.clips === 1 ? "" : "S");
+    }
+    msg += " · " + d.filtersOn + " FILTER" + (d.filtersOn === 1 ? "" : "S") + " ON · " + d.applied + " PARAM" + (d.applied === 1 ? "" : "S");
+    if (d.keys) msg += " · " + d.keys + " KEYFRAMES, EASING APPROX";
+    if (d.colorsExact) msg += " · " + d.colorsExact + " COLOR" + (d.colorsExact === 1 ? "" : "S") + " FROM YOUR PREMIERE PRESET, SET EXACTLY";
+    if (d.colorsFixed) msg += " · " + d.colorsFixed + " COLOR" + (d.colorsFixed === 1 ? "" : "S") + " FIXED";
+    if (d.colorsUnv) msg += " · " + d.colorsUnv + " COLOR" + (d.colorsUnv === 1 ? "" : "S") + " NOT VERIFIED — CHECK THEM ONCE";
+    if (d.colorSeen && d.colorSeen.length) msg += " · COLOR CHECK: " + d.colorSeen.join(" · ");
+    if (d.mismatched) msg += " · " + d.mismatched + " SETTING" + (d.mismatched === 1 ? "" : "S") + " SKIPPED — THIS EFFECT'S CONTROLS DO NOT LINE UP WITH THE PRESET, SO NOTHING WAS FORCED";
+    if (d.skipped) msg += " · " + d.skipped + " PARAM" + (d.skipped === 1 ? "" : "S") + " SKIPPED";
+    if (d.filtersMissed) msg += " · " + d.filtersMissed + " FILTER" + (d.filtersMissed === 1 ? "" : "S") + " NOT ON THIS MACHINE";
+    if (d.al) {
+      if (d.fit === "ok") msg += " · FITTED TO THE FRAME (SCALE " + d.fitScale + ")";
+      else if (d.fit === "motion") msg += " · FIT SKIPPED — THE PRESET SETS MOTION";
+      else if (d.fit === "keys") msg += " · FIT SKIPPED — POSITION OR SCALE IS ANIMATED";
+    }
+    msg += " · " + ms + " MS. UNDO REVERTS.";
+    status(msg, d.filtersOn === 0, d.filtersOn > 0 && !d.filtersMissed);
+  });
+  setTimeout(function () { busy = false; }, 6000);
+}
+
+/* ---------------- FIND's own presets: apply ---------------- */
+function doLibPreset(it) {
+  if (busy) return;
+  busy = true;
+  var t0 = Date.now();
+  hostCall("applyAdjust", { name: it.n, kind: "v", comps: it.comps, space: it.sp || "src", color: colorFor(it), mode: placeMode(), frames: FRAMES }, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) {
+      var err = String(d.error);
+      if (err === "NO_SOURCE") status("NO ADJUSTMENT LAYER IN THIS PROJECT — PLACE ANY EFFECT AS A LAYER ONCE, OR MAKE ONE IN ADJUST.", true);
+      else if (err === "NO_TARGET") status("SELECT A CLIP, OR PARK THE PLAYHEAD OVER ONE.", true);
+      else status(err.toUpperCase(), true);
+      return;
+    }
+    var msg = "PRESET “" + it.n.toUpperCase() + "” ON V" + d.track + " · " + d.frames + " FRAME" + (d.frames === 1 ? "" : "S");
+    if (d.matched) msg += " (MATCHED)";
+    if (d.moved) msg += " · MOVED UP A TRACK, THE ONE ABOVE WAS BUSY";
+    if (d.labeled === false) msg += " · PREMIERE REFUSED THE COLOR LABEL";
+    msg += " · " + d.applied + " PARAM" + (d.applied === 1 ? "" : "S") + " SET";
+    if (d.colorsExact) msg += " · " + d.colorsExact + " COLOR" + (d.colorsExact === 1 ? "" : "S") + " SET EXACTLY";
+    if (d.colorsFixed) msg += " · " + d.colorsFixed + " COLOR" + (d.colorsFixed === 1 ? "" : "S") + " FIXED";
+    if (d.colorsUnv) msg += " · " + d.colorsUnv + " COLOR" + (d.colorsUnv === 1 ? "" : "S") + " NOT VERIFIED — CHECK THEM ONCE";
+    if (d.colorsUnv && d.colorTrace && d.colorTrace.length) msg += " · TRACE: " + d.colorTrace.join(" · ");
+    if (d.colorSeen && d.colorSeen.length) msg += " · COLOR CHECK: " + d.colorSeen.join(" · ");
+    if (d.mismatched) msg += " · " + d.mismatched + " SETTING" + (d.mismatched === 1 ? "" : "S") + " SKIPPED — THE CONTROLS DO NOT LINE UP WITH THE PRESET, SO NOTHING WAS FORCED";
+    if (d.missed) msg += " · " + d.missed + " EFFECT" + (d.missed === 1 ? "" : "S") + " COULD NOT BE RE-ADDED";
+    msg += " · " + ms + " MS. UNDO REVERTS.";
+    status(msg, false, !d.missed);
+  });
+  setTimeout(function () { busy = false; }, 6000);
+}
+
+function doCombo(it) {
+  if (busy) return;
+  busy = true;
+  var t0 = Date.now();
+  hostCall("applyCombo", { name: it.n, layers: it.layers }, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+    var msg = "COMBO “" + it.n.toUpperCase() + "” · " + d.placed + " OF " + d.total + " LAYER" + (d.total === 1 ? "" : "S") + " AT THE PLAYHEAD, FROM V" + d.baseTrack;
+    msg += " · " + d.applied + " PARAM" + (d.applied === 1 ? "" : "S") + " SET";
+    if (d.colorsExact) msg += " · " + d.colorsExact + " COLOR" + (d.colorsExact === 1 ? "" : "S") + " SET EXACTLY";
+    if (d.colorsFixed) msg += " · " + d.colorsFixed + " COLOR" + (d.colorsFixed === 1 ? "" : "S") + " FIXED";
+    if (d.colorsUnv) msg += " · " + d.colorsUnv + " COLOR" + (d.colorsUnv === 1 ? "" : "S") + " NOT VERIFIED — CHECK THEM ONCE";
+    if (d.colorsUnv && d.colorTrace && d.colorTrace.length) msg += " · TRACE: " + d.colorTrace.join(" · ");
+    if (d.colorSeen && d.colorSeen.length) msg += " · COLOR CHECK: " + d.colorSeen.join(" · ");
+    if (d.failed) msg += " · " + d.failed + " LAYER" + (d.failed === 1 ? "" : "S") + " FAILED";
+    if (d.missed) msg += " · " + d.missed + " EFFECT" + (d.missed === 1 ? "" : "S") + " COULD NOT BE RE-ADDED";
+    msg += " · " + ms + " MS. UNDO REVERTS.";
+    status(msg, d.placed === 0, d.placed === d.total);
+  });
+  setTimeout(function () { busy = false; }, 8000);
+}
+
+/* ---------------- save a preset from the timeline ---------------- */
+var SAVE_DATA = null;   /* what readPreset / readCombo answered */
+var EDIT_REF = null;    /* {li, pj} when the overlay renames instead of saves */
+var sDelArm = null;
+
+function fillLibSelect() {
+  var sel = $("sLib"), i, o;
+  sel.innerHTML = "";
+  for (i = 0; i < FLIBS.libs.length; i++) {
+    o = document.createElement("option");
+    o.value = i;
+    o.textContent = FLIBS.libs[i].name;
+    sel.appendChild(o);
+  }
+  sel.value = FLIBS.cur;
+}
+
+function openSaveOvl(kind, data) {
+  SAVE_DATA = { kind: kind, data: data };
+  EDIT_REF = null;
+  $("sTtl").textContent = kind === "m" ? "SAVE COMBO" : "SAVE PRESET";
+  $("sDel").style.display = "none";
+  $("sGo").textContent = "SAVE";
+  fillLibSelect();
+  $("sLib").parentNode ? null : null;
+  $("sLib").style.display = "";
+  $("sLibLab").style.display = "";
+  var host = $("sFx");
+  host.innerHTML = "";
+  if (kind === "s") {
+    $("sName").value = (data.name || "PRESET").slice(0, 24);
+    $("sMeta").textContent = (data.frames || 0) + "F · " + (data.comps ? data.comps.length : 0) + " FX";
+    $("sFxLab").style.display = "";
+    host.style.display = "";
+    var i;
+    for (i = 0; i < data.comps.length; i++) {
+      (function (rec, ix) {
+        var row = document.createElement("label");
+        row.className = "efxr";
+        row.setAttribute("data-tip", "Untick to leave this effect out of the preset");
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = true;
+        cb.setAttribute("data-cix", String(ix));
+        var t = document.createTextNode(" " + String(rec.disp || rec.match || "EFFECT").toUpperCase());
+        var tag = document.createElement("i");
+        var keyed = 0, j;
+        for (j = 0; j < rec.props.length; j++) { if (rec.props[j].kf && rec.props[j].k && rec.props[j].k.length) keyed++; }
+        tag.textContent = keyed ? (keyed + " ANIMATED") : (rec.props.length + " PARAMS");
+        row.appendChild(cb); row.appendChild(t); row.appendChild(tag);
+        host.appendChild(row);
+      })(data.comps[i], i);
+    }
+    if (!data.comps.length) {
+      var non = document.createElement("div");
+      non.className = "efxr non";
+      non.textContent = "Nothing on this clip — the preset makes a clean layer.";
+      host.appendChild(non);
+    }
+    /* V1.11 - a colour saved from the timeline still rides the colour hunt.
+       the studio found the road that always works: Premiere's own Save Preset.
+       Say so right where he is saving, once, only when colours are here. */
+    var nCol = 0, c1, c2;
+    for (c1 = 0; c1 < data.comps.length; c1++) {
+      for (c2 = 0; c2 < data.comps[c1].props.length; c2++) {
+        if (data.comps[c1].props[c2].col) nCol++;
+      }
+    }
+    if (nCol) {
+      var cn = document.createElement("div");
+      cn.className = "efxr non";
+      cn.textContent = nCol + (nCol === 1 ? " COLOR RIDES ALONG." : " COLORS RIDE ALONG.") +
+        " For a color that must land exactly: right-click the effect in Effect Controls, Save Preset, then press the refresh arrows here - it appears under PREMIERE with its true color.";
+      host.appendChild(cn);
+    }
+  } else {
+    $("sName").value = "COMBO";
+    $("sMeta").textContent = data.count + " LAYERS";
+    $("sFxLab").style.display = "none";
+    host.style.display = "none";
+  }
+  $("sOvl").classList.add("show");
+  hideTip();
+  $("sName").focus();
+  $("sName").select();
+}
+
+function openEditOvl(it) {
+  SAVE_DATA = null;
+  EDIT_REF = { li: it.li, pj: it.pj };
+  $("sTtl").textContent = it.k === "cmb" ? "COMBO" : "PRESET";
+  $("sMeta").textContent = it.lib;
+  $("sName").value = it.n;
+  $("sGo").textContent = "DONE";
+  $("sDel").style.display = "";
+  $("sDel").className = "pill";
+  $("sLib").style.display = "none";
+  $("sLibLab").style.display = "none";   /* V1.13 - no orphan LIBRARY label */
+  $("sFxLab").style.display = "none";
+  $("sFx").style.display = "none";
+  $("sFx").innerHTML = "";
+  $("sOvl").classList.add("show");
+  hideTip();
+  $("sName").focus();
+  $("sName").select();
+}
+
+function closeSaveOvl() {
+  $("sOvl").classList.remove("show");
+  SAVE_DATA = null;
+  EDIT_REF = null;
+  if (sDelArm) { clearTimeout(sDelArm); sDelArm = null; }
+  focusQ();
+  syncZoomHeight();
+}
+
+/* ---------------- move a preset to another library ---------------- */
+function moveFPreset(it, toLi) {
+  var from = FLIBS.libs[it.li], to = FLIBS.libs[toLi];
+  if (!from || !to || !from.presets[it.pj]) return;
+  var p = from.presets.splice(it.pj, 1)[0];
+  var base = p.n, k = 2, j, hit;
+  function exists(nm) { hit = false; for (j = 0; j < to.presets.length; j++) { if (to.presets[j].n === nm) hit = true; } return hit; }
+  while (exists(p.n)) { p.n = (base + " " + k).slice(0, 24); k++; }
+  to.presets.push(p);
+  FLIBS.cur = toLi;
+  LVIEW = "u"; saveLView();
+  saveFLibs();
+  $("mvOvl").classList.remove("show");
+  renderLibBar(); render(); focusQ();
+  status("MOVED “" + p.n + "” → " + to.name + ".", false, true);
+}
+/* V1.12 - copy one of HIS Premiere presets into a FIND library.
+   FIND reads Premiere's preset file and never writes to it. So this makes a
+   COPY: the same filters, under FIND's own name, in FIND's own storage. His
+   Premiere presets are untouched, and the copy can be renamed and moved. */
+function copyPPreset(it, toLi) {
+  var to = FLIBS.libs[toLi];
+  if (!to) { status("NO LIBRARY TO COPY INTO — PRESS + BY THE LIBRARY NAME.", true); return; }
+  var base = String(it.n).slice(0, 24), nm = base, k = 2, j, hit;
+  function exists(x) { hit = false; for (j = 0; j < to.presets.length; j++) { if (to.presets[j].n === x) hit = true; } return hit; }
+  while (exists(nm)) { nm = (base + " " + k).slice(0, 24); k++; }
+  to.presets.push({ n: nm, kind: "s", pkind: it.kind === "a" ? "a" : "v",
+                    filters: it.filters, c: COLOR });
+  FLIBS.cur = toLi;
+  saveFLibs();
+  LVIEW = "u"; saveLView();
+  $("mvOvl").classList.remove("show");
+  renderLibBar(); render(); focusQ();
+  status("COPIED “" + nm + "” INTO " + to.name + ". YOUR PREMIERE PRESET IS UNCHANGED — THE PEN RENAMES THE COPY.", false, true);
+}
+/* V1.13 - the copy now ASKS which library, in the same box MOVE uses. */
+function openCopyOvl(it) {
+  $("mvTtl").textContent = "COPY “" + it.n + "”";
+  $("mvLab").textContent = "COPY TO";
+  var host = $("mvList"), i;
+  host.innerHTML = "";
+  for (i = 0; i < FLIBS.libs.length; i++) {
+    (function (ix) {
+      var b = document.createElement("button");
+      b.className = "pill";
+      b.style.width = "100%";
+      b.style.marginBottom = "6px";
+      b.textContent = FLIBS.libs[ix].name + " (" + FLIBS.libs[ix].presets.length + ")";
+      b.setAttribute("data-tip", "Copy it into " + FLIBS.libs[ix].name);
+      b.addEventListener("click", function () { copyPPreset(it, ix); });
+      host.appendChild(b);
+    })(i);
+  }
+  $("mvOvl").classList.add("show");
+  hideTip();
+}
+
+function openMoveOvl(it) {
+  if (FLIBS.libs.length < 2) {
+    status("ONLY ONE LIBRARY EXISTS — PRESS + BY THE LIBRARY NAME TO ADD ANOTHER.", true);
+    return;
+  }
+  $("mvTtl").textContent = "MOVE “" + it.n + "”";
+  $("mvLab").textContent = "MOVE TO";
+  var host = $("mvList"), i;
+  host.innerHTML = "";
+  for (i = 0; i < FLIBS.libs.length; i++) {
+    if (i === it.li) continue;
+    (function (ix) {
+      var b = document.createElement("button");
+      b.className = "pill";
+      b.style.width = "100%";
+      b.style.marginBottom = "6px";
+      b.textContent = FLIBS.libs[ix].name + " (" + FLIBS.libs[ix].presets.length + ")";
+      b.setAttribute("data-tip", "Move it into " + FLIBS.libs[ix].name);
+      b.addEventListener("click", function () { moveFPreset(it, ix); });
+      host.appendChild(b);
+    })(i);
+  }
+  $("mvOvl").classList.add("show");
+  hideTip();
+}
+$("mvCancel").addEventListener("click", function () { $("mvOvl").classList.remove("show"); focusQ(); });
+
+$("saveBtn").addEventListener("click", function () {
+  if (busy) return;
+  if (!hostOK()) {
+    status("OPEN THIS PANEL INSIDE PREMIERE PRO (WINDOW → EXTENSIONS → FIND).", true);
+    return;
+  }
+  busy = true;
+  callHost("FIND.readSel()", function (d0) {
+    if (!d0.ok) { busy = false; status(String(d0.error).toUpperCase(), true); return; }
+    if (d0.count === 0) {
+      busy = false;
+      status("SELECT A CLIP OR SOME ADJUSTMENT LAYERS FIRST, THEN PRESS SAVE.", true);
+      return;
+    }
+    if (d0.count === 1) {
+      callHost("FIND.readPreset()", function (d) {
+        busy = false;
+        if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+        openSaveOvl("s", d);
+      });
+    } else {
+      callHost("FIND.readCombo()", function (d) {
+        busy = false;
+        if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+        openSaveOvl("m", d);
+      });
+    }
+  });
+  setTimeout(function () { busy = false; }, 8000);
+});
+
+$("sGo").addEventListener("click", function () {
+  var n = ($("sName").value || "").replace(/^\s+|\s+$/g, "").slice(0, 24);
+  if (EDIT_REF) {
+    if (n) {
+      try { FLIBS.libs[EDIT_REF.li].presets[EDIT_REF.pj].n = n; } catch (e) {}
+      saveFLibs();
+    }
+    closeSaveOvl();
+    render();
+    return;
+  }
+  if (!SAVE_DATA) { closeSaveOvl(); return; }
+  if (!n) n = SAVE_DATA.kind === "m" ? "COMBO" : "PRESET";
+  var li = parseInt($("sLib").value, 10) || 0;
+  if (li < 0 || li >= FLIBS.libs.length) li = 0;
+  var ps = FLIBS.libs[li].presets, base = n, k = 2, i, clash;
+  function exists(nm) { var f = false, j; for (j = 0; j < ps.length; j++) { if (ps[j].n === nm) f = true; } return f; }
+  while (exists(n)) { n = (base + " " + k).slice(0, 24); k++; }
+  if (SAVE_DATA.kind === "s") {
+    var picked = [], boxes = $("sFx").getElementsByTagName("input");
+    for (i = 0; i < boxes.length; i++) {
+      if (boxes[i].checked) picked.push(SAVE_DATA.data.comps[parseInt(boxes[i].getAttribute("data-cix"), 10)]);
+    }
+    ps.push({
+      kind: "s", n: n,
+      c: (typeof SAVE_DATA.data.color === "number" && SAVE_DATA.data.color >= 0) ? SAVE_DATA.data.color : -1,
+      f: SAVE_DATA.data.frames || FRAMES,
+      sp: SAVE_DATA.data.space === "seq" ? "seq" : "src",
+      comps: picked
+    });
+    status("SAVED “" + n + "” · " + picked.length + " EFFECT" + (picked.length === 1 ? "" : "S") + " → " + FLIBS.libs[li].name + ".", false, true);
+  } else {
+    ps.push({ kind: "m", n: n, layers: SAVE_DATA.data.layers });
+    status("SAVED COMBO “" + n + "” · " + SAVE_DATA.data.count + " LAYERS WITH THEIR TIMING → " + FLIBS.libs[li].name + ".", false, true);
+  }
+  FLIBS.cur = li;
+  LVIEW = "u"; saveLView();
+  saveFLibs();
+  closeSaveOvl();
+  renderLibBar();
+  render();
+});
+
+$("sDel").addEventListener("click", function () {
+  if (!EDIT_REF) return;
+  if (sDelArm === null) {
+    $("sDel").className = "pill acc";
+    sDelArm = setTimeout(function () { $("sDel").className = "pill"; sDelArm = null; }, 2800);
+    return;
+  }
+  clearTimeout(sDelArm); sDelArm = null;
+  try { FLIBS.libs[EDIT_REF.li].presets.splice(EDIT_REF.pj, 1); } catch (e) {}
+  saveFLibs();
+  closeSaveOvl();
+  render();
+  status("PRESET DELETED.", false, true);
+});
+
+$("sCancel").addEventListener("click", closeSaveOvl);
+$("sOvl").addEventListener("click", function (e) { if (e.target === $("sOvl")) closeSaveOvl(); });
+$("sName").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") $("sGo").click();
+  else if (e.key === "Escape") closeSaveOvl();
+  e.stopPropagation();
+});
+
+function delFPreset(it, btn) {
+  if (btn.getAttribute("data-armed") === "1") {
+    try { FLIBS.libs[it.li].presets.splice(it.pj, 1); } catch (e) {}
+    saveFLibs();
+    render();
+    status("DELETED “" + it.n + "”.", false, true);
+    return;
+  }
+  btn.setAttribute("data-armed", "1");
+  btn.className = "xb on";
+  status("CLICK × AGAIN TO DELETE “" + it.n + "”.", true);
+  setTimeout(function () {
+    try { btn.setAttribute("data-armed", "0"); btn.className = "xb"; } catch (e) {}
+  }, 2800);
+}
+
+/* ---------------- place a saved ADJUST preset ---------------- */
+function doPreset(it) {
+  if (busy) return;
+  busy = true;
+  var t0 = Date.now();
+  hostCall("applyAdjust", { name: it.n, kind: "v", comps: it.comps, space: it.sp, color: colorFor(it), mode: placeMode(), frames: FRAMES }, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) {
+      var err = String(d.error);
+      if (err === "NO_SOURCE") status("NO ADJUSTMENT LAYER IN THIS PROJECT \u2014 PLACE ANY EFFECT AS A LAYER ONCE, OR MAKE ONE IN ADJUST.", true);
+      else if (err === "NO_TARGET") status("SELECT A CLIP, OR PARK THE PLAYHEAD OVER ONE.", true);
+      else status(err.toUpperCase(), true);
+      return;
+    }
+    var msg = "PRESET \u201C" + it.n.toUpperCase() + "\u201D ON V" + d.track + " \u00B7 " + d.frames + " FRAME" + (d.frames === 1 ? "" : "S");
+    if (d.matched) msg += " (MATCHED)";
+    if (d.moved) msg += " \u00B7 MOVED UP A TRACK, THE ONE ABOVE WAS BUSY";
+    if (d.labeled === false) msg += " \u00B7 PREMIERE REFUSED THE COLOR LABEL";
+    msg += " \u00B7 " + d.applied + " PARAM" + (d.applied === 1 ? "" : "S") + " SET";
+    if (d.colorsExact) msg += " \u00B7 " + d.colorsExact + " COLOR" + (d.colorsExact === 1 ? "" : "S") + " SET EXACTLY";
+    if (d.colorsFixed) msg += " \u00B7 " + d.colorsFixed + " COLOR" + (d.colorsFixed === 1 ? "" : "S") + " FIXED";
+    if (d.colorsUnv) msg += " \u00B7 " + d.colorsUnv + " COLOR" + (d.colorsUnv === 1 ? "" : "S") + " NOT VERIFIED \u2014 CHECK THEM ONCE";
+    if (d.colorsUnv && d.colorTrace && d.colorTrace.length) msg += " \u00B7 TRACE: " + d.colorTrace.join(" \u00B7 ");
+    if (d.colorSeen && d.colorSeen.length) msg += " \u00B7 COLOR CHECK: " + d.colorSeen.join(" \u00B7 ");
+    if (d.mismatched) msg += " \u00B7 " + d.mismatched + " SETTING" + (d.mismatched === 1 ? "" : "S") + " SKIPPED \u2014 THE CONTROLS DO NOT LINE UP WITH THE PRESET, SO NOTHING WAS FORCED";
+    if (d.missed) msg += " \u00B7 " + d.missed + " EFFECT" + (d.missed === 1 ? "" : "S") + " COULD NOT BE RE-ADDED";
+    if (d.fit === "ok") msg += " \u00B7 FITTED TO THE FRAME (SCALE " + d.fitScale + ")";
+    else if (d.fit === "keys") msg += " \u00B7 FIT SKIPPED \u2014 THE PRESET ANIMATES POSITION OR SCALE";
+    else msg += " \u00B7 FIT NOT PROVED \u2014 CHECK THE LAYER FILLS THE FRAME";
+    msg += " \u00B7 " + ms + " MS. UNDO REVERTS.";
+    status(msg, false, !d.missed);
+  });
+  setTimeout(function () { busy = false; }, 6000);
+}
+
+/* ---------------- apply as an adjustment layer ----------------
+   ADJUST's machinery, on the studio's instruction. The layer spans the selected
+   clips, lands on the first free track above them, and takes the effect's
+   name. In a project with no adjustment layer at all, the panel asks
+   Premiere's own File > New > Adjustment Layer (macOS) - same as ADJUST. */
+
+function isMac() {
+  try { return String(navigator.platform).toLowerCase().indexOf("win") < 0; } catch (e) { return true; }
+}
+
+/* The helper script RETURNS a result string on stdout, so a failure names
+   itself instead of being blamed on the likeliest cause. The dialog is
+   confirmed by clicking ITS OWN OK button - never a blind Return, which
+   would land in the timeline if the dialog were already gone. */
+/* V1.9: the studio's V1.8 report said NODIALOG - the menu click ran and nothing
+   opened. File > New > Adjustment Layer is DISABLED while a panel has
+   focus; his right-click way works because the Project panel has focus
+   first. So: Shift+1 (Premiere's own Focus Project Panel key) BEFORE the
+   menu, and the dialog's OK is hunted in windows AND sheets. */
+var NATIVE_LINES = [
+  "on run",
+  "delay 0.15",
+  "try",
+  "tell application \"System Events\"",
+  "set pp to first application process whose frontmost is true",
+  "tell pp",
+  "set frontmost to true",
+  "end tell",
+  "key code 18 using shift down",
+  "delay 0.35",
+  "tell pp",
+  "try",
+  "click (first menu item of menu 1 of menu item \"New\" of menu 1 of menu bar item \"File\" of menu bar 1 whose name begins with \"Adjustment Layer\")",
+  "on error",
+  "click (first menu item of menu 1 of menu item 1 of menu 1 of menu bar item 3 of menu bar 1 whose name begins with \"Adjustment Layer\")",
+  "end try",
+  "end tell",
+  "end tell",
+  "on error m number nn",
+  "return \"ERR \" & nn & \": \" & m",
+  "end try",
+  "set clicked to false",
+  "repeat 12 times",
+  "delay 0.35",
+  "try",
+  "tell application \"System Events\"",
+  "tell (first application process whose frontmost is true)",
+  "if exists (button \"OK\" of window 1) then",
+  "click button \"OK\" of window 1",
+  "set clicked to true",
+  "else if exists (sheet 1 of window 1) then",
+  "if exists (button \"OK\" of sheet 1 of window 1) then",
+  "click button \"OK\" of sheet 1 of window 1",
+  "set clicked to true",
+  "end if",
+  "end if",
+  "end tell",
+  "end tell",
+  "end try",
+  "if clicked then exit repeat",
+  "end repeat",
+  "if clicked then",
+  "return \"OK\"",
+  "else",
+  "return \"NODIALOG\"",
+  "end if",
+  "end run"
+];
+
+var NATIVE_OUT = "";
+function spawnNative() {
+  if (!(window.cep && window.cep.process && window.cep.process.createProcess)) return false;
+  var argv = ["/usr/bin/osascript"], i;
+  for (i = 0; i < NATIVE_LINES.length; i++) { argv.push("-e"); argv.push(NATIVE_LINES[i]); }
+  NATIVE_OUT = "";
+  try {
+    var r = window.cep.process.createProcess.apply(window.cep.process, argv);
+    if (!(r && (r.err === 0 || r.err === undefined))) return false;
+    try {
+      if (r.data !== undefined && window.cep.process.stdout) {
+        window.cep.process.stdout(r.data, function (out) {
+          NATIVE_OUT += String(out || "");
+        });
+      }
+    } catch (eo) {}
+    return true;
+  } catch (e) { return false; }
+}
+
+/* Turn the helper's own words into the RIGHT instruction. */
+function nativeWhy() {
+  var t = NATIVE_OUT || "";
+  if (/assistive|not allowed|not authori|1743|25211/i.test(t)) {
+    return "MACOS BLOCKED THE HELPER. OPEN SYSTEM SETTINGS → PRIVACY & SECURITY → ACCESSIBILITY, SWITCH ADOBE PREMIERE PRO ON, THEN TRY AGAIN. (AUTOMATION, ONE PANE UP, MUST ALSO ALLOW PREMIERE → SYSTEM EVENTS.)";
+  }
+  if (/ERR .*menu/i.test(t)) {
+    return "THE FILE → NEW → ADJUSTMENT LAYER MENU WAS NOT WHERE EXPECTED. MAKE ONE ADJUSTMENT LAYER BY HAND — THE PANEL COPIES IT FROM THEN ON. THEN SEND ME THIS LINE: " + t.slice(0, 120);
+  }
+  if (/NODIALOG/.test(t)) {
+    return "PREMIERE OPENED NO ADJUSTMENT LAYER DIALOG. THE PANEL PRESSES SHIFT+1 TO FOCUS THE PROJECT PANEL FIRST — IF SHIFT+1 IS NOT “FOCUS PROJECT PANEL” ON YOUR KEYBOARD, TELL ME WHICH KEY IS. FOR NOW: RIGHT-CLICK THE PROJECT PANEL → NEW ITEM → ADJUSTMENT LAYER, AND THE PANEL COPIES IT FROM THEN ON.";
+  }
+  return "PREMIERE DID NOT MAKE THE LAYER. OPEN SYSTEM SETTINGS → PRIVACY & SECURITY → ACCESSIBILITY AND SWITCH ADOBE PREMIERE PRO ON, OR MAKE ONE ADJUSTMENT LAYER BY HAND (FILE → NEW → ADJUSTMENT LAYER).";
+}
+
+function nativeCreate(name, done, giveUp) {
+  if (!isMac()) {
+    giveUp("NO ADJUSTMENT LAYER IN THIS PROJECT. MAKE ONE BY HAND (FILE \u2192 NEW \u2192 ADJUSTMENT LAYER) \u2014 THE PANEL COPIES IT FROM THEN ON.");
+    return;
+  }
+  status("NO ADJUSTMENT LAYER IN THIS PROJECT \u2014 ASKING PREMIERE TO MAKE ONE\u2026", false);
+  callHost("FIND.snapshot()", function (snap) {
+    if (!snap.ok) { giveUp(String(snap.error).toUpperCase()); return; }
+    var idArg = JSON.stringify(encodeURIComponent(JSON.stringify({ ids: snap.ids || [], name: name || "" })));
+    var call = "FIND.adopt(" + idArg + ")";
+    if (!spawnNative()) {
+      giveUp("THE PANEL COULD NOT START THE HELPER. MAKE ONE ADJUSTMENT LAYER BY HAND (FILE \u2192 NEW \u2192 ADJUSTMENT LAYER). THE PANEL COPIES IT FROM THEN ON.");
+      return;
+    }
+    var tries = 0;
+    function poll() {
+      tries++;
+      callHost(call, function (d) {
+        if (d.ok && d.found) { done(d); return; }
+        if (tries >= 14) {
+          giveUp(nativeWhy());
+          return;
+        }
+        setTimeout(poll, 600);
+      });
+    }
+    setTimeout(poll, 900);
+  });
+}
+
+function doAdjust(it, extra) {
+  if (busy && !(extra && extra.retry)) return;
+  busy = true;
+  var stage = (extra && extra.stage) ? extra.stage : 0;
+  var payload = { name: it.n, kind: it.k, mode: placeMode(), frames: FRAMES, color: COLOR };
+  if (extra && extra.useId) payload.useId = extra.useId;
+  var t0 = Date.now();
+  hostCall("applyAdjust", payload, function (d) {
+    busy = false;
+    var ms = Date.now() - t0;
+    if (!d.ok) {
+      var err = String(d.error);
+      if ((err === "NO_SOURCE" || err === "CLONE_FAILED") && stage === 0) {
+        nativeCreate(it.n, function (n) {
+          doAdjust(it, { retry: true, stage: 1, useId: n.id });
+        }, function (why) { status(why, true); });
+        return;
+      }
+      if (err === "NO_TARGET") status("SELECT A CLIP, OR PARK THE PLAYHEAD OVER ONE.", true);
+      else status(err.toUpperCase(), true);
+      return;
+    }
+    var msg = "ADJUSTMENT LAYER \u201C" + it.n.toUpperCase() + "\u201D ON V" + d.track + " \u00B7 " + d.frames + " FRAME" + (d.frames === 1 ? "" : "S");
+    if (d.matched) msg += " (MATCHED)";
+    if (d.moved) msg += " \u00B7 MOVED UP A TRACK, THE ONE ABOVE WAS BUSY";
+    if (d.fx === "on") msg += " \u00B7 EFFECT ON";
+    else if (d.fx === "unverified") msg += " \u00B7 THE EFFECT DID NOT APPEAR ON IT \u2014 LIKELY AN OLD EFFECT NAME. CHECK EFFECT CONTROLS ONCE";
+    else msg += " \u00B7 THE EFFECT DID NOT GO ON \u2014 DROP IT ON THE LAYER BY HAND";
+    if (d.fit === "ok") msg += " \u00B7 FITTED TO THE FRAME (SCALE " + d.fitScale + ")";
+    else if (d.fit === "keys") msg += " \u00B7 FIT SKIPPED \u2014 POSITION OR SCALE IS ANIMATED";
+    else msg += " \u00B7 FIT NOT PROVED \u2014 CHECK THE LAYER FILLS THE FRAME";
+    if (!d.isAdjustment) msg += " \u00B7 WARNING: THAT SOURCE IS NOT AN ADJUSTMENT LAYER";
+    if (d.named === false) msg += " \u00B7 PREMIERE REFUSED THE NAME";
+    if (d.labeled === false) msg += " \u00B7 PREMIERE REFUSED THE COLOR LABEL";
+    msg += " \u00B7 " + ms + " MS. UNDO REVERTS.";
+    status(msg, d.fx !== "on", d.fx === "on");
+  });
+  setTimeout(function () { busy = false; }, 6000);
+}
+
+/* ---------------- panel menu + host hooks ---------------- */
+function installPanelMenu() {
+  /* The flyout menu is owned by js/llloc-revive.js, which loads before
+     everything else - so Reload / Fix blank panel / Startup report exist
+     even when this script never ran. FIND adds nothing of its own yet. */
+  if (!window.LLLOC_MENU_ADD) return;
+}
+function installHostHooks() {
+  if (!cs || !window.__adobe_cep__) return;
+  var evts = ["com.adobe.csxs.events.ApplicationActivate",
+              "com.adobe.csxs.events.WindowVisibilityChanged",
+              "com.adobe.csxs.events.ThemeColorChanged",
+              "applicationActivate", "documentAfterActivate"];
+  var i;
+  for (i = 0; i < evts.length; i++) {
+    try { cs.addEventListener(evts[i], function () { try { applySize(); } catch (e) {} }); } catch (e2) {}
+  }
+}
+function markBooted() {
+  window.__findBooted = true;
+  try {
+    if (window.location.hash) {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.pathname);
+      } else { window.location.hash = ""; }
+    }
+  } catch (e) {}
+}
+
+/* The whole point of FIND: the search box is ready the moment the panel is. */
+document.addEventListener("visibilitychange", function () {
+  if (!document.hidden) setTimeout(focusQ, 60);
+});
+window.addEventListener("focus", function () { setTimeout(focusQ, 60); });
+
+/* ---------------- boot ---------------- */
+applyTheme();
+applyTips();
+applySize();
+applyAlDef();
+syncLen();
+syncMatch();
+renderSwatches();
+renderLibBar();
+loadPresets();
+setFilter(FILTER === "v" || FILTER === "a" || FILTER === "t" || FILTER === "pre" ? FILTER : "all");
+focusQ();
+
+try { installPanelMenu(); installHostHooks(); markBooted(); } catch (e) {}
+
+/* The Premiere preset file is 3.6 MB - read and parse it OFF the open path,
+   a moment after first paint, in the panel's own process. Opening FIND never
+   waits on it. */
+setTimeout(function () {
+  try { loadPP(); renderLibBar(); render(); } catch (e) {}
+}, 350);
+
+/* One list read per session, off the click path. With an empty saved copy it
+   runs at once - the panel is useless without a list. With a saved copy it
+   waits a moment so opening the panel costs Premiere nothing, then quietly
+   picks up anything new. The stale-install warning rides the same ping. */
+if (hostOK()) {
+  callHost("FIND.ping()", function (d) {
+    if (d.ok && d.ver && panelVer() && String(d.ver) !== panelVer()) {
+      status("YOUR INSTALL IS HALF OLD \u2014 PANEL V" + panelVer() + ", ENGINE V" + d.ver + ". RUN THE FIND INSTALLER AGAIN.", true);
+    }
+  });
+  if (!FX.v.length && !FX.a.length) refreshList(true);
+  else setTimeout(function () { refreshList(false); }, 1200);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+- 2026-10-10 v1: new skill. SFX pass plus VO and music mix in Premiere with Soundly. Files: SKILL.md, method.md (research-backed craft), premiere-mechanics.md (tested MCP facts).
+- 16 Oct 2026, his pick "Words and lead-ins": 6 capital lead-ins and 1 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- 2026-10-16 round 5: Reply points to core rule 9 (fix 6)

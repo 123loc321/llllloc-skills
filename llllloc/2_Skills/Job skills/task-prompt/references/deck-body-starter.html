@@ -1,0 +1,136 @@
+## Contents
+
+## Contents
+
+<!-- ===========================================================================
+     DECK BODY STARTER  ·  Lord Of The Prompt  ·  llloc-UI
+
+     COPY THIS FILE. Do not assemble a deck from the patterns by hand - that is
+     how a deck ends up missing a class and rendering at the wrong size.
+
+       cp "$SKILL_DIR/references/deck-body-starter.html" "$SCRATCH/_body.html"
+       # or:  python3 "$SKILL_DIR/scripts/build-deck.py" --starter "$SCRATCH/_body.html"
+       # $SCRATCH and $PROMPTS: deck.md PATHS
+
+     Then:
+       1. Replace the <h1>, the SPEC rows, and the cards below.
+       2. Build:  python3 "$SKILL_DIR/scripts/build-deck.py" \
+                    --body "$SCRATCH/_body.html" \
+                    --out  "$PROMPTS/<PromptName>_V<N>_Deck.html"
+       3. Check:  python3 "$SKILL_DIR/scripts/test-deck.py" "$PROMPTS/<file>.html"
+       4. Send the built file as a file card. The scratch body stays.
+
+     THE FIVE THINGS THAT BREAK A DECK, ALL OF THEM SILENT:
+       - Indenting the prompt text. A <pre> keeps every space, and those spaces
+         ride onto the clipboard. Write it FLUSH at column 0, however deep the
+         markup goes. The builder cleans it and reports the count, but write it
+         flush.
+       - Forgetting data-tab / data-tname on a TOP-LEVEL unit. No tab, and the
+         prompt is unreachable except through ALL.
+       - Typing a number into <span class="chars">. Leave it EMPTY. The engine
+         fills it from the exact text COPY sends.
+       - Setting a colour, a background or a border anywhere in the body. The
+         shell owns all of it.
+       - Putting data-new="1" on more than the prompt(s) you changed THIS turn.
+       - Two prompts sharing a data-tname. It is the only human label a prompt
+         carries now, so a duplicate makes the tab strip useless.
+     =========================================================================== -->
+
+<h1>Deck title</h1>
+
+<details class="meta" open>
+  <summary><svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>SPEC</summary>
+  <div class="spec"><span class="k">MODE</span><span class="v">IMAGE &#183; FRAME SET</span></div>
+  <div class="spec"><span class="k">MODEL</span><span class="v">MIDJOURNEY 8.2</span></div>
+  <div class="spec"><span class="k">RATIO</span><span class="v">2.39:1 &#183; --AR 239:100</span></div>
+  <div class="spec"><span class="k">LOOK</span><span class="v">ONE LINE ON THE LOOK</span></div>
+  <div class="spec"><span class="k">RESEARCH RUN</span><span class="v">DD MMM YYYY</span></div>
+  <div class="spec"><span class="k">PROMPTS</span><span class="v">N &#183; N UPDATED</span></div>
+</details>
+
+
+<!-- ============ A PLAIN PROMPT. Duplicate this block per prompt. ============ -->
+<details class="card" open data-tab="01" data-tname="First prompt">
+  <summary class="card-head">
+    <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+    <span class="dot"></span>
+    <span class="tab">FR 01</span>
+    <span class="chars"></span>
+    <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+  </summary>
+  <div class="cbody">
+    <pre class="prompt-text">PromptName_Model_V1
+
+The prompt, flush at column 0. Escape &amp; &lt; &gt;. Self-contained: never refer to
+another card. The name line is always the first line.</pre>
+  </div>
+</details>
+
+
+<!-- ============ A PROMPT WITH HISTORY, CHANGED THIS TURN ============
+     data-new="1" on the .group gives it the JUST UPDATED badge, a dot on its
+     tab, and a place in the star filter. Only this turn's changes wear it.
+     There is no CURRENT pill: a prompt sitting above its own history is
+     obviously the current one.
+     A group unchanged this turn is the same, minus data-new and minus the
+     badge span. -->
+<div class="group" data-new="1" data-tab="02" data-tname="Second prompt">
+  <details class="card current updated" open>
+    <summary class="card-head">
+      <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+      <span class="dot"></span>
+      <span class="tab">FR 02</span>
+      <span class="badge-new"><span class="bdot"></span>JUST UPDATED</span>
+      <span class="chars"></span>
+      <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+    </summary>
+    <div class="cbody">
+      <pre class="prompt-text">PromptName_Model_V2
+
+The current text, in full.</pre>
+    </div>
+  </details>
+
+  <details class="archive">
+    <summary><svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>VERSION HISTORY (1)</summary>
+
+    <details class="card" open>
+      <summary class="card-head">
+        <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+        <span class="dot"></span>
+        <span class="tab">V1</span>
+        <span class="dim">OLDER</span>
+        <span class="chars"></span>
+        <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this older version">COPY</button>
+      </summary>
+      <div class="cbody">
+        <pre class="prompt-text">PromptName_Model_V1
+
+The older text, written out in full. Never "same as V2".</pre>
+      </div>
+    </details>
+
+  </details>
+</div>
+
+
+<!-- ============ A SHOTLIST CARD ============
+     Only in SHOTLIST mode. Swap the .dot for a .ck checkbox and the shell adds
+     a "n/m DONE" count to the bottom bar, greys the card and its tab, and
+     remembers the ticks. Delete this block for a normal prompt deck.
+
+<details class="card" open data-tab="SC 01" data-tname="Arrival">
+  <summary class="card-head">
+    <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+    <button class="ck" aria-label="Mark done"></button>
+    <span class="tab">SC 01</span>
+    <span class="chars"></span>
+    <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+  </summary>
+  <div class="cbody">
+    <pre class="prompt-text">Project_SC01_Model_V1
+
+Full prompt for this shot.</pre>
+  </div>
+</details>
+-->

@@ -1,0 +1,8 @@
+# llllloc:references-cinematography — notes
+
+- 2026-10-17 07:50 UTC: built on his pick "Option A, one skill: llllloc:references-cinematography". Reads a video shot by shot (move, rig, lens, shutter, time, light in time, in-camera tricks, VFX by type). Edit keeps the cut, photo keeps the still, motion keeps designed animation.
+- Tools verified 17 Oct 2026: PySceneDetect 0.7.2 (detect-adaptive), OpenCV Farneback flow (push vs zoom by parallax, handheld by jitter), ffmpeg cropdetect, freezedetect, signalstats (YAVG, YDIF, UAVG, VAVG), vidstabdetect transforms, ffprobe colour fields for HDR, GeoCalib on one frame (CPU). GPU-only camera path models (ViPE, MegaSaM, MonST3R) and COLMAP are named, not required. CameraBench taxonomy (NeurIPS 2025) used for the move names.
+- VFX vocabulary from standard breakdown usage (fxguide, befores & afters, Art of VFX): plate, clean plate, comp, key, roto, matte, set extension, CG, sim, DMP, 2.5D, screen replacement, matchmove, wire removal, beauty.
+- No legal rule: his own and a client's footage, logo, product and faces go in as given; an outside reference's subject comes in when he says so (his words, 17 Oct 2026).
+- Sheet: job `*_CLAUDE/2_Research/SHOTS_<name>.md`. Router row and hub table updated the same day; hub says nine medium skills.
+- 28 Oct 2026: shot finder upgrade. TransNetV2 1.0.5 (cpu) runs beside PySceneDetect adaptive; keep the union, eye-check cuts only one tool found. Test on WESTPOINT_MANIFESTO_V4 (87 s): 29 shared cuts to the frame, TransNetV2 alone lost 3 of 33 hard cuts, PySceneDetect alone lost 8 of 8 dissolves and added 7 false cuts.

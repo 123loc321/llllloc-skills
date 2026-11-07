@@ -1,0 +1,290 @@
+<!--
+  llloc-UI — TAB STRIP COMPONENT REFERENCE
+  ==========================================================================
+  This is NOT a second design system. FIND V1.20 (assets/reference-panel.html)
+  is still the reference for everything. This file holds ONE component that
+  FIND does not carry, built out of FIND's own parts, so you can clone it
+  without re-deriving it.
+
+  Cloned from FIND: the 24px .tb button and its hover, the .tbd divider, the
+  1.5px radius, the --edge / --edge-2 theme tokens, the 9px scrollbar.
+
+  WHEN TO USE IT
+  A deck, panel or page that holds MANY sibling items of the same kind — one
+  prompt per tab, one shot per tab, one preset per tab — where the reader
+  works on one at a time. Not for steps in a sequence. Not for a hierarchy.
+
+  WHEN NOT TO USE IT
+  Under two items. The engine hides itself in that case, and so should you.
+
+  EVERY NUMBER HERE IS MEASURED
+  • 30px tab height. 30 x 0.83 (the S step of the scaler) = 24.9 CSS px, so
+    the target still clears WCAG 2.2 SC 2.5.8 (24 x 24) at the SMALLEST UI
+    size. The size ladder lets a content target pass 24px if the reason is in
+    a comment. This is the reason.
+  • An unselected tab label is --ink, never --ink-soft. A tab is a CONTROL, so
+    its text needs 4.5:1. Light --ink-soft measured 3.46:1 on white: it fails.
+    NN/g: an unselected tab drawn in grey reads as disabled and is not clicked.
+  • The selected tab carries THREE marks — weight 700, the accent underline,
+    the --card fill. NN/g measured that one mark alone (bold) gets missed.
+  • The underline sits on the edge that TOUCHES the panel, so the eye joins
+    the tab to its content.
+  • The rail scrolls and never wraps. NN/g: a second row makes tabs jump and
+    destroys the reader's spatial memory.
+  • A WHEEL MOUSE MUST REACH IT. A trackpad sends deltaX and works by itself. A
+    wheel sends only deltaY, which a horizontal scroller ignores - so a wheel
+    user could not reach an off-screen tab at all. Turn the wheel sideways, and
+    let a middle-mouse drag pan it.
+  • A fade at a rail end is the only signal that tabs sit off screen. A hidden
+    scrollbar with no fade hides them. That is the bug in the screenshot the studio
+    sent on 29 August 2026, and it has been open in code editors for years.
+  • NO ARROW BUTTONS. They shipped first and came out the same day, once the
+    wheel and the middle-drag were added: a button that repeats what the wheel
+    already does is a button too many. The fade stays - it is the signal, not
+    the control.
+  • The strip sits OUTSIDE the scroll region. A sticky strip inside it would
+    cover a card holding keyboard focus, which is the W3C's named failure
+    F110 for SC 2.4.11.
+
+  THE THREE TRAPS TABS CARRY, AND THE ANSWER TO EACH
+  1. Browser find cannot see a hidden panel.  -> the ALL tab, plus a deck
+     SEARCH that jumps to ALL the moment a term is typed.
+  2. Print drops a hidden panel.              -> the print stylesheet shows
+     every panel and hides the strip.
+  3. Readers do not notice what is behind a
+     tab they never click.                    -> the ALL tab is pinned to the
+     left and never scrolls away.
+  Ship a tab strip without all three and you have hidden the content.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>llloc-UI — tab strip</title>
+<style>
+:root{
+  /* TIER 1 - the five primitives from the ARRIVAL FLEET sheet */
+  --c-canvas:#FFFFFF; --c-surface:#F2F2F2; --c-ink:#171717;
+  --c-live:#F44E16;   --c-tertiary:#909090;
+  --c-tertiary-txt:#6B6B6B;   /* TERTIARY is 3.19:1 - a mark, never text */
+  --c-live-txt:#C93C0E;       /* LIVE is 3.53:1 - a mark, never text */
+  /* TIER 2 - roles. A role never contains a hex. */
+  --paper:var(--c-canvas); --card:var(--c-surface); --field:var(--c-canvas);
+  --ink:var(--c-ink); --ink-soft:var(--c-tertiary-txt); --line:#E2E2E2;
+  --btn:#EAEAEA; --btn-line:#D6D6D6;
+  --tab-on:#E2E2E2;
+  --accent:var(--c-live); --accent-dk:var(--c-live-txt);
+  --accent-txt:var(--c-live-txt);       /* the accent step that is legal as TEXT */
+  --radius:1.5px; --radius-sm:1.5px;
+  --t:0s;   /* one speed token. Measured, not guessed - see design-system.md */
+  --edge:transparent; --edge-2:transparent;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+html.dark{
+  /* dark reuses the same five, inverted. The muted-text step is #CCCCCC, not
+     TERTIARY: TERTIARY passes WCAG here at 5.62:1 and scores only Lc42 on APCA,
+     under the Lc75 floor for small text. */
+  --paper:var(--c-ink); --card:#212121; --field:#1C1C1C;
+  --ink:var(--c-surface); --ink-soft:#CCCCCC; --line:#2E2E2E;
+  --btn:#2A2A2A; --btn-line:#3A3A3A;
+  --tab-on:#3A3A3A;
+  --accent:var(--c-live); --accent-dk:var(--c-live); --accent-txt:var(--c-live);
+  --edge:var(--line); --edge-2:var(--btn-line);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+/* reduced motion cuts what TRAVELS, not what fades */
+@media (prefers-reduced-motion: reduce){ html,.trail{scroll-behavior:auto !important} }
+html,body{height:100%;overflow:hidden;background:var(--paper);color:var(--ink);
+          font-family:var(--font-mono);-webkit-font-smoothing:antialiased}
+#zoomRoot{display:flex;flex-direction:column;zoom:var(--uis,1);height:100%}
+.app{width:100%;max-width:1040px;margin:0 auto;padding:14px;display:flex;
+     flex-direction:column;flex:1;min-height:0}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--btn-line);border:2px solid var(--paper)}
+
+/* ======================= THE COMPONENT — clone from here ======================= */
+.tabs{display:flex;align-items:flex-end;flex-shrink:0;gap:6px;
+      margin:11px 0 0;border-bottom:1px solid var(--edge)}
+.trail{flex:1 1 auto;min-width:0;display:flex;align-items:flex-end;gap:2px;
+       overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
+       scrollbar-width:none;-ms-overflow-style:none;scroll-padding-inline:40px}
+.trail::-webkit-scrollbar{display:none}
+.trail.fadeR{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent);
+                     mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent)}
+.trail.fadeL{-webkit-mask-image:linear-gradient(90deg,transparent,#000 30px);
+                     mask-image:linear-gradient(90deg,transparent,#000 30px)}
+.trail.fadeL.fadeR{-webkit-mask-image:linear-gradient(90deg,transparent,#000 30px,#000 calc(100% - 30px),transparent);
+                           mask-image:linear-gradient(90deg,transparent,#000 30px,#000 calc(100% - 30px),transparent)}
+.tbn{flex:none;height:30px;padding:0 11px;display:inline-flex;align-items:center;gap:7px;
+     border:none;border-bottom:2px solid transparent;border-radius:0;background:transparent;
+     color:var(--ink);cursor:pointer;white-space:nowrap;transition:background var(--t),color var(--t)}
+.tbn .tn{font:700 9px var(--font-mono);letter-spacing:.12em;color:var(--ink-soft)}
+.tbn .tl{font:500 9.5px var(--font-mono);letter-spacing:.06em;color:var(--ink);
+         max-width:16ch;overflow:hidden;text-overflow:ellipsis}
+.tbn:hover{background:var(--btn)}
+.tbn:hover .tn{color:var(--ink)}
+.tbn .tl{color:var(--ink-soft)}
+.tbn[aria-selected="true"]{background:var(--tab-on);border-bottom-color:var(--accent)}
+.tbn[aria-selected="true"] .tl{font-weight:700;color:var(--ink)}
+.tbn[aria-selected="true"] .tn{color:var(--accent-txt)}
+.tbn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tabs .allb{flex:none}
+.tabs .allb .tl{letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+/* ============================ end of the component ============================ */
+
+.grow{flex:1;min-height:0;overflow:auto;margin-top:13px;padding-right:6px}
+.panel{background:var(--card);border:1px solid var(--edge);border-radius:var(--radius);
+       padding:12px;margin:0 0 10px}
+.panel h2{font:700 10.5px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;margin:0 0 7px}
+.panel p{font:400 11px/1.7 var(--font-mono);color:var(--ink);max-width:78ch}
+.foot{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-top:11px;padding:9px 0 0;
+      border-top:1px solid var(--line);font:700 8.5px var(--font-mono);color:var(--ink-soft)}
+.foot b{color:var(--ink)}
+.foot .fbtns{margin-left:auto;display:flex;gap:11px}
+.hbtn{width:14px;height:14px;padding:0;border:none;background:none;color:var(--ink);
+      cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative}
+.hbtn::after{content:"";position:absolute;left:50%;top:50%;width:24px;height:24px;
+             transform:translate(-50%,-50%)}
+@media print{.tabs,.foot{display:none !important}.panel{display:block !important}}
+</style>
+</head>
+<body>
+<div id="zoomRoot"><div class="app">
+
+  <div class="tabs" id="tabs" role="tablist" aria-label="Items">
+    <div class="trail" id="trail"></div>
+  </div>
+
+  <div class="grow" id="scroller">
+    <div class="panel" data-tab="01" data-tname="The litany"><h2>01 The litany</h2><p>One panel for each tab. The engine reads data-tab and data-tname. Never write a tab by hand.</p></div>
+    <div class="panel" data-tab="02" data-tname="Zero zero"><h2>02 Zero zero</h2><p>Arrow keys move and activate. Home goes to ALL. End goes to the last item.</p></div>
+    <div class="panel" data-tab="03" data-tname="Position three"><h2>03 Position three</h2><p>The selected tab carries three marks: weight, the accent underline and the fill.</p></div>
+    <div class="panel" data-tab="04" data-tname="The patch"><h2>04 The patch</h2><p>Narrow the window until the rail overflows. The fade and the arrows appear together.</p></div>
+    <div class="panel" data-tab="05" data-tname="His father's seat"><h2>05 His father&#8217;s seat</h2><p>ALL is pinned left and never scrolls away.</p></div>
+    <div class="panel" data-tab="06" data-tname="No carrier"><h2>06 No carrier</h2><p>Print shows every panel and hides the strip.</p></div>
+  </div>
+
+  <div class="foot">
+    <span>TAB STRIP.</span><span>made by <b>llllllloc</b></span>
+    <span class="fbtns"><button class="hbtn" id="themeBtn" aria-label="Theme">&#9679;</button></span>
+  </div>
+
+</div></div>
+
+<script>
+"use strict";
+var $ = function (id) { return document.getElementById(id); };
+$("themeBtn").addEventListener("click", function () {
+  document.documentElement.classList.toggle("dark");
+});
+
+/* ---------------- the tab engine — clone this whole block ----------------
+   Panels are already in the DOM, so a tab activates the moment it takes
+   focus. That is the APG rule: automatic activation when the panel shows
+   with no wait. Manual activation is for panels that must be fetched. */
+(function () {
+  var strip = $("tabs"), rail = $("trail"), host = $("scroller");
+  var UNITS = [].slice.call(host.children);
+  var TABS = [], TAB = 0;
+  if (UNITS.length < 2) { strip.style.display = "none"; return; }
+
+  function mk(num, name, ix, isAll) {
+    var b = document.createElement("button");
+    b.className = "tbn" + (isAll ? " allb" : "");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", ix === 0 ? "true" : "false");
+    b.tabIndex = ix === 0 ? 0 : -1;
+    b.innerHTML = (num ? '<span class="tn"></span>' : "") + '<span class="tl"></span>';
+    if (num) b.querySelector(".tn").textContent = num;
+    b.querySelector(".tl").textContent = name;
+    b.addEventListener("click", function () { select(ix, true); });
+    TABS.push(b);
+    return b;
+  }
+  strip.insertBefore(mk("", "All", 0, true), rail);
+  UNITS.forEach(function (u, i) {
+    rail.appendChild(mk(u.getAttribute("data-tab") || String(i + 1),
+                        u.getAttribute("data-tname") || ("Item " + (i + 1)), i + 1, false));
+  });
+
+  function render() {
+    UNITS.forEach(function (u, i) {
+      u.style.display = (TAB === 0 || i === TAB - 1) ? "" : "none";
+    });
+  }
+  function select(ix, focus) {
+    TAB = ix;
+    TABS.forEach(function (t, i) {
+      t.setAttribute("aria-selected", i === ix ? "true" : "false");
+      t.tabIndex = i === ix ? 0 : -1;
+    });
+    if (focus) {
+      TABS[ix].focus();
+      if (ix > 0) TABS[ix].scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+    host.scrollTop = 0;
+    render(); fades();
+  }
+  /* ONE listener, on the strip. The rail is inside it, so a key on a rail tab
+     already bubbles here. Two listeners run this twice and the selection
+     jumps two tabs on one press. That bug shipped once. */
+  strip.addEventListener("keydown", function (e) {
+    var ix = TAB;
+    if (e.key === "ArrowRight") ix = (TAB + 1) % TABS.length;
+    else if (e.key === "ArrowLeft") ix = (TAB - 1 + TABS.length) % TABS.length;
+    else if (e.key === "Home") ix = 0;
+    else if (e.key === "End") ix = TABS.length - 1;
+    else return;
+    e.preventDefault();
+    select(ix, true);
+  });
+  function fades() {
+    var over = rail.scrollWidth - rail.clientWidth;
+    var l = rail.scrollLeft > 2, r = rail.scrollLeft < over - 2;
+    rail.className = "trail" + (l ? " fadeL" : "") + (r ? " fadeR" : "");
+  }
+  rail.addEventListener("scroll", fades);
+  window.addEventListener("resize", fades);
+  /* A WHEEL OVER THE STRIP SWITCHES ITEMS. Panning does nothing visible when
+     the items already fit, which is the common case. Throttled to one per
+     notch, and it stops at the ends rather than wrapping. */
+  /* A WHEEL OVER THE STRIP PANS IT, 1:1 and painted this frame.
+     Selecting on a wheel was tried and reversed: the smallest step it can take
+     is a whole item, so every notch is a leap and the strip stutters. Panning
+     maps input to output one-to-one, which is what smooth means here.
+     preventDefault ONLY when the rail moved - with nothing to pan, the event
+     has to fall through to the page. */
+  strip.addEventListener("wheel", function (e) {
+    var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (!d) return;
+    var before = rail.scrollLeft;
+    rail.scrollLeft = before + d;
+    if (rail.scrollLeft !== before) e.preventDefault();
+  }, { passive: false });
+
+  /* MIDDLE-MOUSE DRAG PANS IT. preventDefault stops the OS autoscroll cursor
+     and stops a middle click pasting on Linux. */
+  var pan = null;
+  strip.addEventListener("mousedown", function (e) {
+    if (e.button !== 1) return;
+    e.preventDefault();
+    pan = { x: e.clientX, left: rail.scrollLeft };
+    strip.style.cursor = "grabbing";
+  });
+  window.addEventListener("mousemove", function (e) {
+    if (pan) rail.scrollLeft = pan.left - (e.clientX - pan.x);
+  });
+  window.addEventListener("mouseup", function () {
+    if (pan) { pan = null; strip.style.cursor = ""; }
+  });
+  strip.addEventListener("auxclick", function (e) { if (e.button === 1) e.preventDefault(); });
+  /* the rail is wider once the real font lands, so measure again then */
+  try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(fades); } catch (e) {}
+  render(); fades();
+})();
+</script>
+</body>
+</html>

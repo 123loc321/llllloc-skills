@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PLUGIN-NAME</title>
+<!-- STARTER PANEL. UI follows the llloc-UI design system (load that skill and clone its
+     reference deck for the full shell: theme toggle, L/M/S size scaler, tooltip engine,
+     collapsible cards). This file keeps only the essentials so the bridge pattern is clear.
+     Rename PLUGIN-NAME and the localStorage prefix, then build your content cards. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF; --card:#F1F0ED; --ink:#161513; --ink-soft:#8B8A85; --line:#E5E4E0;
+  --field:#FFFFFF; --btn:#ECEBE8; --btn-line:#D9D8D4;
+  --accent:#F0481E; --accent-dk:#D33E16;
+  --radius:1.75px; --radius-sm:1.25px;
+  --font-mono:"Space Mono","IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+html.dark{
+  --paper:#171613; --card:#201F1B; --ink:#EDEBE4; --ink-soft:#8F8E86; --line:#33322D;
+  --field:#191814; --btn:#2B2A25; --btn-line:#3C3B35; --accent:#F0481E; --accent-dk:#F5602F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font-mono);-webkit-font-smoothing:antialiased}
+.app{max-width:520px;margin:0 auto;padding:16px 14px 24px}
+.hd{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.hd h1{font:700 22px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+.logo{font:700 10px var(--font-mono);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--btn-line);border-radius:var(--radius-sm);padding:0 10px;background:var(--btn);height:30px;line-height:30px}
+.logo b{color:var(--ink)}
+.chip{display:inline-flex;align-items:center;font:700 10px var(--font-mono);letter-spacing:.08em;border:1px solid var(--btn-line);border-radius:var(--radius-sm);padding:0 10px;background:var(--btn);color:var(--ink);height:30px}
+.hbtn{width:30px;height:30px;border:1px solid var(--btn-line);border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.15s}
+.hbtn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+#themeBtn{margin-left:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.chd{display:flex;align-items:center;gap:9px;padding:12px 15px;border-bottom:1px solid var(--line)}
+.chd .dot{width:9px;height:9px;border-radius:2px;background:var(--accent)}
+.chd h3{font:700 11px var(--font-mono);letter-spacing:.16em;text-transform:uppercase}
+.chd .cst{margin-left:auto;font:700 9px var(--font-mono);letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase}
+.cbd{padding:15px}
+.pill{border:1px solid var(--btn-line);border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);font:700 11px var(--font-mono);letter-spacing:.07em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.15s}
+.pill:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pill.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill.acc:hover{background:var(--accent-dk);border-color:var(--accent-dk)}
+.note{font:400 9.5px/1.55 var(--font-mono);color:var(--ink-soft);padding:10px 0 0;letter-spacing:.03em}
+.note.err{color:var(--accent)} .note.okk{color:var(--ink)}
+#tip{position:fixed;z-index:99;max-width:200px;background:var(--ink);color:var(--paper);font:700 8.5px/1.55 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:var(--radius-sm);pointer-events:none;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hd">
+    <h1>PLUGIN.</h1>
+    <span class="logo">made by <b>llllllloc</b></span>
+    <span class="chip">V1</span>
+    <button class="hbtn" id="themeBtn" data-tip="Dark / light theme" aria-label="Theme"></button>
+  </div>
+  <div class="card">
+    <div class="chd"><span class="dot"></span><h3>PANEL</h3><span class="cst" id="hostSt">NOT CONNECTED</span></div>
+    <div class="cbd">
+      <button class="pill acc" id="goBtn" data-tip="Run the example host action">RUN EXAMPLE</button>
+      <div class="note" id="status">STARTER PANEL — WIRE YOUR CONTENT CARDS HERE, THEN CALL THE HOST BRIDGE.</div>
+    </div>
+  </div>
+</div>
+<div id="tip"></div>
+
+<script src="js/CSInterface.js"></script>
+<script>
+"use strict";
+var $ = function (id) { return document.getElementById(id); };
+var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+
+/* theme */
+var DARK = true;
+try { var t = localStorage.getItem("plugin.theme"); if (t) DARK = (t === "dark"); } catch (e) {}
+var SUN = '<svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><g stroke="currentColor" stroke-width="1.4"><path d="M7 0v2M7 12v2M0 7h2M12 7h2M2 2l1.4 1.4M10.6 10.6L12 12M12 2l-1.4 1.4M3.4 10.6L2 12"/></g></svg>';
+var MOON = '<svg width="14" height="14" viewBox="0 0 14 14"><path d="M11.5 8.6A5.4 5.4 0 0 1 5.4 2.5 5.4 5.4 0 1 0 11.5 8.6Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+function applyTheme() {
+  document.documentElement.classList.toggle("dark", DARK);
+  $("themeBtn").innerHTML = DARK ? SUN : MOON;
+}
+$("themeBtn").addEventListener("click", function () {
+  DARK = !DARK;
+  try { localStorage.setItem("plugin.theme", DARK ? "dark" : "light"); } catch (e) {}
+  applyTheme();
+});
+
+/* hover tips (delegated) */
+var tipEl = $("tip");
+function findTip(el) {
+  while (el && el !== document.body && el.getAttribute) {
+    if (el.getAttribute("data-tip")) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+document.addEventListener("mouseover", function (e) {
+  var el = findTip(e.target);
+  if (!el) { tipEl.style.display = "none"; return; }
+  tipEl.textContent = el.getAttribute("data-tip");
+  tipEl.style.display = "block";
+  var r = el.getBoundingClientRect(), tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  var x = clamp(r.left + r.width / 2 - tw / 2, 6, window.innerWidth - tw - 6);
+  var y = r.bottom + 7; if (y + th > window.innerHeight - 6) y = r.top - th - 7;
+  tipEl.style.left = x + "px"; tipEl.style.top = y + "px";
+});
+document.addEventListener("mousedown", function () { tipEl.style.display = "none"; });
+
+/* host bridge */
+var cs = null;
+try { cs = new CSInterface(); } catch (e) { cs = null; }
+function hostOK() { return !!(cs && window.__adobe_cep__); }
+function status(msg, isErr, isOk) {
+  var s = $("status"); s.textContent = msg;
+  s.className = "note" + (isErr ? " err" : (isOk ? " okk" : ""));
+}
+function callHost(fn, cb) {
+  if (!hostOK()) { status("OPEN THIS PANEL INSIDE THE HOST APP (WINDOW > EXTENSIONS > PLUGIN).", true); return; }
+  cs.evalScript(fn, function (r) {
+    var data = null; try { data = JSON.parse(r); } catch (e) {}
+    if (!data) { status("COULD NOT TALK TO THE HOST APP.", true); return; }
+    cb(data);
+  });
+}
+$("goBtn").addEventListener("click", function () {
+  callHost("PLUGIN.doThing('hello')", function (d) {
+    if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+    status("HOST REPLIED: " + String(d.echo).toUpperCase() + ".", false, true);
+  });
+});
+
+/* boot */
+applyTheme();
+if (hostOK()) {
+  callHost("PLUGIN.ping()", function (d) {
+    if (d.ok) { $("hostSt").textContent = "CONNECTED"; status("CONNECTED TO HOST " + String(d.host).toUpperCase() + ".", false, true); }
+  });
+}
+</script>
+</body>
+</html>

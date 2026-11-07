@@ -1,0 +1,4 @@
+# impeccable hook, Mac version (29 Oct 2026). Set up in ~/.claude/settings.json, hooks > PostToolUse:
+# matcher "Write|Edit|MultiEdit|mcp__.*", command:
+# python3 -I -B "$HOME/Desktop/Claude/llllloc/1_Core rule/hooks/impeccable/impeccable_hook.py", timeout 90.
+# The old cloud Setup script lines are in Old/261029_before_mac/.

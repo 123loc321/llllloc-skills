@@ -1,0 +1,4 @@
+- 16 Oct 2026, his pick "Words and lead-ins": 0 capital lead-ins and 4 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- 2026-10-16 round 5: HARD STOPS moved to the top (fix 3)
+- 261019: first HARD STOP: every code job loads ponytail + using-agent-skills, check before each reply. Before: Old/261019_before_code_ponytail_rule.
+- 29 Oct 2026: Mac-first for the Code tab (round 76). Cloud paths, device tools, the To Mac pipeline and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.

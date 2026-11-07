@@ -1,0 +1,2 @@
+- 3 Nov 2026 round 100: new skill, built from the c1 install and scratch test on Capture One 16.9.0.10. 7645 chars.
+- 3 Nov 2026 round 101: catalog and album scripting, style removal, Silver+ trap, from the TAL catalog job. 7645 to 8954 chars. Old copy: Old/261103_before_round101/.

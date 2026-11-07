@@ -1,0 +1,289 @@
+## Contents
+
+## Contents
+
+<!--
+  LORD OF THE PROMPT — DECK BODY PATTERNS  ·  llloc-UI (FIND V1.20)  ·  DECK V3
+  ============================================================================
+  DO NOT BUILD A BODY FROM THESE PATTERNS BY HAND. Copy the starter instead:
+
+      python3 "$SKILL_DIR/scripts/build-deck.py" --starter "$SCRATCH/_body.html"
+  ($SCRATCH and $PROMPTS: deck.md PATHS)
+
+  It writes a WORKING body - masthead, SPEC sheet, a plain prompt, a version
+  group - and that is what every deck begins as. THIS file is the reference
+  behind it: the patterns the starter does not carry, and the reasoning for the
+  ones it does.
+
+  READ THIS FILE. It is small on purpose. It holds every card pattern you need.
+
+  DO NOT OPEN assets/deck-shell.html. It carries about 120 KB of embedded font
+  data. Reading it burns the context this whole design is meant to save.
+
+  ---------------------------------------------------------------------------
+  WHAT IS NEW IN V3 — 29 August 2026
+  ---------------------------------------------------------------------------
+  1. TABS. Every prompt gets its own tab, like tabs in a browser. Put
+     data-tab and data-tname on each top-level .card or .group and the engine
+     builds the strip. NEVER write a tab by hand. An ALL tab is added for you.
+  2. THE CARD BODY SPLITS. The prompt sits in a column capped at 78
+     characters. The facts move into a rail beside it. WCAG 1.4.8 caps a block
+     of text at 80 characters; the old deck ran the prompt the full width and
+     reached about 150.
+  3. A WATCH OUT note, in the rail, smaller than the prompt it warns about.
+  4. THE FILE NAME IS A CHIP THAT COPIES ITSELF.
+  5. Contrast is fixed in the shell. You do not have to do anything about it.
+  6. A CARD IS A HEAD ROW AND A PROMPT. Nothing else. the studio cut the rail on
+     29 August: SIZE, LENS, LIGHT, the WATCH OUT note, the file-name chip and
+     the repeated title all came out. The tab already says which prompt this
+     is, the prompt's first line says its name and version, and the deck-level
+     SPEC sheet carries the facts that hold across the deck. Anything that
+     repeats one of those three is clutter.
+  6a. data-new="1" ON A CHANGED UNIT puts the JUST UPDATED badge on its head, a dot on
+     its tab, and it into the star filter. Only the prompts changed THIS turn wear it.
+  7. THE CHARACTER COUNT IS WRITTEN BY THE ENGINE. Put an empty
+     <span class="chars"></span> in the head row and leave it empty. The shell
+     fills it from the text COPY puts on the clipboard, so the number on screen
+     and the number the model receives can never disagree. Never type it.
+  8. THE COLUMN FILLS THE PANEL AND THE TYPE HOLDS THE MEASURE. NEVER give an
+     element its own width cap. The deck fills the panel with a margin, and the
+     prompt's font size is tied to its container so a line always holds about 76
+     characters. Both of the studio's 29 August notes are in that one sentence: "never
+     leave a gap like this, it must adapt to the width", then "make it always
+     adapt to panel width as well, but of course have some margin".
+  9. NO BOX INSIDE A BOX. The card is FLAT — transparent, no border. The prompt
+     block is the only surface on the card, and the head row sits bare on the
+     page above it, sharing its left and right edge. Never give a card a fill,
+     never put a panel inside a panel, and never set a background in a deck
+     body. The gate fails a build that does.
+
+  ---------------------------------------------------------------------------
+  HOW A DECK IS BUILT — three steps, every time
+  ---------------------------------------------------------------------------
+  You write ONLY the deck body: the masthead, the SPEC block, the cards. A
+  script wraps it in the locked shell.
+
+    1. Write the body to a file, using the patterns below.
+
+         Write  "$SCRATCH/_body.html"
+
+    2. Build it.
+
+         python3 "$SKILL_DIR/scripts/build-deck.py" \
+           --body "$SCRATCH/_body.html" \
+           --out  "$PROMPTS/<PromptName>_V<N>_Deck.html"
+
+    3. Check it, then send it as a file card. _body.html stays.
+
+         python3 "$SKILL_DIR/scripts/test-deck.py" "$PROMPTS/<file>.html"
+
+       The gate runs 30 checks: tabs, keyboard, contrast in both themes, line
+       length, hit sizes, overflow, print. It needs playwright. If playwright
+       is missing it says so and exits 0 — build and ship anyway.
+
+  The shell gives you, working and checked: IBM Plex Mono embedded, the token
+  set, light and dark mode, the L / M / S scaler, hover tips, the SEARCH
+  filter, COLLAPSE ALL / OPEN ALL, the tab strip and its engine, the bottom
+  bar, one COPY button per card. Do not restyle any of it. Do not add a second
+  accent. If the deck needs a look the shell does not have, say so in chat.
+
+  ---------------------------------------------------------------------------
+  THE TAB RULE — read this before you write a card
+  ---------------------------------------------------------------------------
+  * Put data-tab and data-tname on each TOP-LEVEL unit: a lone .card, or the
+    .group that wraps a card and its history. Never on a card inside a history
+    box — an old version is not a tab.
+  * data-tab   is the short number on the tab:  "07", "SC 04", "V2".
+  * data-tname is the human name beside it:     "The litany". Keep it under
+    about 16 characters or it gets an ellipsis. Sentence case, not caps.
+  * Under two units the strip hides itself. Do not fight it. One prompt does
+    not need a tab.
+  * ALL is added by the engine, pinned left, and never scrolls away. It is not
+    decoration: browser find cannot see a hidden panel and print drops one, so
+    ALL is how a reader searches, prints and reads the set straight through.
+  * THE SEARCH BOX STEERS THE STRIP. One match jumps to that prompt's tab.
+    Several or none falls back to ALL. Clearing it returns to ALL. data-tab and
+    data-tname are searchable, so write a real name in data-tname - it is now
+    the only human label a prompt carries.
+
+  ---------------------------------------------------------------------------
+  THE RULES THE PATTERNS ENFORCE
+  ---------------------------------------------------------------------------
+  * ONE history box per prompt, inside that prompt's own .group, directly under
+    its current card, holding ONLY that prompt's older versions. NEVER merge
+    two prompts' versions into one box.
+  * Editing one prompt in a set means re-emitting the WHOLE deck: every prompt
+    that was in it, same order, all present. Mark only the prompt(s) you
+    changed THIS turn as just-updated. Clear that mark from the previous one.
+  * Remove a prompt only when the user explicitly asked to remove it.
+  * The prompt's name line is the FIRST line inside <pre class="prompt-text">.
+  * NEVER INDENT THE PROMPT TEXT. A <pre> keeps every space you type. The name
+    line sits hard against the opening tag so it has no indent, and every line
+    after it picks up the indentation of the markup around it. On screen that
+    is a gap before the first word. On the CLIPBOARD it is whitespace the model
+    receives, and you cannot see it. Write the prompt flush at column 0, even
+    when the <pre> is nested four levels deep in the markup. build-deck.py
+    cleans it anyway and says how many it fixed, the shell repeats the clean at
+    load, and the gate fails a deck that still has it - but write it flush.
+  * HTML-escape & < > as &amp; &lt; &gt; inside prompt text.
+  * Never cross-reference another card. Each prompt is complete on its own.
+  * Every prompt has its own COPY button. There is no COPY ALL.
+  * Ship every card open. The user has COLLAPSE ALL if the deck is long.
+  * Give every control a data-tip. Never the native title attribute.
+  * American spelling in the chrome: color, organize, center.
+
+  ===========================================================================
+  PATTERN 0 — MASTHEAD + SPEC. Always first. One .spec row per fact.
+
+  NO EYEBROW AND NO DESCRIPTION LINE. Both came out on 29 August 2026 and their
+  classes were deleted with them, so a body that still carries one renders
+  unstyled and the gate fails it. The title is the masthead. Everything the
+  description used to say belongs in a SPEC row, where it is a fact with a label.
+
+  SPEC IS A TABLE: label hard left, value hard right, a hairline between rows.
+  ===========================================================================
+
+    <h1>Deck Title</h1>
+
+    <details class="meta" open>
+      <summary><svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>SPEC</summary>
+      <div class="spec"><span class="k">MODE</span><span class="v">VIDEO &#183; SINGLE CLIP</span></div>
+      <div class="spec"><span class="k">MODEL</span><span class="v">SEEDANCE 2.5</span></div>
+      <div class="spec"><span class="k">OUTPUT LANGUAGE</span><span class="v">ENGLISH ONLY &#183; MODE 2</span></div>
+      <div class="spec"><span class="k">REFERENCE TAGS</span><span class="v">TYPE 2 &#183; @IMAGE N</span></div>
+      <div class="spec"><span class="k">RESEARCH RUN</span><span class="v">29 AUG 2026</span></div>
+      <div class="spec"><span class="k">PROMPTS</span><span class="v">3 &#183; 1 UPDATED</span></div>
+    </details>
+
+  ===========================================================================
+  PATTERN A — SIMPLE CARD. A V1 prompt, or a distinct scene with no history.
+  data-tab and data-tname sit on the .card itself, because it is top level.
+  The .tab chip is a short tag: a version "V1" or a scene "SC 04".
+  The .rail is optional. Drop it and the prompt takes the full column.
+  ===========================================================================
+
+    <details class="card" open data-tab="SC 01" data-tname="Night market">
+      <summary class="card-head">
+        <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+        <span class="dot"></span>
+        <span class="tab">SC 01</span>
+        <span class="chars"></span>
+        <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+      </summary>
+      <div class="cbody">
+        <pre class="prompt-text">PromptName_Model_V1
+
+The full prompt text, name line first, escaped, self-contained.</pre>
+      </div>
+    </details>
+
+  ===========================================================================
+  PATTERN B — VERSION GROUP, unchanged this turn. NO pill and no badge: a prompt
+  sitting directly above its own version history is obviously the current one,
+  and the `CURRENT` pill was retired on 29 August 2026 for labelling a fact the
+  layout already states.
+  data-tab and data-tname go on the .group, NOT on the cards inside it.
+  ===========================================================================
+
+    <div class="group" data-tab="02" data-tname="Rooftop chase">
+      <details class="card current" open>
+        <summary class="card-head">
+          <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+          <span class="dot"></span>
+          <span class="tab">V2</span>
+          <span class="chars"></span>
+          <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+        </summary>
+        <div class="cbody">
+          <pre class="prompt-text">PromptName_Model_V2
+
+Full current text.</pre>
+        </div>
+      </details>
+
+      <details class="archive">
+        <summary><svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>VERSION HISTORY (1)</summary>
+
+        <details class="card" open>
+          <summary class="card-head">
+            <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+            <span class="dot"></span>
+            <span class="tab">V1</span>
+            <span class="dim">OLDER</span>
+            <span class="chars"></span>
+            <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this older version">COPY</button>
+          </summary>
+          <div class="cbody">
+            <pre class="prompt-text">PromptName_Model_V1
+
+Full older text, written out in full. Never "same as V2".</pre>
+          </div>
+        </details>
+
+      </details>
+    </div>
+
+  ===========================================================================
+  PATTERN C — JUST UPDATED. Pattern B plus class "updated", the badge, and
+  data-new="1" on the .group so the toolbar's star button can filter to it.
+  Only the prompt(s) you changed THIS turn wear this.
+  ===========================================================================
+
+    <div class="group" data-new="1" data-tab="03" data-tname="The patch">
+      <details class="card current updated" open>
+        <summary class="card-head">
+          <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+          <span class="dot"></span>
+          <span class="tab">V3</span>
+          <span class="badge-new"><span class="bdot"></span>JUST UPDATED</span>
+          <span class="chars"></span>
+          <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+        </summary>
+        <div class="cbody">
+          <pre class="prompt-text">PromptName_Model_V3
+
+Full new text.</pre>
+        </div>
+      </details>
+
+      ... this prompt's own <details class="archive"> here, exactly as in
+      PATTERN B, newest-older first (V2 above V1) ...
+    </div>
+
+  ===========================================================================
+  PATTERN D — SHOTLIST CARD. Only in SHOTLIST mode. Swap the .dot for a .ck
+  checkbox. The shell then shows a "n/m DONE" count in the bottom bar, greys
+  the card AND its tab, and remembers the ticks.
+  ===========================================================================
+
+    <details class="card" open data-tab="SC 01" data-tname="Arrival">
+      <summary class="card-head">
+        <svg class="cv" width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 1.2 5.4 4 2.6 6.8"/></svg>
+        <button class="ck" aria-label="Mark done"></button>
+        <span class="tab">SC 01</span>
+        <span class="chars"></span>
+        <button class="copy-btn" onclick="copyOne(this,event)" data-tip="Copy this prompt">COPY</button>
+      </summary>
+      <div class="cbody">
+        <pre class="prompt-text">Project_SC01_Model_V1
+
+Full prompt for this shot.</pre>
+      </div>
+    </details>
+
+  ===========================================================================
+  CASE — one system, no exceptions
+  ===========================================================================
+  UPPERCASE for labels, tags, states, buttons and key hints.
+  Sentence case for values, notes, tab names and prompt text.
+  File names, @Image tags, hex and model syntax stay literal.
+
+  ===========================================================================
+  FILE NAMING — the deck is a search anchor, so name it properly
+  ===========================================================================
+  Lead the filename with the prompt name and its version:
+    CyberRonin_Seedance_V3_Deck.html          one lineage
+    Gruesome_MovingGym_Seedance_Prompts.html  many prompts, one project
+  Then list every prompt name in the chat body as plain text, so a pasted name
+  is findable later. The names inside the HTML are not searchable.
+-->

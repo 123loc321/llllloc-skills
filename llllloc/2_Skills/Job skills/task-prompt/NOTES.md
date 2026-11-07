@@ -1,0 +1,9 @@
+14 Oct 2026 review: references/deck.md Deliver line now uses project RULE 5 delivery instead of SendUserFile. SKILL.md unchanged. Install the zip by hand (Customize, Skills).
+- 16 Oct 2026, his pick "Words and lead-ins": 8 capital lead-ins and 11 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- 2026-10-17 07:22 UTC, his words "fix prompts": legal caps removed from references/audio-prompts.md (rights line), seedance-video.md (video references inspiration only, two lines) and video-craft.md (strict prohibition block). Client and own material carried as given; an outside video gives motion and mood by default. Zip rebuilt from the installed .skill (19 files). Previous files in Old/261017_before_legal_removal. Shipped in Desktop round 18.
+- 2026-10-19: ONE MODEL, ONE PROMPT rule in section 3; lessons and cache read per model; section 9 node line and second pass check it (his words: each model should have its own prompt). Old copy: Old/261019_before_per_model_prompts/.
+- 20 Oct 2026: section 3 one-prompt-per-model only when he names several models; section 9 one GPT 2.5 node per frame, Low, 2K. Round 41 .skill.
+- 29 Oct 2026: Mac-first for the Code tab (round 76). Cloud paths, device tools, the To Mac pipeline and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.
+2026-10-31 | research check | New section 0 at the top: research first, revision names its question, file findings, Research line. Hook checks it.
+2026-11-04 | round 103 | Seedance shots with a person now build from 4_Lessons/Prompts/Seedance/natural-acting-video.md (his words: all Seedance video at this quality or better).
+2026-11-04 | round 103 REVERTED | his words: save it as a lesson file only, the formula may change. Lesson 4_Lessons/Prompts/Seedance/natural-acting-video.md stays; the skill is back to before.

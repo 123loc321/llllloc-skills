@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EASEUP</title>
+<style>
+/* Space Mono is bundled in ./fonts, never fetched. A remote <link> here is
+   render-blocking: when Premiere restarts with the network asleep the request
+   hangs and the panel paints NOTHING until it times out. Local files also mean
+   the panel works offline, which a sold plugin has to. */
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/IBMPlexMono-400-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/IBMPlexMono-400-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/IBMPlexMono-500-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/IBMPlexMono-500-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/IBMPlexMono-600-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/IBMPlexMono-600-latin1.woff2") format("woff2");unicode-range:U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/IBMPlexMono-600-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/IBMPlexMono-600-latin3.woff2") format("woff2");unicode-range:U+0102-0103,U+01CD-01DC,U+1E0C-1E0D,U+1E12-1E13,U+1E24-1E25,U+1E36-1E37,U+1E3C-1E3D,U+1E40-1E47,U+1E4A-1E4B,U+1E62-1E63,U+1E6C-1E6D,U+1E70-1E71,U+1E92-1E93,U+1EA0-1EF9,U+20AB}
+:root{--paper:#FFFFFF; --card:#F1F0ED; --ink:#161513; --ink-soft:#8B8A85; --line:#E5E4E0;
+  --field:#FFFFFF; --btn:#ECEBE8; --btn-line:#D9D8D4;
+  --accent:#F0481E; --accent-dk:#D33E16;
+  --radius:1.5px; --radius-sm:1.5px;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+/* DARK RAMP — widened 11 August 2026, option DEEP, chosen by the studio.
+   The old ramp put every surface inside one narrow band: a button against the page
+   measured 1.26:1, a button border against its button 1.28:1, a divider against the
+   page 1.41:1. At the dark end of a screen anything under about 1.4:1 reads as flat
+   page, so buttons and fields looked like nothing. Text was never the problem.
+   Now: btn/page 1.69:1, btn-line/btn 1.73:1, line/page 2.17:1, ink-soft/page 8.02:1.
+   The vermilion accent is untouched. Light mode is untouched.
+   The steps are spaced evenly in CIE L*, not evenly in hex, so they read even.
+   THIS BLOCK IS BYTE-IDENTICAL IN ALL ELEVEN PANELS. Change it in one, change it in
+   all, and update llloc-ui assets/reference-panel.html plus PLUGIN-LOG section 6, or
+   the next new panel is born with the old colours. */
+html.dark{--paper:#0C0C0A; --card:#24231E; --ink:#EFEEE7; --ink-soft:#A7A6A0; --line:#4A4944;
+  --field:#1B1B18; --btn:#3A3934; --btn-line:#5D5C57; --accent:#F0481E; --accent-dk:#F5602F;}
+*{box-sizing:border-box;margin:0;padding:0}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--btn-line);border:2px solid var(--paper);border-radius:0}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-soft)}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(--font-mono);-webkit-font-smoothing:antialiased}
+/* Text selection: tint the background with the accent and leave the text colour
+   alone, so contrast holds in both themes. Dark needs a stronger tint to read. */
+::selection{background:rgba(240,72,30,.26);color:var(--ink)}
+::-moz-selection{background:rgba(240,72,30,.26);color:var(--ink)}
+html.dark ::selection{background:rgba(240,72,30,.42);color:var(--ink)}
+html.dark .ibtn{border-color:var(--btn-line)}
+/* FIND SWEEP - light separates by TONE and carries no strokes. Dark puts
+   the edges back, because two dark surfaces under 1.45:1 read as one flat
+   page. Log section 6 holds the numbers. */
+html.dark .psname{border-color:var(--btn-line)}
+html.dark .psname{background:var(--field)}
+html.dark .mini{border-color:var(--btn-line)}
+html.dark .pstile .px{border-color:var(--btn-line)}
+html.dark ::-moz-selection{background:rgba(240,72,30,.42);color:var(--ink)}
+#zoomRoot{display:flex;flex-direction:column;zoom:var(--uis,1);height:100%}
+.app{width:100%;max-width:none;margin:0;padding:16px 14px 20px;display:flex;flex-direction:column;flex:1}
+/* header */
+.hd{display:none}
+.hd h1{font:700 22px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+.chip{display:inline-flex;align-items:center;gap:5px;font:700 8px var(--font-mono);letter-spacing:.07em;border:1px solid transparent;border-radius:var(--radius-sm);padding:0 6px;background:var(--btn);white-space:nowrap;color:var(--ink);height:19px}
+.hbtn{width:19px;height:19px;padding:0;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);font-size:10px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center}
+.hbtn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.hbtn.off{color:var(--ink-soft)}
+#sizeBtn{font:700 9px var(--font-mono);letter-spacing:.05em}
+/* cards */
+.rail{display:flex;flex-direction:column;gap:16px}
+.card{background:transparent;border:none;border-radius:0;overflow:visible;display:flex;flex-direction:column;flex:1}
+/* V10.27 - the studio: "delete this big gap when CLIP section is being closed".
+   A shut card kept flex:1, so it still claimed half the leftover height and
+   left an empty band under its own header. */
+.card.shut{flex:0 0 auto}
+/* V10.27 - the studio: "remove this", drawn on the line above EASING. No box in
+   the design system carries a stroke. Tone and space separate the cards. */
+.card + .card{margin-top:12px;padding-top:0;border-top:none}
+.chd{display:flex;align-items:center;gap:9px;padding:0 0 9px;user-select:none}
+.chd .dot{width:9px;height:9px;border-radius:2px;background:var(--accent)}
+.chd h3{font:700 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+.chd .cst{margin-left:auto;font:700 9px var(--font-mono);letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase}
+.cbd{padding:0;display:flex;flex-direction:column;flex:1}
+/* rows */
+.row{padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.rowhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rowleft{display:flex;align-items:center;gap:8px;min-width:0}
+.lab{font:700 9px var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.val{font:700 9.5px var(--font-mono);letter-spacing:.03em;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel{appearance:none;-webkit-appearance:none;width:100%;font:700 11px var(--font-mono);letter-spacing:.03em;border:1px solid var(--btn-line);border-radius:var(--radius-sm);padding:7px 24px 7px 9px;background:var(--field) url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23161513'/%3E%3C/svg%3E") no-repeat right 9px center;color:var(--ink);margin-top:8px;cursor:pointer}
+html.dark .sel{background:var(--field) url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23EFEEE7'/%3E%3C/svg%3E") no-repeat right 9px center}
+.sel:focus{outline:none;border-color:var(--accent)}
+.sel:disabled{opacity:.45;cursor:default}
+/* parameter checklist */
+.tgl{width:15px;height:15px;padding:0;border:1px solid var(--btn-line);border-radius:var(--radius-sm);background:var(--field);cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;color:#fff;transition:.13s}
+.tgl:checked{background:var(--accent);border-color:var(--accent)}
+.tgl:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.prow2{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.prow2:last-child{border-bottom:none}
+.prow2 .pl2{flex:1;font:700 10px var(--font-mono);letter-spacing:.06em;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow2 .pk{font:700 9.5px var(--font-mono);letter-spacing:.05em;color:var(--ink-soft);white-space:nowrap}
+.parbtns{display:flex;gap:6px}
+/* buttons */
+.pill{display:block;width:100%;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);font:700 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;text-align:center}
+.pill:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pill.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill.acc:hover:not(:disabled){background:var(--accent-dk);border-color:var(--accent-dk);color:#fff}
+.pill.sm{padding:5px 10px;font-size:9.5px;width:auto;display:inline-block}
+.pill:disabled{opacity:.4;cursor:default}
+/* curve editor */
+/* V10.27 - the studio: "remove the outer stroke". The grid draws the box now. */
+#bez{width:100%;height:auto;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--field);touch-action:none;margin-top:0;display:block;cursor:crosshair}
+/* V10.25 — the preset shelf moved out from under APPLY and up beside the graph,
+   on the studio's mark: "move this to the right of the graph". The graph takes the
+   width that is left and stays square. The shelf stretches to the graph height
+   and its tiles scroll inside their own box, so the page never scrolls. */
+.ezmain{display:flex;gap:14px;align-items:stretch;margin-top:9px;flex:1 1 auto;min-height:0}
+/* LEFT: the graph, its numbers, DELETE and APPLY. Square graph, so the column
+   width sets the graph height. */
+.ezgraph{flex:0 0 46%;max-width:340px;min-width:190px;display:flex;flex-direction:column}
+/* RIGHT: the library. The toolbar is one row, the tiles wrap into as many
+   columns as fit, and they scroll inside their own box so the page cannot. */
+.ezshelf{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column}
+.vrow{display:flex;align-items:center;gap:8px;margin-top:9px}
+.ibtn{width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.13s;flex-shrink:0}
+.ibtn:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.ibtn:disabled{opacity:.4;cursor:default}
+.bzvals{flex:1;text-align:center;font:700 10.5px var(--font-mono);letter-spacing:.05em;color:var(--ink);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bzvals:hover{color:var(--accent)}
+.dab{display:flex;flex-direction:column;gap:8px;margin-top:11px}
+.dab .pill{flex:1;text-align:center}
+/* library bar — one row at the top of the right column */
+.libbar{display:flex;align-items:center;gap:4px;margin:0 0 9px;padding:0;border-top:none;flex:0 0 auto;position:relative}
+.libname{appearance:none;-webkit-appearance:none;border:none;background:transparent;font:700 9px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);cursor:pointer;max-width:150px;min-width:0;flex:0 1 auto;margin-right:auto;padding:2px 14px 2px 0;text-align:left;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.libname::after{content:"";position:absolute;right:2px;top:50%;margin-top:-1.5px;border:3px solid transparent;border-top-color:currentColor}
+.libname:focus{outline:none}
+/* V10.27 - the library row is now FIND's, mark for mark. 15px borderless
+   buttons, small icons, and a dropdown built from panel elements because
+   macOS draws a native select popup outside the page. */
+.libtn{width:15px;height:15px;padding:0;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.13s;flex-shrink:0}
+.libtn:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+.libtn.ok:hover{background:var(--ink);border-color:var(--ink)}
+.libtn.acc{background:var(--accent);border-color:var(--accent);color:#fff}
+.lmenu{display:none;position:absolute;left:0;top:100%;margin-top:5px;z-index:40;min-width:150px;max-height:230px;overflow:auto;background:var(--paper);border:1px solid transparent;border-radius:var(--radius-sm);box-shadow:0 6px 20px rgba(0,0,0,.16);padding:3px}
+html.dark .lmenu{background:var(--btn);border-color:var(--btn-line);box-shadow:0 6px 20px rgba(0,0,0,.55)}
+html.dark .lmi:hover{background:var(--btn-line)}
+html.dark .lmi.on:hover{background:var(--accent-dk)}
+.lmenu.show{display:block}
+.lmi{display:block;width:100%;text-align:left;border:none;background:transparent;color:var(--ink);font:500 9.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;cursor:pointer;border-radius:var(--radius-sm);white-space:nowrap}
+.lmi:hover{background:var(--btn)}
+.lmi.on{background:var(--accent);color:#fff}
+.newrow{display:none;gap:7px;margin-top:8px}
+.newrow.show{display:flex}
+.psname{flex:1;font:700 11px var(--font-mono);letter-spacing:.03em;border:1px solid transparent;border-radius:var(--radius-sm);padding:7px 9px;background:var(--card);color:var(--ink);text-transform:uppercase}
+.psname:focus{outline:none;border-color:var(--accent)}
+/* preset tiles — V10.25: one column in the shelf, scrolling in its own box.
+   6px of clear space between a tile and the scroll bar, per the house rule. */
+#libGrid{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;margin-top:0;padding-right:6px}
+#libGrid::-webkit-scrollbar{width:5px}
+#libGrid::-webkit-scrollbar-thumb{background:var(--btn-line);border-radius:var(--radius-sm)}
+#libGrid::-webkit-scrollbar-track{background:transparent}
+/* The tiles fill the row and share what is left over, so a wide library reads
+   as a grid and a narrow one still lines up. 54px is the house tile. */
+.pstiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:9px;padding:0 0 2px;align-content:start;justify-content:start}
+.pstile{position:relative;width:100%;cursor:pointer}
+.pstile canvas{display:block;width:100%;height:auto;border:1px solid var(--btn-line);border-radius:var(--radius-sm);background:var(--field);transition:border-color .13s}
+.pstile:hover canvas{border-color:var(--ink)}
+.pstile.on canvas{border-color:var(--accent);outline:1px solid var(--accent);outline-offset:-1px}
+.pstile .pn{font:500 8.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-top:3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pstile.on .pn{color:var(--accent)}
+.pstile .px{position:absolute;top:2px;right:2px;width:13px;height:13px;display:flex;align-items:center;justify-content:center;font:700 9px var(--font-mono);color:var(--ink-soft);background:var(--card);border:1px solid transparent;border-radius:var(--radius-sm);cursor:pointer}
+.pstile:hover .px{opacity:1}
+.pstile .px:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+.pstile .pe{left:3px;right:auto}
+.pstile .pnEdit{width:100%;margin-top:4px;font:700 8.5px var(--font-mono);letter-spacing:.05em;text-transform:uppercase;text-align:center;border:1px solid var(--accent);border-radius:var(--radius-sm);padding:2px 3px;background:var(--field);color:var(--ink)}
+.pstile .pnEdit:focus{outline:none}
+.note{display:none;font:400 9.5px/1.55 var(--font-mono);color:var(--ink-soft);letter-spacing:.03em;padding:10px 0 0}
+.note.err{color:var(--accent)}
+.note.okk{color:var(--ink)}
+
+/* NARROW PANEL: one column. Two columns need about 400 layout pixels, which is
+   a panel about 465px wide at L, 392 at M and 332 at S. Under that the graph
+   would be too small to drag in, so the library goes back under APPLY. */
+@media (max-width:400px){
+  .ezmain{display:block;flex:0 0 auto}
+  .ezgraph{max-width:none;min-width:0;display:block}
+  .ezshelf{display:block;margin-top:14px;padding-top:0;border-top:none}
+  /* DELETE and APPLY go side by side here. Stacked they cost 56px of height
+     that a narrow panel has to take off the graph. */
+  .dab{flex-direction:row}
+  #libGrid{max-height:210px}
+}
+
+/* bottom bar */
+.foot{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px;padding:9px 0 0;border-top:1px solid var(--line);font:700 8.5px var(--font-mono);letter-spacing:.05em;color:var(--ink-soft)}
+.foot b{color:var(--ink);font-weight:700}
+.foot .fbrand{font:700 8.5px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.foot .fby{margin-left:3px}
+.foot .fbtns{margin-left:auto;display:flex;align-items:center;gap:11px}
+/* bare text and icons in this bar - no boxes. */
+.foot .chip{border:none;background:none;padding:0;height:auto;color:var(--ink);font-size:8.5px;font-weight:700;letter-spacing:.05em;margin-left:-3px}
+.foot .hbtn{width:14px;height:14px;min-width:0;padding:0;margin:0;border:none;background:none;color:var(--ink);line-height:1}
+.foot .hbtn svg{width:12px;height:12px;display:block}
+.foot #sizeBtn{font:700 11px/1 var(--font-mono);letter-spacing:0}
+.foot .hbtn:hover{background:none;border-color:transparent;color:var(--accent)}
+.foot .hbtn.off{color:var(--ink-soft)}
+.foot .hbtn.off:hover{color:var(--accent)}
+.grow{flex:1;min-height:0}
+/* narrow dock — icon rail anchored in a fixed left column */
+@media (max-width:200px){
+  .app{width:64px;margin:0;padding:8px 0 12px;max-width:none}
+  #sizeBtn{margin-left:0}
+  .tbar{flex-direction:column;align-items:center;gap:4px}
+  .tbd{width:16px;height:1px;margin:2px 0}
+  #tip{max-width:88px}
+  .narrowHide{display:none!important}
+  .foot{display:flex!important;flex-direction:column;align-items:center;gap:4px;margin-top:6px;padding:6px 0 0;border-top:none}
+  .foot .fbrand,.foot .fby,.foot .chip{display:none}
+  .foot .fbtns{margin-left:0;flex-direction:column;gap:4px}
+}
+/* --- SORT design system components (icon toolbar kit) --- */
+.tb{width:24px;height:24px;padding:0;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--btn);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.13s;flex-shrink:0}
+.tb:hover:not(:disabled){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tb.set{border-color:var(--accent);color:var(--accent)}
+.tb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tb.acc{background:var(--accent);border-color:var(--accent);color:#fff}
+.tb.acc:hover:not(:disabled){background:var(--accent-dk);border-color:var(--accent-dk);color:#fff}
+.tb:disabled{opacity:.35;cursor:default}
+.tbw{position:relative;display:inline-flex}
+.bdg{position:absolute;top:-4px;right:-4px;min-width:12px;height:12px;padding:0 2px;border-radius:6px;background:var(--accent);color:#fff;font:700 7px/12px var(--font-mono);text-align:center;display:none;pointer-events:none}
+.bdg.show{display:block}
+.xb{width:14px;height:14px;padding:0;display:inline-flex;align-items:center;justify-content:center;font:700 9px var(--font-mono);color:var(--ink-soft);background:var(--card);border:1px solid transparent;border-radius:var(--radius-sm);cursor:pointer;flex-shrink:0;transition:.13s}
+.xb:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+.xb.ok:hover{background:var(--ink);border-color:var(--ink)}
+.mini{appearance:none;-webkit-appearance:none;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--field) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%23161513' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat right 6px center;color:var(--ink);font:700 8.5px var(--font-mono);letter-spacing:.04em;padding:3px 18px 3px 6px;cursor:pointer;max-width:150px;min-width:0;flex-shrink:0}
+html.dark .mini{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%23EFEEE7' stroke-width='1.4'/%3E%3C/svg%3E")}
+.mini:focus{outline:none;border-color:var(--accent)}
+#tip{position:fixed;z-index:99;max-width:210px;background:var(--ink);color:var(--paper);font:700 8.5px/1.55 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:var(--radius-sm);pointer-events:none;display:none}
+#clipHd{cursor:pointer}
+.chd .cv{display:inline-flex;align-items:center;color:var(--ink-soft);margin-left:4px;flex-shrink:0}
+#clipHd:hover .cv{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="zoomRoot">
+<div class="app">
+
+  <div class="rail">
+
+    <div class="card">
+      <div class="chd" id="clipHd" data-tip="Collapse / expand this card"><span class="dot"></span><h3>CLIP</h3><span class="cst" id="clipst">NOT LOADED</span><span class="cv" id="clipCv"></span></div>
+      <div class="cbd" id="clipBody">
+        <div class="row">
+          <div class="rowhead">
+            <div class="rowleft"><span class="lab">TIMELINE SELECTION</span></div>
+            <button class="tb" id="loadB" data-tip="Re-read the selected clip manually — normally automatic"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><polyline points="1 20 1 14 7 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <div class="note" id="clipname">AUTO — FOLLOWS THE CLIP YOU SELECT. EVERY ANIMATED PARAMETER LISTS BELOW; TICK THE ONES TO EASE TOGETHER.</div>
+        </div>
+        <div class="row">
+          <div class="rowhead">
+            <div class="rowleft"><span class="lab">PARAMETERS</span><span class="val" id="parCt"></span></div>
+            <div class="parbtns tbar">
+              <button class="tb" id="pAll" data-tip="Tick every parameter"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="1.6" y="1.6" width="8.8" height="8.8" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3.6 6.1l1.7 1.7 3.1-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button class="tb" id="pNone" data-tip="Untick every parameter"><svg width="12" height="12" viewBox="0 0 12 12"><rect x="1.6" y="1.6" width="8.8" height="8.8" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+            </div>
+          </div>
+          <div id="parList"></div>
+          <div class="note" id="parNote">NO ANIMATED PARAMETERS ON THIS CLIP — SET AT LEAST 2 KEYFRAMES ON A PARAMETER IN EFFECT CONTROLS.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="chd"><span class="dot"></span><h3>EASING</h3><span class="cst" id="preName">CUSTOM</span></div>
+      <div class="cbd">
+        <div class="ezmain">
+          <div class="ezgraph">
+            <canvas id="bez" width="600" height="600"></canvas>
+            <div class="vrow">
+            <button class="ibtn" id="readB" disabled data-tip="Copy easing — reads the baked ease of the pair under the playhead back into the graph"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M1 7h7M5.4 4.4L8 7l-2.6 2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.5 2v10" stroke="currentColor" stroke-width="1.6"/></svg></button>
+            <div class="bzvals" id="bzvals" data-tip="The curve as x1, y1, x2, y2 — click to copy as CSS cubic-bezier">0.65, 0, 0.35, 1</div>
+            <button class="ibtn" id="starB" data-tip="Save preset — stores this curve in the open library; double-click its tile to rename"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1.4l1.75 3.55 3.9.55-2.85 2.75.7 3.9L7 10.3 3.5 12.15l.7-3.9L1.35 5.5l3.9-.55L7 1.4z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+            </div>
+            <div class="dab">
+            <button class="pill" id="delB" disabled data-tip="Removes all baked keys on the ticked parameters — your anchor keyframes stay">DELETE</button>
+            <button class="pill acc" id="applyB" disabled data-tip="Bakes this curve onto every keyframe pair of the ticked parameters">APPLY</button>
+            </div>
+            <div class="note" id="status">APPLY EASES EVERY KEYFRAME PAIR ON THE TICKED PARAMETERS. RE-APPLY ANY TIME TO SWAP THE CURVE. DELETE PUTS THINGS BACK TO PLAIN KEYFRAMES.</div>
+          </div>
+          <div class="ezshelf">
+            <div class="libbar">
+            <button class="libname" id="libSel" type="button" data-tip="Current library — click to switch"></button>
+            <div class="lmenu" id="libMenu"></div>
+            <button class="libtn" id="libTog" data-tip="Expand / collapse the preset grid"></button>
+            <button class="libtn ok" id="libNew" data-tip="Add a new library"><svg width="9" height="9" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.6"/></svg></button>
+            <button class="libtn ok" id="libRen" data-tip="Rename this library"><svg width="8" height="8" viewBox="0 0 12 12"><path d="M1.2 10.8l.7-2.8L8.6 1.3l2.1 2.1-6.7 6.7-2.8.7z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+            <button class="libtn ok" id="libImp" data-tip="Import a library file (.easeup.json)"><svg width="9" height="9" viewBox="0 0 14 14"><path d="M7 1v7M4.2 5.6L7 8.4l2.8-2.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 12.5h10" stroke="currentColor" stroke-width="1.5"/></svg></button>
+            <button class="libtn ok" id="libExp" data-tip="Export this library as a file — share curves between machines"><svg width="9" height="9" viewBox="0 0 14 14"><path d="M7 8.4V1.4M4.2 4L7 1.2 9.8 4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 12.5h10" stroke="currentColor" stroke-width="1.5"/></svg></button>
+            <button class="libtn" id="libDel" data-tip="Delete this library — click twice to confirm"><svg width="9" height="9" viewBox="0 0 13 13"><path d="M2 3.5h9M5 3.5V2h3v1.5M3.2 3.5l.6 8h5.4l.6-8" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+            </div>
+            <div class="newrow" id="libRow">
+            <input class="psname" id="libName" maxlength="18" placeholder="NAME NEW LIBRARY">
+            <button class="pill sm" id="libCreate">CREATE</button>
+            <button class="pill sm" id="libCancel" data-tip="Cancel">&#215;</button>
+            </div>
+            <div id="libGrid">
+              <div class="pstiles" id="psTiles"></div>
+              <div class="note" id="psNote">NO PRESETS YET</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="grow"></div>
+<div class="foot">
+    <span class="fbrand">EASEUP.</span>
+    <span class="chip">V10.29</span>
+    <span class="fby"><span class="fpre">made by </span><b>llllllloc</b></span>
+    <span class="fbtns">
+      <button class="hbtn" id="sizeBtn" data-tip="UI size — click to cycle L / M / S">L</button>
+      <button class="hbtn" id="tipBtn" data-tip="Hover tips — click to turn them off" aria-label="Toggle hover tips"></button>
+      <button class="hbtn" id="themeBtn" data-tip="Dark / light theme" aria-label="Toggle dark or light theme"></button>
+    </span>
+  </div>
+</div>
+</div>
+<div id="tip"></div>
+<input type="file" id="impFile" accept=".json,.easeup" style="display:none">
+
+<script>
+/* A blank panel is the worst failure: nothing to read, nothing to click. If any
+   boot script throws, show the reason and a reload button instead of nothing. */
+window.__easeupBooted = false;
+function panic_easeup(why) {
+  if (window.__easeupBooted) return;
+  try {
+    document.body.innerHTML =
+      '<div style="font:400 11px/1.6 monospace;color:#EDEBE4;background:#171613;padding:14px">' +
+      '<div style="font-weight:700;letter-spacing:.12em;margin-bottom:8px">EASEUP \u2014 DIDN\'T START</div>' +
+      '<div style="color:#8F8E86;margin-bottom:10px">' + String(why || "unknown error").replace(/</g, "&lt;") + '</div>' +
+      '<button onclick="location.reload()" style="font:700 10px monospace;letter-spacing:.09em;padding:7px 12px;' +
+      'background:#F0481E;color:#fff;border:none;cursor:pointer">RELOAD PANEL</button></div>';
+  } catch (e) {}
+}
+window.addEventListener("error", function (e) {
+  panic_easeup((e && e.message) ? e.message : "script error");
+});
+
+/* ---- restore watchdog ----------------------------------------------------
+   When Premiere restarts, CEP sometimes brings a docked panel back as an empty
+   page. Reopening it from Window > Extensions fixes it because that builds a
+   fresh page - so the panel does exactly that for itself: if it still looks
+   empty a few seconds in, it reloads. Attempts are counted in the URL hash so
+   a genuinely broken build can not loop forever. */
+(function () {
+  var MAX = 3;
+  function tries() {
+    var m = /r(\d+)/.exec(window.location.hash || "");
+    return m ? parseInt(m[1], 10) : 0;
+  }
+  function looksEmpty() {
+    if (window.__easeupBooted) return false;
+    var zr = document.getElementById("zoomRoot");
+    if (!zr) return true;
+    if (!zr.offsetHeight || zr.offsetHeight < 8) return true;
+    return false;
+  }
+  function check() {
+    if (!looksEmpty()) return;
+    var n = tries();
+    if (n >= MAX) { panic_easeup("The panel came back empty after restarting Premiere."); return; }
+    try { window.location.hash = "r" + (n + 1); } catch (e) {}
+    try { window.location.reload(); } catch (e2) {}
+  }
+  var AT = [4500], i;
+  for (i = 0; i < AT.length; i++) { window.setTimeout(check, AT[i]); }
+  window.addEventListener("focus", function () { window.setTimeout(check, 400); });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) window.setTimeout(check, 400);
+  });
+})();
+</script>
+<script>window.LLLOC_PANEL = "EASEUP";</script>
+<script src="js/llloc-revive.js"></script>
+<script src="js/llloc-prefs.js"></script>
+<script src="js/CSInterface.js"></script>
+<script>
+"use strict";
+var $ = function (id) { return document.getElementById(id); };
+var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+
+/* ---------------- theme ---------------- */
+var DARK = true;
+try { var t = localStorage.getItem("easeup.theme"); if (t) DARK = (t === "dark"); } catch (e) {}
+var SUN = '<svg width="12" height="12" viewBox="0 0 14 14"><circle cx="7" cy="7" r="3.1" fill="currentColor"/><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 .6v1.7M7 11.7v1.7M.6 7h1.7M11.7 7h1.7M2.5 2.5l1.2 1.2M10.3 10.3l1.2 1.2M11.5 2.5l-1.2 1.2M3.7 10.3l-1.2 1.2"/></g></svg>';
+var MOON = '<svg width="12" height="12" viewBox="0 0 14 14"><path d="M12.1 9.1A5.9 5.9 0 0 1 4.9 1.9 5.9 5.9 0 1 0 12.1 9.1Z" fill="currentColor"/></svg>';
+function applyTheme() {
+  document.documentElement.classList.toggle("dark", DARK);
+  $("themeBtn").innerHTML = DARK ? SUN : MOON;
+  drawBez(); renderPresets();
+}
+$("themeBtn").addEventListener("click", function () {
+  DARK = !DARK;
+  try { localStorage.setItem("easeup.theme", DARK ? "dark" : "light"); } catch (e) {}
+  applyTheme();
+});
+
+/* ---------------- UI size (transform-based so mouse math stays exact) ---------------- */
+var SIZES = [["L", 1.16], ["M", 0.98], ["S", 0.83]];
+var sizeIx = 0;
+try {
+  var si = parseInt(localStorage.getItem("easeup.size") || "0", 10);
+  if (si >= 0 && si < SIZES.length) sizeIx = si;
+} catch (e) {}
+function syncZoomHeight() {
+  var s = SIZES[sizeIx][1];
+  var zr = document.getElementById("zoomRoot");
+  var vh = 0;
+  try { vh = window.innerHeight || document.documentElement.clientHeight || 0; } catch (e) { vh = 0; }
+  /* During a Premiere restart the panel can report no height (or a couple of
+     pixels) before it is laid out. Committing a height from that measurement
+     leaves the panel looking empty, so skip it and let the retries settle it. */
+  if (vh < 80) { return; }  /* V1.18 sweep: nothing to clear - CSS zoom owns the height */
+  /* The container is scaled, so to fill the panel visually it must lay out at
+     viewport height / scale. A DEFINITE height is what lets the inner flex chain
+     hand its leftover space to the spacer above the bottom bar. */
+  var layoutH = Math.max(60, Math.floor(vh / s) - 1);
+  var app = document.querySelector(".app");
+  var need = layoutH;
+  if (app) {
+    need = app.scrollHeight;
+    if (app.offsetHeight > need) need = app.offsetHeight;
+  }
+  var total = (need > layoutH) ? need : layoutH;
+}
+/* Keep the bottom bar on a single line. When the panel is too narrow, shed the
+   least essential parts first - the wordmark, then the version - so "made by" and
+   the controls survive longest. */
+function footWrapped(f, btns) {
+  var kids = f.children, i, need = 0, n = 0, gap = 0;
+  try { gap = parseFloat(getComputedStyle(f).gap) || 0; } catch (e) { gap = 0; }
+  for (i = 0; i < kids.length; i++) {
+    if (getComputedStyle(kids[i]).display === "none") continue;
+    need += kids[i].offsetWidth;
+    n++;
+  }
+  if (n > 1) need += gap * (n - 1);
+  return need > f.clientWidth + 1;
+}
+function fitFooter() {
+  var f = document.querySelector(".foot");
+  if (!f) return;
+  var btns = f.querySelector(".fbtns");
+  if (!btns) return;
+  var narrow = false;
+  try { narrow = window.matchMedia("(max-width:200px)").matches; } catch (e) {}
+  var order = [f.querySelector(".fbrand"), f.querySelector(".chip"),
+               f.querySelector(".fpre"), f.querySelector(".fby")];
+  var i;
+  for (i = 0; i < order.length; i++) { if (order[i]) order[i].style.display = ""; }
+  if (narrow) return;
+  for (i = 0; i < order.length; i++) {
+    if (!footWrapped(f, btns)) return;
+    if (order[i]) order[i].style.display = "none";
+  }
+}
+function applySize() {
+  var s = SIZES[sizeIx][1];
+  var zr = document.getElementById("zoomRoot");
+  /* V1.18 sweep - one custom property drives the scaler. The CSS reads it
+     as zoom, and zoom scales the LAYOUT, so the bottom bar lands on the
+     panel floor and the page can never scroll. Nothing is calculated. */
+  document.documentElement.style.setProperty("--uis", String(s));
+  syncZoomHeight();
+  /* the tooltip lives outside the scaled container, so size it by hand */
+  var tp = document.getElementById("tip");
+  if (tp) {
+    tp.style.fontSize = (8.5 * s).toFixed(2) + "px";
+    tp.style.padding = (6 * s).toFixed(1) + "px " + (8 * s).toFixed(1) + "px";
+    tp.style.maxWidth = Math.round(210 * s) + "px";
+  }
+  var sb = document.getElementById("sizeBtn");
+  sb.textContent = SIZES[sizeIx][0];
+  sb.setAttribute("data-tip", "UI size: " + SIZES[sizeIx][0] + " \u2014 click to cycle L / M / S");
+  fitFooter();
+}
+$("sizeBtn").addEventListener("click", function () {
+  sizeIx = (sizeIx + 1) % SIZES.length;
+  try { localStorage.setItem("easeup.size", String(sizeIx)); } catch (e) {}
+  applySize();
+});
+if (window.ResizeObserver) {
+  new ResizeObserver(function () { syncZoomHeight(); fitFooter(); fitGraph(); bezResync(); }).observe(document.getElementById("zoomRoot"));
+} else {
+  setInterval(syncZoomHeight, 1200);
+}
+
+/* Re-measure after the webfont lands and again while a restored panel settles. */
+try {
+  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+    document.fonts.ready.then(function () { applySize(); });
+  }
+} catch (e) {}
+window.addEventListener("resize", function () { applySize(); });
+var __RETRY = [60, 250, 600, 900, 1800, 3000], __ri;
+for (__ri = 0; __ri < __RETRY.length; __ri++) {
+  setTimeout(function () { applySize(); }, __RETRY[__ri]);
+}
+
+/* ---------------- hover tips ---------------- */
+var tipEl = $("tip");
+function findTip(el) {
+  while (el && el !== document.body && el.getAttribute) {
+    if (el.getAttribute("data-tip")) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+function showTip(el) {
+  tipEl.textContent = el.getAttribute("data-tip");
+  tipEl.style.display = "block";
+  var r = el.getBoundingClientRect();
+  var tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  var x = clamp(r.left + r.width / 2 - tw / 2, 6, window.innerWidth - tw - 6);
+  var y = r.bottom + 7;
+  if (y + th > window.innerHeight - 6) y = r.top - th - 7;
+  tipEl.style.left = x + "px";
+  tipEl.style.top = y + "px";
+}
+function hideTip() { tipEl.style.display = "none"; }
+document.addEventListener("mouseover", function (e) {
+  if (!TIPS) { hideTip(); return; }
+  var el = findTip(e.target);
+  if (el) showTip(el); else hideTip();
+});
+document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) hideTip(); });
+document.addEventListener("mousedown", hideTip);
+document.addEventListener("scroll", hideTip, true);
+window.addEventListener("blur", hideTip);
+
+/* ---------------- hover tips on / off ---------------- */
+var TIPS = true;
+try { var tp = localStorage.getItem("easeup.tips"); if (tp !== null) TIPS = (tp !== "0"); } catch (e) {}
+var BUB = '<svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 3h10v6.2H5.8L3.2 11.6V9.2H2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+var BUB_OFF = '<svg width="12" height="12" viewBox="0 0 14 14"><path d="M2 3h10v6.2H5.8L3.2 11.6V9.2H2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="1.2" y1="12.8" x2="12.8" y2="1.2" stroke="currentColor" stroke-width="1.4"/></svg>';
+function applyTips() {
+  var b = $("tipBtn");
+  b.innerHTML = TIPS ? BUB : BUB_OFF;
+  b.className = "hbtn" + (TIPS ? "" : " off");
+  b.setAttribute("data-tip", "Hover tips — click to turn them " + (TIPS ? "off" : "on"));
+  if (!TIPS) hideTip();
+}
+$("tipBtn").addEventListener("click", function () {
+  TIPS = !TIPS;
+  try { localStorage.setItem("easeup.tips", TIPS ? "1" : "0"); } catch (e) {}
+  applyTips();
+});
+
+/* ---------------- curve state ---------------- */
+var B = [0.65, 0, 0.35, 1];
+try {
+  var savedB = JSON.parse(localStorage.getItem("easeup.curve") || "null");
+  if (savedB && savedB.length === 4) B = savedB;
+} catch (e) {}
+
+function bezierY(X, x1, y1, x2, y2) {
+  if (X <= 0) return 0;
+  if (X >= 1) return 1;
+  var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
+  var cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  function sx(u) { return ((ax * u + bx) * u + cx) * u; }
+  function sy(u) { return ((ay * u + by) * u + cy) * u; }
+  function dx(u) { return (3 * ax * u + 2 * bx) * u + cx; }
+  var u = X, i, e, d;
+  for (i = 0; i < 8; i++) {
+    e = sx(u) - X;
+    if (Math.abs(e) < 1e-6) return sy(u);
+    d = dx(u);
+    if (Math.abs(d) < 1e-6) break;
+    u = clamp(u - e / d, 0, 1);
+  }
+  var lo = 0, hi = 1; u = X;
+  for (i = 0; i < 24; i++) {
+    e = sx(u) - X;
+    if (Math.abs(e) < 1e-6) break;
+    if (e > 0) hi = u; else lo = u;
+    u = (lo + hi) / 2;
+  }
+  return sy(u);
+}
+var ease = function (u) { return bezierY(u, B[0], B[1], B[2], B[3]); };
+
+function fmt(v) { return String(Math.round(v * 100) / 100); }
+function cssBezier() { return "cubic-bezier(" + fmt(B[0]) + ", " + fmt(B[1]) + ", " + fmt(B[2]) + ", " + fmt(B[3]) + ")"; }
+function persistCurve() {
+  try { localStorage.setItem("easeup.curve", JSON.stringify(B)); } catch (e) {}
+}
+function curveChanged() {
+  $("bzvals").textContent = fmt(B[0]) + ", " + fmt(B[1]) + ", " + fmt(B[2]) + ", " + fmt(B[3]);
+  syncPresetSel();
+  persistCurve();
+}
+function restartPrev() {}
+
+/* ---------------- preset libraries ---------------- */
+var LDB = null;
+try { LDB = JSON.parse(localStorage.getItem("easeup.libs") || "null"); } catch (e) { LDB = null; }
+if (!LDB || !LDB.libs || !LDB.libs.length) {
+  var oldPS = [];
+  try { oldPS = JSON.parse(localStorage.getItem("easeup.presets") || "[]") || []; } catch (e) { oldPS = []; }
+  LDB = { libs: [{ name: "LIBRARY", presets: oldPS }], cur: 0 };
+}
+if (typeof LDB.cur !== "number" || LDB.cur < 0 || LDB.cur >= LDB.libs.length) LDB.cur = 0;
+
+function saveLibs() {
+  try { localStorage.setItem("easeup.libs", JSON.stringify(LDB)); } catch (e) {}
+}
+function curLib() {
+  if (LDB.cur >= LDB.libs.length) LDB.cur = 0;
+  return LDB.libs[LDB.cur];
+}
+function matchPreset() {
+  var ps = curLib().presets;
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i].b, hit = true;
+    for (var j = 0; j < 4; j++) if (Math.abs(p[j] - B[j]) > 0.005) { hit = false; break; }
+    if (hit) return i;
+  }
+  return -1;
+}
+function syncPresetSel() {
+  var m = matchPreset();
+  var tiles = $("psTiles").children;
+  for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle("on", i === m);
+  $("preName").textContent = m >= 0 ? curLib().presets[m].n : "CUSTOM";
+}
+function drawThumb(cv, b) {
+  var x = cv.getContext("2d"), W = cv.width, H = cv.height;
+  x.clearRect(0, 0, W, H);
+  var top = Math.max(1.25, b[1], b[3]), bot = Math.min(-0.25, b[1], b[3]);
+  /* V10.25 — pad x as well as y. The tile curve used to run off both ends. */
+  var pad = 14, padx = 16;
+  function mx(u) { return padx + u * (W - 2 * padx); }
+  function my(v) { return pad + (top - v) / (top - bot) * (H - 2 * pad); }
+  var gl = DARK ? "#4A4944" : "#E5E4E0", ln = DARK ? "#EFEEE7" : "#161513";
+  x.strokeStyle = gl; x.lineWidth = 2;
+  [0, 1].forEach(function (v) { x.beginPath(); x.moveTo(mx(0), my(v)); x.lineTo(mx(1), my(v)); x.stroke(); });
+  x.strokeStyle = ln; x.lineWidth = 6; x.lineJoin = "round"; x.lineCap = "round";
+  x.beginPath();
+  for (var k = 0; k <= 48; k++) {
+    var u = k / 48, v = bezierY(u, b[0], b[1], b[2], b[3]);
+    if (k === 0) x.moveTo(mx(u), my(v)); else x.lineTo(mx(u), my(v));
+  }
+  x.stroke();
+}
+/* V10.27 - the same control FIND uses. A native <select> popup is drawn by
+   macOS outside the page, so no panel style reaches it. This one is built
+   from panel elements, so it carries the accent and dark mode. */
+function renderLibSel() {
+  var sel = $("libSel"), menu = $("libMenu");
+  sel.textContent = curLib().name;
+  menu.innerHTML = "";
+  LDB.libs.forEach(function (l, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "lmi" + (i === LDB.cur ? " on" : "");
+    b.textContent = l.name;
+    b.setAttribute("data-tip", "Show " + l.name);
+    b.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      menu.classList.remove("show");
+      if (i === LDB.cur) return;
+      LDB.cur = i; saveLibs(); renderPresets();
+    });
+    menu.appendChild(b);
+  });
+}
+function renderPresets() {
+  renderLibSel();
+  var host = $("psTiles");
+  host.innerHTML = "";
+  var ps = curLib().presets;
+  ps.forEach(function (p, i) {
+    var tile = document.createElement("div");
+    tile.className = "pstile";
+    var cv = document.createElement("canvas");
+    cv.width = 144; cv.height = 144;
+    drawThumb(cv, p.b);
+    var nm = document.createElement("div");
+    nm.className = "pn"; nm.textContent = p.n; nm.title = p.n;
+    var x = document.createElement("div");
+    x.className = "px"; x.textContent = "\u00D7"; x.setAttribute("data-tip", "Delete this preset");
+    var pe = document.createElement("div");
+    pe.className = "px pe"; pe.setAttribute("data-tip", "Rename — or double-click the tile");
+    pe.innerHTML = '<svg width="9" height="9" viewBox="0 0 12 12"><path d="M1.2 10.8l.7-2.8L8.6 1.3l2.1 2.1-6.7 6.7-2.8.7z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+    tile.appendChild(cv); tile.appendChild(pe); tile.appendChild(x); tile.appendChild(nm);
+    tile.addEventListener("click", function () {
+      B = p.b.slice();
+      curveChanged(); drawBez(); restartPrev();
+    });
+    tile.addEventListener("dblclick", function () { startRename(tile, nm, p); });
+    pe.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      startRename(tile, nm, p);
+    });
+    x.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      curLib().presets.splice(i, 1);
+      saveLibs(); renderPresets();
+    });
+    host.appendChild(tile);
+  });
+  $("psNote").style.display = ps.length ? "none" : "block";
+  syncPresetSel();
+  /* saving or deleting a preset changes how tall the tile box wants to be, and
+     that does not change the panel size, so the ResizeObserver never fires */
+  if (typeof relayout === "function") relayout();
+}
+function startRename(tile, nm, p) {
+  if (tile.getElementsByTagName("input").length) return;
+  var inp = document.createElement("input");
+  inp.className = "pnEdit";
+  inp.value = p.n;
+  inp.maxLength = 18;
+  nm.style.display = "none";
+  tile.appendChild(inp);
+  inp.focus(); inp.select();
+  var done = false;
+  function commit(cancel) {
+    if (done) return;
+    done = true;
+    var n = cancel ? "" : (inp.value || "").replace(/^\s+|\s+$/g, "").toUpperCase();
+    tile.removeChild(inp);
+    nm.style.display = "";
+    if (!n || n === p.n) return;
+    var clash = false;
+    curLib().presets.forEach(function (q) { if (q !== p && q.n === n) clash = true; });
+    if (clash) { status("A PRESET NAMED \u201C" + n + "\u201D ALREADY EXISTS IN THIS LIBRARY.", true); return; }
+    var oldn = p.n;
+    p.n = n;
+    saveLibs(); renderPresets();
+    status("RENAMED \u201C" + oldn + "\u201D \u2192 \u201C" + n + "\u201D.", false, true);
+  }
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") commit(false);
+    else if (e.key === "Escape") commit(true);
+    e.stopPropagation();
+  });
+  inp.addEventListener("blur", function () { commit(false); });
+  inp.addEventListener("click", function (e) { e.stopPropagation(); });
+  inp.addEventListener("dblclick", function (e) { e.stopPropagation(); });
+}
+
+/* star = save preset into the open library */
+$("starB").addEventListener("click", function () {
+  var ps = curLib().presets;
+  var k = ps.length + 1, name = "PRESET " + k;
+  function exists(nm) { var f = false; ps.forEach(function (q) { if (q.n === nm) f = true; }); return f; }
+  while (exists(name)) { k++; name = "PRESET " + k; }
+  ps.push({ n: name, b: B.slice() });
+  saveLibs(); renderPresets();
+  status("SAVED \u201C" + name + "\u201D TO " + curLib().name + " — DOUBLE-CLICK ITS TILE TO RENAME.", false, true);
+});
+
+/* library bar */
+$("libSel").addEventListener("click", function (ev) {
+  ev.stopPropagation();
+  $("libMenu").classList.toggle("show");
+});
+/* one click anywhere else shuts it - no listener sits on a click path */
+document.addEventListener("click", function () {
+  var m = $("libMenu");
+  if (m && m.className.indexOf("show") >= 0) m.classList.remove("show");
+});
+var gridOpen = true;
+try { gridOpen = localStorage.getItem("easeup.grid") !== "0"; } catch (e) {}
+var CHEV_DN = '<svg width="9" height="9" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+var CHEV_UP = '<svg width="9" height="9" viewBox="0 0 12 12"><path d="M2 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+var CHEV_CARD_DN = '<svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+var CHEV_CARD_UP = '<svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+function applyGrid() {
+  $("libGrid").style.display = gridOpen ? "" : "none";
+  $("libTog").innerHTML = gridOpen ? CHEV_UP : CHEV_DN;
+  relayout();
+}
+$("libTog").addEventListener("click", function () {
+  gridOpen = !gridOpen;
+  try { localStorage.setItem("easeup.grid", gridOpen ? "1" : "0"); } catch (e) {}
+  applyGrid();
+});
+/* collapsible CLIP card */
+var clipOpen = true;
+try { clipOpen = localStorage.getItem("easeup.clipopen") !== "0"; } catch (e) {}
+function applyClipOpen() {
+  $("clipBody").style.display = clipOpen ? "" : "none";
+  $("clipCv").innerHTML = clipOpen ? CHEV_CARD_UP : CHEV_CARD_DN;
+  $("clipBody").parentNode.classList.toggle("shut", !clipOpen);
+  relayout();
+}
+$("clipHd").addEventListener("click", function () {
+  clipOpen = !clipOpen;
+  try { localStorage.setItem("easeup.clipopen", clipOpen ? "1" : "0"); } catch (e) {}
+  applyClipOpen();
+});
+var libMode = "new";
+$("libNew").addEventListener("click", function () {
+  libMode = "new";
+  $("libName").value = "";
+  $("libName").placeholder = "NAME NEW LIBRARY";
+  $("libCreate").textContent = "CREATE";
+  $("libRow").classList.add("show");
+  $("libName").focus();
+});
+$("libRen").addEventListener("click", function () {
+  libMode = "ren";
+  $("libName").value = curLib().name;
+  $("libName").placeholder = "RENAME LIBRARY";
+  $("libCreate").textContent = "RENAME";
+  $("libRow").classList.add("show");
+  $("libName").focus();
+  $("libName").select();
+});
+$("libCancel").addEventListener("click", function () {
+  $("libRow").classList.remove("show");
+  $("libName").value = "";
+});
+$("libCreate").addEventListener("click", function () {
+  var n = ($("libName").value || "").replace(/^\s+|\s+$/g, "").toUpperCase();
+  if (libMode === "ren") {
+    if (!n) { $("libRow").classList.remove("show"); return; }
+    var clash = false;
+    LDB.libs.forEach(function (l, i) { if (l.name === n && i !== LDB.cur) clash = true; });
+    if (clash) { status("A LIBRARY NAMED \u201C" + n + "\u201D ALREADY EXISTS.", true); return; }
+    var oldn = curLib().name;
+    curLib().name = n;
+    saveLibs();
+    $("libRow").classList.remove("show");
+    $("libName").value = "";
+    renderPresets();
+    if (n !== oldn) status("RENAMED LIBRARY \u201C" + oldn + "\u201D \u2192 \u201C" + n + "\u201D.", false, true);
+    return;
+  }
+  if (!n) n = "LIBRARY " + (LDB.libs.length + 1);
+  var found = -1;
+  LDB.libs.forEach(function (l, i) { if (l.name === n) found = i; });
+  if (found >= 0) LDB.cur = found;
+  else { LDB.libs.push({ name: n, presets: [] }); LDB.cur = LDB.libs.length - 1; }
+  saveLibs();
+  $("libRow").classList.remove("show");
+  $("libName").value = "";
+  renderPresets();
+  status((found >= 0 ? "SWITCHED TO " : "CREATED LIBRARY ") + "\u201C" + n + "\u201D.", false, true);
+});
+$("libName").addEventListener("keydown", function (e) { if (e.key === "Enter") $("libCreate").click(); });
+var delArm = null;
+$("libDel").addEventListener("click", function () {
+  var btn = $("libDel");
+  if (delArm === null) {
+    btn.classList.add("acc");
+    btn.setAttribute("data-tip", "Click again to delete this library");
+    status("CLICK THE TRASH AGAIN TO DELETE LIBRARY \u201C" + curLib().name + "\u201D AND ITS PRESETS.", true);
+    delArm = setTimeout(function () {
+      btn.classList.remove("acc");
+      btn.setAttribute("data-tip", "Delete this library — click twice to confirm");
+      delArm = null;
+    }, 2800);
+    return;
+  }
+  clearTimeout(delArm); delArm = null;
+  btn.classList.remove("acc");
+  btn.setAttribute("data-tip", "Delete this library — click twice to confirm");
+  var gone = curLib().name;
+  LDB.libs.splice(LDB.cur, 1);
+  if (!LDB.libs.length) LDB.libs = [{ name: "LIBRARY", presets: [] }];
+  LDB.cur = 0;
+  saveLibs(); renderPresets();
+  status("DELETED LIBRARY \u201C" + gone + "\u201D AND ITS PRESETS.", false, true);
+});
+
+/* import / export the open library */
+function importPayload(txt) {
+  var obj = null;
+  try { obj = JSON.parse(txt); } catch (e) {}
+  if (!obj || obj.easeup !== 1 || !obj.presets || !obj.presets.length) {
+    status("THAT FILE ISN'T AN EASEUP LIBRARY.", true);
+    return;
+  }
+  var ps = [];
+  obj.presets.forEach(function (p) {
+    if (p && typeof p.n === "string" && p.b && p.b.length === 4) {
+      var ok = true, b = [], j, v;
+      for (j = 0; j < 4; j++) { v = Number(p.b[j]); if (isNaN(v)) ok = false; b.push(v); }
+      if (ok) ps.push({ n: p.n.toUpperCase().slice(0, 18), b: b });
+    }
+  });
+  if (!ps.length) { status("NO VALID PRESETS IN THAT FILE.", true); return; }
+  var base = (typeof obj.name === "string" && obj.name ? obj.name : "IMPORTED").toUpperCase().slice(0, 18);
+  var name = base, k = 2;
+  function exists(nm) { var f = false; LDB.libs.forEach(function (l) { if (l.name === nm) f = true; }); return f; }
+  while (exists(name)) { name = (base + " " + k).slice(0, 18); k++; }
+  LDB.libs.push({ name: name, presets: ps });
+  LDB.cur = LDB.libs.length - 1;
+  saveLibs(); renderPresets();
+  status("IMPORTED " + ps.length + " PRESET" + (ps.length === 1 ? "" : "S") + " \u2192 \u201C" + name + "\u201D.", false, true);
+}
+$("libImp").addEventListener("click", function () {
+  if (window.cep && window.cep.fs) {
+    try {
+      var r = window.cep.fs.showOpenDialogEx(false, false, "Import EASEUP library", "", ["json", "easeup"]);
+      if (r && r.data && r.data.length) {
+        var f = window.cep.fs.readFile(r.data[0]);
+        if (f && f.err === 0) importPayload(f.data);
+        else status("COULD NOT READ THE FILE.", true);
+      }
+      return;
+    } catch (e) {}
+  }
+  $("impFile").click();
+});
+$("impFile").addEventListener("change", function () {
+  var f = $("impFile").files[0];
+  if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function () { importPayload(String(rd.result)); };
+  rd.readAsText(f);
+  $("impFile").value = "";
+});
+$("libExp").addEventListener("click", function () {
+  var lib = curLib();
+  if (!lib.presets.length) { status("THIS LIBRARY IS EMPTY — NOTHING TO EXPORT.", true); return; }
+  var payload = JSON.stringify({ easeup: 1, name: lib.name, presets: lib.presets }, null, 2);
+  var fname = lib.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "library";
+  fname += ".easeup.json";
+  if (window.cep && window.cep.fs) {
+    try {
+      var r = window.cep.fs.showSaveDialogEx("Export EASEUP library", "", ["json"], fname);
+      if (r && r.data) {
+        var w = window.cep.fs.writeFile(r.data, payload);
+        if (w && w.err === 0) status("EXPORTED \u201C" + lib.name + "\u201D.", false, true);
+        else status("COULD NOT WRITE THE FILE.", true);
+      }
+      return;
+    } catch (e) {}
+  }
+  try {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([payload], { type: "application/json" }));
+    a.download = fname;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    status("EXPORTED \u201C" + lib.name + "\u201D.", false, true);
+  } catch (e2) { status("EXPORT FAILED.", true); }
+});
+
+/* ---------------- bezier editor (square, auto-expanding view) ---------------- */
+var bezCv = $("bez"), bx = bezCv.getContext("2d"), dragH = -1, dg = null;
+/* V10.25 — THE PLOT SITS INSIDE THE CANVAS, NEVER ON ITS EDGE.
+   Before this build the y axis had a 20 pixel inset and the x axis had NONE.
+   A handle parked at x=0 was drawn from -9 to +9, so half of it fell outside
+   the canvas, and the curve's own stroke fell off both ends. the studio, 15 August:
+   "the handle and the curve is cropped at the edge ... avoid cropping please".
+
+   The inset is measured FROM the handle, so it holds at every UI size and at
+   every graph width: half a handle, plus AIR_CSS of clear space.
+
+   PIXEL KINDS — read this before you touch bezScale. clientWidth is a LAYOUT
+   pixel, and HANDLE_CSS, AIR_CSS, CURVE_CSS, GUIDE_CSS and GRID_CSS are layout
+   pixels too. Under CSS zoom a getBoundingClientRect value is a VISUAL pixel
+   and is a different number. Never put one in here. The drag math further down
+   stays entirely in visual pixels for the same reason. */
+var HANDLE_CSS = 9, AIR_CSS = 7, CURVE_CSS = 1.4, GUIDE_CSS = 1, GRID_CSS = 1;
+function bezScale() { return bezCv.width / (bezCv.clientWidth || 240); }
+function bezPad() { return (HANDLE_CSS / 2 + AIR_CSS) * bezScale(); }
+function yRange() {
+  var top = Math.max(1.25, B[1], B[3]);
+  var bot = Math.min(-0.25, B[1], B[3]);
+  return [bot, top];
+}
+function mapX(u, W) { var p = bezPad(); return p + u * (W - 2 * p); }
+function fromX(pxPx, W) { var p = bezPad(); return (pxPx - p) / (W - 2 * p); }
+function mapY(v, H) {
+  var p = bezPad(), r = yRange();
+  return p + (r[1] - v) / (r[1] - r[0]) * (H - 2 * p);
+}
+function toVal(pyPx, H) {
+  var p = bezPad(), r = yRange();
+  return r[1] - (pyPx - p) / (H - 2 * p) * (r[1] - r[0]);
+}
+function drawBez() {
+  var W = bezCv.width, H = bezCv.height, x = bx;
+  var s = bezScale(), p = bezPad(), L = p, R = W - p;
+  x.clearRect(0, 0, W, H);
+  var gl = DARK ? "#4A4944" : "#E5E4E0", ln = DARK ? "#EFEEE7" : "#161513";
+  x.strokeStyle = gl; x.lineWidth = GRID_CSS * s;
+  var i, gx, gy;
+  for (i = 0; i <= 4; i++) {
+    gx = L + (R - L) * i / 4;
+    x.beginPath(); x.moveTo(gx, p); x.lineTo(gx, H - p); x.stroke();
+  }
+  for (i = 0; i <= 4; i++) {
+    gy = mapY(i / 4, H);
+    x.beginPath(); x.moveTo(L, gy); x.lineTo(R, gy); x.stroke();
+  }
+  x.strokeStyle = ln; x.lineWidth = CURVE_CSS * s;
+  x.lineJoin = "round"; x.lineCap = "round";
+  x.beginPath();
+  for (var k = 0; k <= 120; k++) {
+    var u = k / 120, v = ease(u);
+    if (k === 0) x.moveTo(mapX(u, W), mapY(v, H)); else x.lineTo(mapX(u, W), mapY(v, H));
+  }
+  x.stroke();
+  x.strokeStyle = "#F0481E"; x.lineWidth = GUIDE_CSS * s;
+  x.beginPath(); x.moveTo(mapX(0, W), mapY(0, H)); x.lineTo(mapX(B[0], W), mapY(B[1], H)); x.stroke();
+  x.beginPath(); x.moveTo(mapX(1, W), mapY(1, H)); x.lineTo(mapX(B[2], W), mapY(B[3], H)); x.stroke();
+  var hh = HANDLE_CSS / 2 * s;
+  x.fillStyle = "#F0481E"; x.strokeStyle = ln; x.lineWidth = GUIDE_CSS * s;
+  [[B[0], B[1]], [B[2], B[3]]].forEach(function (h) {
+    var hx = mapX(h[0], W), hy = mapY(h[1], H);
+    x.fillRect(hx - hh, hy - hh, hh * 2, hh * 2);
+    x.strokeRect(hx - hh, hy - hh, hh * 2, hh * 2);
+  });
+}
+/* The inset is measured in layout pixels, so a width change must redraw the
+   graph. Guarded on the width, so a height-only resize costs nothing. This
+   never runs on a click path. */
+var _bezW = 0;
+function bezResync() {
+  if (!bezCv) return;
+  var w = bezCv.clientWidth;
+  if (w && w !== _bezW) { _bezW = w; drawBez(); }
+}
+/* The graph is square, so in a wide panel it is TALLER than the panel and the
+   page starts to scroll. Locked rule 5 says the page can never scroll.
+   No arithmetic here: the panel measures its own scroll height, the one
+   instrument that was missing when the bottom bar was fixed three times, and
+   takes exactly that many pixels off the graph. The key guard means this runs
+   only when the panel box itself changes. It is never on a click path. */
+var _fitKey = "";
+/* Collapsing the CLIP card changes how much room the graph has, and it does NOT
+   change the size of the panel, so the ResizeObserver never fires. Anything that
+   opens or closes a block calls this. */
+function relayout() { _fitKey = ""; fitGraph(); }
+function fitGraph() {
+  var g = document.querySelector(".ezgraph"), z = $("zoomRoot");
+  if (!g || !z) return;
+  var key = z.clientWidth + "x" + z.clientHeight;
+  if (key === _fitKey) return;
+  _fitKey = key;
+  var grid = $("libGrid");
+  g.style.maxWidth = ""; g.style.minWidth = "";
+  if (grid) grid.style.maxHeight = "";
+  /* NARROW PANEL: the tile box gives up its room FIRST, down to one row. The
+     graph is the working surface and keeps what it can. */
+  var narrow = window.matchMedia && window.matchMedia("(max-width:400px)").matches;
+  if (narrow && grid) {
+    for (var j = 0; j < 3; j++) {
+      var o = document.documentElement.scrollHeight - window.innerHeight;
+      if (o <= 0) break;
+      var h = Math.max(74, grid.clientHeight - o);
+      grid.style.maxHeight = h + "px";
+      if (h === 74) break;
+    }
+  }
+  for (var i = 0; i < 3; i++) {
+    var over = document.documentElement.scrollHeight - window.innerHeight;
+    if (over <= 0) break;
+    /* minWidth has to go too: in CSS a min beats a max, so the floor set in
+       the stylesheet would otherwise hold the page open. */
+    g.style.minWidth = "0";
+    g.style.maxWidth = Math.max(120, g.clientWidth - over) + "px";
+  }
+  /* last resort: the graph is at its floor and the panel is still too short.
+     The tile box takes the rest, because a graph you cannot drag in is worse
+     than a preset list you have to scroll. */
+  if (grid) {
+    var last = document.documentElement.scrollHeight - window.innerHeight;
+    if (last > 0) grid.style.maxHeight = Math.max(0, grid.clientHeight - last) + "px";
+  }
+  bezResync();
+}
+/* ---------------- DRAG — REBUILT V10.27 ----------------
+   the studio, 15 August: "there's a bug: I cant control, drag the handle anymore".
+
+   The old code took an origin from getBoundingClientRect(), a point from the
+   event's clientX, subtracted one from the other, and then REFUSED the grab
+   when the result was more than 34 pixels from a handle. Under CSS zoom those
+   two numbers do not agree in every version of Chromium, and this panel runs
+   inside Premiere's Chromium, not the one the test suite runs in. The V10.26
+   suite passed because it fired synthetic events, which skip hit testing
+   altogether. A hit test that can be wrong is a drag that can be dead.
+
+   TWO CHANGES, and both remove a way to fail rather than tune one.
+
+   1. THERE IS NO THRESHOLD. A press anywhere inside the graph takes the nearer
+      handle. Nothing can refuse the grab. A press with no movement still
+      changes nothing, because only a move writes a value.
+
+   2. THE MOVE IS A DELTA, NOT A POSITION. The handle moves by how far the
+      mouse moved, divided by the plot width taken from the SAME rect read.
+      A ratio of two numbers from one measurement survives any coordinate
+      convention. No origin is used, so no origin can be wrong. */
+function startDrag(e) {
+  var r = bezCv.getBoundingClientRect();
+  if (!r.width || !r.height) return;
+  var W = bezCv.width, H = bezCv.height, p = bezPad(), yr = yRange();
+  var fx = (e.clientX - r.left) / r.width;
+  var fy = (e.clientY - r.top) / r.height;
+  var d1 = Math.hypot(fx - mapX(B[0], W) / W, fy - mapY(B[1], H) / H);
+  var d2 = Math.hypot(fx - mapX(B[2], W) / W, fy - mapY(B[3], H) / H);
+  dragH = d1 <= d2 ? 0 : 1;
+  dg = {
+    x: e.clientX, y: e.clientY,
+    bx: B[dragH * 2], by: B[dragH * 2 + 1],
+    kx: W / ((W - 2 * p) * r.width),
+    ky: (yr[1] - yr[0]) * H / ((H - 2 * p) * r.height)
+  };
+  e.preventDefault();
+}
+function moveDrag(e) {
+  if (dragH < 0 || !dg) return;
+  B[dragH * 2] = clamp(dg.bx + (e.clientX - dg.x) * dg.kx, 0, 1);
+  B[dragH * 2 + 1] = clamp(dg.by - (e.clientY - dg.y) * dg.ky, -3, 4);
+  curveChanged(); drawBez();
+  e.preventDefault();
+}
+function endDrag() { if (dragH >= 0) { dragH = -1; dg = null; restartPrev(); } }
+/* read-only window on the drag state, for the test suite. Never called by the panel. */
+window.__dragActive = function () { return dragH; };
+bezCv.addEventListener("mousedown", startDrag);
+document.addEventListener("mousemove", moveDrag);
+document.addEventListener("mouseup", endDrag);
+document.addEventListener("mouseleave", endDrag);
+
+$("bzvals").addEventListener("click", function () {
+  var ta = document.createElement("textarea");
+  ta.value = cssBezier();
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); status("COPIED — " + ta.value, false, true); } catch (e) {}
+  document.body.removeChild(ta);
+});
+
+/* ---------------- fit a bezier to sampled keys (COPY EASE) ---------------- */
+function fitBezier(pts) {
+  function cost(p) {
+    var s = 0, i, e;
+    for (i = 0; i < pts.length; i++) {
+      e = bezierY(pts[i][0], p[0], p[1], p[2], p[3]) - pts[i][1];
+      s += e * e;
+    }
+    return s;
+  }
+  var seeds = [
+    [0.33, 0.33, 0.67, 0.67],
+    [0.42, 0, 0.58, 1],
+    [0.3, 1.3, 0.65, 1],
+    [0.6, -0.3, 0.4, 1.3],
+    [0.32, 0, 0.67, 0]
+  ];
+  var best = null, bc = 1e18;
+  for (var s = 0; s < seeds.length; s++) {
+    var p = seeds[s].slice(), c = cost(p), st = 0.3;
+    while (st > 0.0015) {
+      var imp = false;
+      for (var k = 0; k < 4; k++) {
+        for (var d = -1; d <= 1; d += 2) {
+          var q = p.slice();
+          q[k] += d * st;
+          if (k === 0 || k === 2) q[k] = clamp(q[k], 0, 1); else q[k] = clamp(q[k], -3, 4);
+          var cc = cost(q);
+          if (cc < c - 1e-12) { c = cc; p = q; imp = true; }
+        }
+      }
+      if (!imp) st /= 2;
+    }
+    if (c < bc) { bc = c; best = p; }
+  }
+  return { b: best, rms: Math.sqrt(bc / Math.max(1, pts.length)) };
+}
+
+/* ---------------- Premiere bridge ---------------- */
+var cs = null, clipData = null, busy = false, snapshot = null, lastClipKey = "";
+var PARAMS = [], lastKeyed = null;
+try { cs = new CSInterface(); } catch (e) { cs = null; }
+
+function status(msg, isErr, isOk) {
+  var s = $("status");
+  s.textContent = msg;
+  s.className = "note" + (isErr ? " err" : (isOk ? " okk" : ""));
+}
+function hostOK() { return !!(cs && window.__adobe_cep__); }
+function callHost(fn, cb) {
+  if (!hostOK()) {
+    status("OPEN THIS PANEL INSIDE PREMIERE PRO (WINDOW \u2192 EXTENSIONS \u2192 EASEUP).", true);
+    return;
+  }
+  cs.evalScript(fn, function (r) {
+    var data = null;
+    try { data = JSON.parse(r); } catch (e) {}
+    if (!data) { status("COULD NOT TALK TO PREMIERE — IS A PROJECT OPEN?", true); return; }
+    cb(data);
+  });
+}
+function callHostSilent(fn, cb) {
+  if (!hostOK()) return;
+  cs.evalScript(fn, function (r) {
+    var data = null;
+    try { data = JSON.parse(r); } catch (e) {}
+    if (data) cb(data);
+  });
+}
+function buildSpec() {
+  var first = [], rest = [];
+  PARAMS.forEach(function (p) {
+    if (!p.checked) return;
+    if (lastKeyed === p.key) first.push(p.key); else rest.push(p.key);
+  });
+  return first.concat(rest).join(",");
+}
+function setReady(ok) {
+  $("applyB").disabled = !ok;
+  $("readB").disabled = !ok;
+  $("delB").disabled = !ok;
+}
+
+/* ---- auto-follow the timeline ---- */
+function fingerprint(d) {
+  var fp = {};
+  d.components.forEach(function (c) {
+    c.params.forEach(function (p) { fp[c.index + "/" + p.index] = p.keys; });
+  });
+  return fp;
+}
+function applyClipData(d) {
+  var key = (d.clipName || "") + "|" + (d.seqName || "");
+  var sameClip = (key === lastClipKey) && !!clipData;
+
+  /* which parameter did the user just add / change keys on? */
+  var changed = null;
+  var fp = fingerprint(d);
+  if (sameClip && snapshot) {
+    for (var kk in fp) {
+      if (fp.hasOwnProperty(kk)) {
+        var before = snapshot.hasOwnProperty(kk) ? snapshot[kk] : 0;
+        if (fp[kk] !== before && fp[kk] >= 1) changed = kk;
+      }
+    }
+  }
+  snapshot = fp;
+  lastClipKey = key;
+  clipData = d;
+
+  $("clipst").textContent = "LOADED";
+  $("clipname").textContent = (d.clipName || "CLIP").toUpperCase() + (d.seqName ? "  \u00B7  " + d.seqName.toUpperCase() : "");
+
+  /* flatten: every parameter with 2+ keys, across all effects */
+  var prevChecked = {};
+  PARAMS.forEach(function (p) { prevChecked[p.key] = p.checked; });
+  PARAMS = [];
+  d.components.forEach(function (c) {
+    c.params.forEach(function (p) {
+      if (p.keys < 2) return;
+      var k = c.index + "/" + p.index;
+      var chk = sameClip ? (prevChecked.hasOwnProperty(k) ? prevChecked[k] : true) : true;
+      if (changed === k) { chk = true; lastKeyed = k; }
+      PARAMS.push({ key: k, name: (c.name + " \u00B7 " + p.name).toUpperCase(), keys: p.keys, checked: chk });
+    });
+  });
+  if (!sameClip) lastKeyed = PARAMS.length ? PARAMS[0].key : null;
+  buildParamRows();
+}
+function buildParamRows() {
+  var host = $("parList");
+  host.innerHTML = "";
+  PARAMS.forEach(function (p) {
+    var row = document.createElement("label");
+    row.className = "prow2";
+    var cb = document.createElement("input");
+    cb.type = "checkbox"; cb.className = "tgl"; cb.checked = p.checked;
+    cb.addEventListener("change", function () { p.checked = cb.checked; syncParamUI(); });
+    var nm = document.createElement("span");
+    nm.className = "pl2"; nm.textContent = p.name; nm.title = p.name;
+    var kc = document.createElement("span");
+    kc.className = "pk"; kc.textContent = p.keys + " KEYS";
+    row.appendChild(cb); row.appendChild(nm); row.appendChild(kc);
+    host.appendChild(row);
+  });
+  $("parNote").style.display = PARAMS.length ? "none" : "block";
+  syncParamUI();
+}
+function syncParamUI() {
+  var n = 0;
+  PARAMS.forEach(function (p) { if (p.checked) n++; });
+  $("parCt").textContent = PARAMS.length ? (n + " OF " + PARAMS.length) : "";
+  setReady(n > 0);
+}
+function autoLoad() {
+  if (busy) return;
+  /* Stand down while nobody can see this panel. 12 Aug 2026: every panel
+     shares ONE script line inside Premiere, and a hidden panel polling that
+     line taxes every visible one - the LABELS-slows-SORT class. A hidden
+     panel shows nothing, so it asks for nothing. The next tick after it
+     becomes visible catches it up. */
+  if (document.hidden) return;
+
+  callHostSilent("EASEUP.getClipInfo()", function (d) {
+    if (!d.ok) return;
+    applyClipData(d);
+  });
+}
+
+$("loadB").addEventListener("click", function () {
+  status("READING THE SELECTED CLIP\u2026", false);
+  callHost("EASEUP.getClipInfo()", function (d) {
+    if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+    applyClipData(d);
+    status("LOADED " + (d.clipName || "CLIP").toUpperCase() + ".", false, true);
+  });
+});
+$("pAll").addEventListener("click", function () { PARAMS.forEach(function (p) { p.checked = true; }); buildParamRows(); });
+$("pNone").addEventListener("click", function () { PARAMS.forEach(function (p) { p.checked = false; }); buildParamRows(); });
+
+$("applyB").addEventListener("click", function () {
+  if (!clipData) return;
+  var spec = buildSpec();
+  if (!spec) { status("TICK AT LEAST ONE PARAMETER FIRST.", true); return; }
+  var call = "EASEUP.applyEase('" + spec + "'," + B[0] + "," + B[1] + "," + B[2] + "," + B[3] + ",1,'all')";
+  status("BAKING THE CURVE\u2026", false);
+  busy = true; setReady(false);
+  callHost(call, function (d) {
+    busy = false; setReady(true);
+    if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+    var msg = "DONE — EASED " + String(d.names).toUpperCase() + " \u00B7 " + d.baked + " KEYS \u00B7 " +
+      d.segs + " PAIR" + (d.segs === 1 ? "" : "S") + ".";
+    if (d.failed) msg += " " + d.failed + " PARAM(S) SKIPPED.";
+    status(msg + " TWEAK AND APPLY AGAIN ANY TIME.", false, true);
+    autoLoad();
+  });
+});
+
+$("delB").addEventListener("click", function () {
+  if (!clipData) return;
+  var spec = buildSpec();
+  if (!spec) { status("TICK AT LEAST ONE PARAMETER FIRST.", true); return; }
+  status("REMOVING BAKED KEYS\u2026", false);
+  busy = true; setReady(false);
+  callHost("EASEUP.deleteEase('" + spec + "','all')", function (d) {
+    busy = false; setReady(true);
+    if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+    var msg = "CLEANED " + String(d.names).toUpperCase() + " — REMOVED " + d.removed + " KEYS \u00B7 " +
+      d.segs + " PAIR" + (d.segs === 1 ? "" : "S") + ". ANCHOR KEYFRAMES KEPT.";
+    if (d.failed) msg += " " + d.failed + " PARAM(S) SKIPPED.";
+    status(msg, false, true);
+    autoLoad();
+  });
+});
+
+$("readB").addEventListener("click", function () {
+  if (!clipData) return;
+  var spec = buildSpec();
+  if (!spec) { status("TICK AT LEAST ONE PARAMETER FIRST.", true); return; }
+  status("READING THE EASE AT THE PLAYHEAD\u2026", false);
+  callHost("EASEUP.readEase('" + spec + "')", function (d) {
+    if (!d.ok) { status(String(d.error).toUpperCase(), true); return; }
+    var fit = fitBezier(d.pts);
+    if (!fit.b) { status("COULD NOT FIT A CURVE TO THOSE KEYFRAMES.", true); return; }
+    B = fit.b;
+    curveChanged(); drawBez(); restartPrev();
+    var approx = fit.rms > 0.03 ? " (CLOSEST FIT)" : "";
+    status("READ " + String(d.pname).toUpperCase() + " \u00B7 " + d.count + " KEYS \u2192 " + cssBezier().toUpperCase() + approx + ".", false, true);
+  });
+});
+
+
+/* ---------------- panel menu + host hooks ---------------- */
+/* Puts RELOAD PANEL in the panel's own hamburger menu, so a blank or wedged
+   panel is one click away from fixed without closing and reopening it. */
+function installPanelMenu() {
+  /* The flyout menu is owned by js/llloc-revive.js, which loads before
+     everything else - so Reload / Fix blank panel / Startup report exist
+     even when this script never ran. Panel-specific items register here. */
+  if (!window.LLLOC_MENU_ADD) return;
+}
+/* Premiere coming to the front is the moment a restored panel needs to
+   re-measure itself. */
+function installHostHooks() {
+  if (!cs || !window.__adobe_cep__) return;
+  var evts = ["com.adobe.csxs.events.ApplicationActivate",
+              "com.adobe.csxs.events.WindowVisibilityChanged",
+              "com.adobe.csxs.events.ThemeColorChanged",
+              "applicationActivate", "documentAfterActivate"];
+  var i;
+  for (i = 0; i < evts.length; i++) {
+    try { cs.addEventListener(evts[i], function () { try { applySize(); } catch (e) {} }); } catch (e2) {}
+  }
+}
+function markBooted() {
+  window.__easeupBooted = true;
+  try {
+    if (window.location.hash) {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.pathname);
+      } else { window.location.hash = ""; }
+    }
+  } catch (e) {}
+}
+
+/* ---------------- boot ---------------- */
+applyTheme();
+applyTips();
+applySize();
+applyGrid();
+applyClipOpen();
+curveChanged();
+drawBez();
+if (hostOK()) {
+  callHostSilent("EASEUP.ping()", function () {});
+  callHostSilent("EASEUP.registerSelListener()", function () {});
+  try {
+    cs.addEventListener("com.studio.easeup.selchanged", function () {
+      setTimeout(autoLoad, 250);
+    });
+  } catch (e) {}
+  autoLoad();
+  setInterval(autoLoad, 2500);
+}
+
+try { installPanelMenu(); installHostHooks(); markBooted(); } catch (e) {}
+</script>
+</body>
+</html>

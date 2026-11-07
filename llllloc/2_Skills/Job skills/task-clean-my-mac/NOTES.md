@@ -1,0 +1,6 @@
+# llllloc:task-clean-my-mac notes
+- 5 Nov 2026 V1: built from the cleanup thread of 5 Nov 2026 (his words: "make all of these into a skill i can reuse in the future"). Name typed as "lllloc-task-clean-my-mac", house name used.
+- Rule from his words 5 Nov 2026: "actually dont delete old render versions" (TOP RULE 3; also in llllloc:task-files-organize THE RENDER RULE).
+- Evidence: Ollama kept for Cotabby; Adobe dialogs show in Creative Cloud; Maxon App without licence has no Uninstall; disconnected Google Drive copy; Finder restore by name is slow; Docker Containers refused by macOS.
+- 5 Nov 2026 V1 same day: his words "and remember dont delete anything from a project folder" (Premiere showed 14 the studio Showreel clips offline after round 2 trashed job _DELETE folders). TOP RULE 3 widened, project items moved from SAFE to KEEP, trash.sh refuses project paths and moves symlinks itself. scan.sh tested: 3 min 29 s, 30 KB output.
+- 5 Nov 2026 V1 same day, his correction: "i mean nothing from client project folder, but for the code folder and or from claude folder you can delete". Rule 3 narrowed to client jobs; CODE and the brain folder may be cleaned; trash.sh guard updated; 145 CODE and brain items moved to Trash again (11 GB).

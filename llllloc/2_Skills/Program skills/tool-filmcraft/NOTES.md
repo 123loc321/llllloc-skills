@@ -1,0 +1,2 @@
+- 26 Oct 2026: new skill, round 56. Built from the client FilmCraft test (install, media wall, motion units, proxies) and his ask: same bin tree as AE, DaVinci, PR and Cavalry. fc_sort.py tested on a copy of a client_FC_V1_PROXY.fcproj.
+- 26 Oct 2026, round 57: MUST HOLD names ***_FILMCRAFT as the save folder (pointer to files-organize).

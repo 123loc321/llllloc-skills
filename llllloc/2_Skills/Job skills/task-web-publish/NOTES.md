@@ -1,0 +1,2 @@
+- v1 20 Oct 2026: new skill, his words "please remember this website publishing method, we will always use this in the future". Cloudflare Pages drag and drop, Access lock, noindex.
+- 24 Oct 2026: STEP 1, a Godot web game = small index.html + .gz.bin files, never one big page (HTTP 500 on Cloudflare, thread Jump & Run new game UI).

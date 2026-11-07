@@ -1,0 +1,40 @@
+Premiere Pro
+Lumetri Color
+Basic Correction
+Creative
+Curves
+Color Wheels
+HSL Secondary
+Vignette
+Exposure
+Contrast
+Highlights
+Shadows
+Whites
+Blacks
+Temperature
+Tint
+Saturation
+Vibrance
+Input LUT
+Look
+Adjustment Layer
+Sequence
+Timeline
+Effect Controls
+Essential Graphics
+Essential Sound
+Export
+Media Encoder
+Proxies
+Ingest
+Markers
+Nest
+Multicam
+Warp Stabilizer
+Speed Duration
+Time Remapping
+Opacity
+Blend Mode
+Track Matte
+Ultra Key

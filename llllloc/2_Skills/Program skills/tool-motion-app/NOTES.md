@@ -1,0 +1,4 @@
+- CHECK step 4: open the film with show: true at the hand-off, then seek. Check with motion_status.
+- Cut two out-of-sight notes in rule 1 and BUILD step 3 to pay for it.
+- 16 Oct 2026, his pick "Words and lead-ins": 5 capital lead-ins and 1 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- 29 Oct 2026: Mac-first for the Code tab (round 77). Cloud paths, device tools, Remote Control handovers and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.

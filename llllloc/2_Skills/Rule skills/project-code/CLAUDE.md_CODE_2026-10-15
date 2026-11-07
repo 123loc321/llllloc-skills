@@ -1,0 +1,95 @@
+# CODE — THE RULEBOOK
+
+Every plugin, app, browser extension, website and script the studio builds. Claude Code runs on his Mac in `~/Desktop/PERSONAL PROJECT/CODE`: every path is real. the studio is a visual artist, not an engineer. He installs and tests every build. Cap: 100 lines. A new rule is paid for by a cut. Why a rule exists: `_System file/WORKFLOW-EXPERIENCE.md`. Written 14 Oct 2026, replaces `.claude/rules/core.md`.
+
+## RULE 0 — THIS IS THE ONLY RULEBOOK
+- This file wins over every skill and over the project instructions. A skill that disagrees with it loses. `using-agent-skills` picks the engineering skill; this file says how the job runs.
+- Three more rule files load by themselves when Claude touches a matching file: `.claude/rules/building.md` (any code), `panels.md` (Premiere and After Effects panels), `apps.md` (apps). He never needs to read them.
+
+## RULE 1 — THE START OF A SESSION
+- A hook prints `_System file/JOBS.md`, the map of jobs, when a session opens. When his message names a job, a second hook prints that job's `STATE.md`.
+- Say `Job: <name>.` Load the Skills column of its row. Read the STATE (by hand only when the hook did not print it), then only what it names. No job word, two rows, or no row: HOW TO OPEN A JOB in `JOBS.md` decides.
+- A build behaves wrongly: ask for its report NOW, before anything is installed. An install wipes it. Ask for every report you will want in one message.
+- Something needed is missing (a file, an app, a connector): say exactly what, and stop. Never guess or substitute.
+- **ONE SESSION, ONE JOB, ONE MODEL.** A long session slows and costs more every turn. Job changes: run END, then he opens a new session. Never switch the model or the effort mid-session: the whole history reloads at full price. Idle over an hour: a new session. A fix that fails twice: WHEN A FIX FAILS in `building.md`, then a fresh session.
+- Two sessions on one job: the first is the LEAD and writes the shared files. The second writes only its own part and lists the shared changes it wants in its reply.
+
+## RULE 2 — HOW TO WRITE
+- Every word a person reads: short sentences, plain words, no filler. Lead with the fix. Mark reasoning "assumed" or "not verified".
+- His exact words go only to the job's `HIS-WORDS.md`. Everywhere else, write what he meant in plain words.
+- Every job reply ends with one line: `Loaded: <skills>`.
+
+## RULE 3 — ONE HOME FOR EACH FACT
+Write a fact in its home only. Everywhere else, a one-line pointer.
+
+| The fact | Its home |
+|---|---|
+| Which jobs exist, their folders, the words he uses | `_System file/JOBS.md` |
+| How the work runs | this file, `.claude/rules/` |
+| Newest version, open work, what to avoid | the job's `Other/LOG/STATE.md` |
+| What the product does, its look, choices expensive to undo | the job's `Other/LOG/PROJECT.md` |
+| What shipped, what went wrong, the rule each mistake bought | the job's `Other/LOG/LOG.md` |
+| His exact words | the job's `Other/LOG/HIS-WORDS.md` |
+| Why a workflow rule exists | `_System file/WORKFLOW-EXPERIENCE.md` |
+| Web findings | `.claude/cache/<subject>.md`, one dated line per fact |
+| A one-time note for one build | its `NOTES-FOR-NEXT-SESSION.md` |
+
+The log is the source of truth. The build on disk beats the log.
+
+## RULE 4 — A TURN IS FAST AND CHEAP
+- Finish as fast as possible with zero faults. A normal fix lands in about 20 minutes. Speed never cuts a test.
+- Size the proof to the risk: a text edit gets one read-back; a code change gets its own tests, and the picture if it looks different; shared code or an installer gets full proof.
+- Fewer, bigger steps. Batch reads, edits and checks into one script. Send independent tool calls together. After each edit, run the one test that covers it. Run the full suite and the gate once, at the end.
+- **Long output never enters the chat raw.** Send test, build and log output through `tail`, `grep` or a summary line: hundreds of tokens, never thousands. Read the part of a file the job needs.
+- No spec for a fix that changes one behavior. A subagent only for wide reading or independent work, with a bounded return ("max 15 bullets"). Never turn off MCP tool search.
+
+## RULE 5 — SILENCE MEANS IT WORKED
+- A build on his disk is a build he installed. Never ask if he installed it. Ask once, plainly: one test, one screen, one expected result. Then stop.
+- Three states in the log: **CONFIRMED LIVE** (his yes in words, or his picture showing the expected result, dated), **PASSED, NO PROBLEM REPORTED** (asked, stayed quiet), **untested**. A confirmation covers the ONE thing asked. An "ok" minutes after a build is not a live test. A choice resting on an untested limit is a bug.
+
+## RULE 6 — A FACT FROM OUTSIDE NEEDS A SEARCH
+- Search the web when the answer rests on an outside fact or a limit, scoped to what he asked, cache first. Source links inline. One cache line per fact searched.
+- A claim of a LIMIT, or that something WORKS on his Mac, needs two searches: the mechanism tried and the outcome he asked for. Otherwise write ASSUMED.
+
+## RULE 7 — DELIVERY
+- A file is delivered when he can find it: folder and file name in plain words. A finished installer or picture is revealed with `open -R`.
+- A new build is a NEW `<NAME>-V<n+1>/`. The build it replaces moves into `Other/_OLDER/` the same turn. Every version is kept. Never overwrite a zip. Zip a folder from OUTSIDE it.
+- `install.command`: `chmod 755` BEFORE any zip, then read the mode back. Built on his Mac, it carries no quarantine, so a double-click always runs.
+- Never propose anything that needs the terminal or hand-editing a file: put it behind a button, or do it yourself. A step that leaves him picking a folder or repeating an action is a bug.
+- A side effect you must warn about is a bug: fix it or ask first. When he points at another panel or app, copy the part he named. Port what he does by hand exactly.
+
+## RULE 8 — UPDATING A RULE
+- A rule that gets skipped never gets louder. In order: make a hook or a gate enforce it, move it to where it is read, give it an output he can see (an exit code, a revealed file, a picture, a test count, never a line in the reply), answer its hardest case inside it, then add words.
+- A rule followed out of obedience that prevents nothing gets named. He decides if it goes.
+- A rule that matters only while building, or for one kind of job, goes in `.claude/rules/`, not here.
+- A skill change: edit `~/.claude/skills/<name>/SKILL.md`, read it back, print the `description` count (cap 1024).
+- The workflow itself: `llllloc-workflow-rule` keeps it healthy, `llllloc-workflow-review` upgrades it.
+
+## THE FOLDER
+```
+CODE/
+  CLAUDE.md                      <- this rulebook
+  PR Plugin/   AE Plugin/   Apps/MOTION App/   <- the first jobs; PR Plugin/<PANEL>/ is one folder per panel
+  Plugins/  Apps/  Scripts/  Websites/         <- kind folders; a new kind makes a new one
+  _System file/                  <- JOBS.md, WORKFLOW-EXPERIENCE.md, _TEMPLATE/ (scaffold.sh, check-state.sh)
+  <Kind>/<Job>/
+    <NAME>-V<n>/                 <- the newest build he opens: install.command, then the shipped files
+    Other/                       <- everything Claude needs and he never opens:
+                                    LOG/ (STATE, PROJECT, LOG, HIS-WORDS), src/, _OLDER/, _SHOTS/, _to_delete/
+```
+He opens a job folder and sees the newest version folder and `Other`. No loose files, ever.
+
+## HARD STOPS
+- **Never delete anything:** move it to `Other/_to_delete/` (`rm` is blocked). A stray folder nobody made on purpose: `diff -rq` it, then park it under a name that says what it was.
+- Ask the studio first before you: install anything outside the CODE folder, touch another job's folder, make any change that needs his password, or change a gate (`check-build.js`, `check-pack.js`, `check-state.sh`).
+- Never write a receipt for work that did not happen. "Not run" is a finished answer.
+
+## END
+A message that is only `end` closes the open job. The same steps for every job:
+1. Rewrite the job's `STATE.md` under the eight headings of `_System file/_TEMPLATE/LOG/STATE.md`.
+2. Add a dated block to its `LOG.md`: what shipped, what went wrong, the rule bought and the instrument that now enforces it.
+3. Put his exact words in its `HIS-WORDS.md`.
+4. Premiere suite jobs (PR Plugin, a panel, FX LIBRARY) also run `/plugin-log-update` for the suite log parts.
+5. `bash "_System file/_TEMPLATE/check-state.sh" "<STATE.md>"`. Exit 0 closes the job. A hook refuses to end the turn until it does.
+
+Never hand-edit a `LOG-UPDATED` stamp.

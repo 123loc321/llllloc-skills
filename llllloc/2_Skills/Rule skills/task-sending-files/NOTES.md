@@ -1,0 +1,5 @@
+- 16 Oct 2026, his pick "Words and lead-ins": 0 capital lead-ins and 1 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- 2026-10-16 round 5: Reply step points to core rule 9 (fix 6)
+- 27 Oct 2026: a sheet of two or more images labels each image with its name (his words). 3,368 to 3,629 characters. Previous version in Old/261027_before_sheet-labels.
+- 29 Oct 2026: Mac-first for the Code tab (round 76). Cloud paths, device tools, the To Mac pipeline and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.
+- 30 Oct 2026 (round 80): skills also go out as file cards; tested Code tab facts; core V31 wording.

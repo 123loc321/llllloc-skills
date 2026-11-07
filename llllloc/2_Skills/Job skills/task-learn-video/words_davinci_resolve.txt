@@ -1,0 +1,53 @@
+DaVinci
+Resolve
+Lift
+Gamma
+Gain
+Offset
+Contrast
+Pivot
+Saturation
+Hue
+Temp
+Tint
+Color Boost
+Shadows
+Highlights
+Midtone Detail
+Log Wheels
+Primaries
+Curves
+Qualifier
+Color Warper
+Power Windows
+Node
+Serial Node
+Parallel Node
+Layer Node
+Color Space Transform
+DaVinci Wide Gamut
+DaVinci Intermediate
+Rec.709
+Gamma 2.4
+Tone Mapping
+Luminance Mapping
+Film Look Creator
+LUT
+Scopes
+Waveform
+Parade
+Vectorscope
+Histogram
+Key
+Blur
+Noise Reduction
+Glow
+Halation
+Grain
+Still
+Gallery
+PowerGrade
+Timeline
+Color Management
+Input Color Space
+Output Color Space

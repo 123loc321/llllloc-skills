@@ -1,0 +1,7 @@
+- MUST HOLD ON EVERY PLACEMENT checklist at the top: pink label, slot + 2 s handle with item in/out, copy Scale and Position, blend by set_effect_property, checkpoint and set_active_sequence, no save. Check with a go-back line (9 Oct 2026).
+- 3b, the 2c blend rule and the section 4 checkpoint rule now point to MUST HOLD.
+- 2b step 4 (29.97 fps and roll_edit) now points to the README, where the full rule lives. 13,813 to 14,050 characters.
+- 16 Oct 2026, his pick "Words and lead-ins": 30 capital lead-ins and 4 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- 25 Oct 2026: shared bin tree (his words: same bin panel structure across AE, PR, DaVinci, Cavalry). Round 55. New section 4b BINS AND VERSIONS replaces the Checkpoint bin rule (archive to **_EXPORT/<Video>/OLD VERSIONS/V<n>/).
+- 29 Oct 2026: Mac-first for the Code tab (round 77). Cloud paths, device tools, Remote Control handovers and save cards replaced by Mac paths, file cards and the Desktop round folder. His yes in the migration session.
+- 30 Oct 2026 round 84: no-nest rule in MUST HOLD and SAFETY; unnest_sequence banned (drops keyframes).

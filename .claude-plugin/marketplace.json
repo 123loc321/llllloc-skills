@@ -1,0 +1,214 @@
+{
+  "name": "llllloc-skills",
+  "description": "The llllloc skills of Loc's video, motion and design studio, shared with friends. Read-only copy, refreshed weekly.",
+  "owner": {
+    "name": "Loc Bui"
+  },
+  "plugins": [
+    {
+      "name": "llllloc",
+      "source": "./",
+      "description": "llllloc workflow skills: a router, about 90 skills, the core rule and its hooks",
+      "strict": false,
+      "skills": [
+        "./llllloc/2_Skills/Outside skills/api-and-interface-design",
+        "./llllloc/2_Skills/Outside skills/browser-testing-with-devtools",
+        "./llllloc/2_Skills/Outside skills/ci-cd-and-automation",
+        "./llllloc/2_Skills/Outside skills/code-review-and-quality",
+        "./llllloc/2_Skills/Outside skills/code-simplification",
+        "./llllloc/2_Skills/Outside skills/constraint-driven-development",
+        "./llllloc/2_Skills/Outside skills/context-engineering",
+        "./llllloc/2_Skills/Outside skills/debugging-and-error-recovery",
+        "./llllloc/2_Skills/Outside skills/deprecation-and-migration",
+        "./llllloc/2_Skills/Outside skills/documentation-and-adrs",
+        "./llllloc/2_Skills/Outside skills/doubt-driven-development",
+        "./llllloc/2_Skills/Workflow skills/end",
+        "./llllloc/2_Skills/Workflow skills/end-plugin-log",
+        "./llllloc/2_Skills/Outside skills/frontend-ui-engineering",
+        "./llllloc/2_Skills/Job skills/fundamental",
+        "./llllloc/2_Skills/Outside skills/git-workflow-and-versioning",
+        "./llllloc/2_Skills/Outside skills/idea-refine",
+        "./llllloc/2_Skills/Outside skills/impeccable",
+        "./llllloc/2_Skills/Outside skills/incremental-implementation",
+        "./llllloc/2_Skills/Outside skills/interview-me",
+        "./llllloc/2_Skills/Outside skills/observability-and-instrumentation",
+        "./llllloc/2_Skills/Outside skills/performance-optimization",
+        "./llllloc/2_Skills/Outside skills/planning-and-task-breakdown",
+        "./llllloc/2_Skills/Outside skills/ponytail",
+        "./llllloc/2_Skills/Outside skills/ponytail-audit",
+        "./llllloc/2_Skills/Outside skills/ponytail-debt",
+        "./llllloc/2_Skills/Outside skills/ponytail-gain",
+        "./llllloc/2_Skills/Outside skills/ponytail-help",
+        "./llllloc/2_Skills/Outside skills/ponytail-review",
+        "./llllloc/2_Skills/Rule skills/project-code",
+        "./llllloc/2_Skills/Rule skills/project-creatives",
+        "./llllloc/2_Skills/Rule skills/project-workflow",
+        "./llllloc/2_Skills/Job skills/references",
+        "./llllloc/2_Skills/Job skills/references-art",
+        "./llllloc/2_Skills/Job skills/references-cinematography",
+        "./llllloc/2_Skills/Job skills/references-code",
+        "./llllloc/2_Skills/Job skills/references-color-grading",
+        "./llllloc/2_Skills/Job skills/references-design",
+        "./llllloc/2_Skills/Job skills/references-edit",
+        "./llllloc/2_Skills/Job skills/references-motion",
+        "./llllloc/2_Skills/Job skills/references-people",
+        "./llllloc/2_Skills/Job skills/references-photo",
+        "./llllloc/2_Skills/Job skills/references-sound",
+        "./llllloc/2_Skills/Job skills/references-space",
+        "./llllloc/2_Skills/Workflow skills/router",
+        "./llllloc/2_Skills/Outside skills/security-and-hardening",
+        "./llllloc/2_Skills/Outside skills/shipping-and-launch",
+        "./llllloc/2_Skills/Outside skills/source-driven-development",
+        "./llllloc/2_Skills/Outside skills/spec-driven-development",
+        "./llllloc/2_Skills/Job skills/task-app-builder",
+        "./llllloc/2_Skills/Job skills/task-art-direction",
+        "./llllloc/2_Skills/Job skills/task-be-ambitious",
+        "./llllloc/2_Skills/Job skills/task-clean-my-mac",
+        "./llllloc/2_Skills/Job skills/task-colorist",
+        "./llllloc/2_Skills/Job skills/task-design",
+        "./llllloc/2_Skills/Job skills/task-design-system",
+        "./llllloc/2_Skills/Job skills/task-files-organize",
+        "./llllloc/2_Skills/Job skills/task-judge",
+        "./llllloc/2_Skills/Workflow skills/task-learn",
+        "./llllloc/2_Skills/Job skills/task-learn-video",
+        "./llllloc/2_Skills/Job skills/task-motion",
+        "./llllloc/2_Skills/Job skills/task-plugin-builder",
+        "./llllloc/2_Skills/Job skills/task-prompt",
+        "./llllloc/2_Skills/Job skills/task-rea",
+        "./llllloc/2_Skills/Job skills/task-render-preview",
+        "./llllloc/2_Skills/Job skills/task-research",
+        "./llllloc/2_Skills/Job skills/task-retopology",
+        "./llllloc/2_Skills/Rule skills/task-sending-files",
+        "./llllloc/2_Skills/Job skills/task-sharpen-prompt",
+        "./llllloc/2_Skills/Workflow skills/task-skill-creator",
+        "./llllloc/2_Skills/Job skills/task-sound-design",
+        "./llllloc/2_Skills/Job skills/task-vo-to-srt-subtitle",
+        "./llllloc/2_Skills/Job skills/task-web-publish",
+        "./llllloc/2_Skills/Workflow skills/task-workflow-best-practices",
+        "./llllloc/2_Skills/Workflow skills/task-workflow-update",
+        "./llllloc/2_Skills/Outside skills/test-driven-development",
+        "./llllloc/2_Skills/Program skills/tool-after-effects",
+        "./llllloc/2_Skills/Program skills/tool-blender",
+        "./llllloc/2_Skills/Program skills/tool-capture-one",
+        "./llllloc/2_Skills/Program skills/tool-cavalry",
+        "./llllloc/2_Skills/Program skills/tool-comfyui",
+        "./llllloc/2_Skills/Program skills/tool-davinci-resolve",
+        "./llllloc/2_Skills/Program skills/tool-figjam",
+        "./llllloc/2_Skills/Program skills/tool-figma",
+        "./llllloc/2_Skills/Program skills/tool-filmcraft",
+        "./llllloc/2_Skills/Program skills/tool-illustrator",
+        "./llllloc/2_Skills/Program skills/tool-magnific",
+        "./llllloc/2_Skills/Program skills/tool-motion-app",
+        "./llllloc/2_Skills/Program skills/tool-plasticity",
+        "./llllloc/2_Skills/Program skills/tool-premiere-pro",
+        "./llllloc/2_Skills/Program skills/tool-rclone",
+        "./llllloc/2_Skills/Program skills/tool-soundly",
+        "./llllloc/2_Skills/Outside skills/using-agent-skills"
+      ],
+      "hooks": {
+        "UserPromptSubmit": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "echo \"llllloc core rule 9 (hook, 29 Oct 2026): your first tool call for this message is a Skill call on llllloc:router. Then follow router STEP 4 for the Loaded and Time lines. His message arrived at $(date '+%H:%M:%S %Z, %d %b %Y'): use this as his message's sent time for the Time line.\""
+              }
+            ]
+          }
+        ],
+        "SessionStart": [
+          {
+            "matcher": "startup",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" git-pull",
+                "timeout": 20
+              },
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" core-rule",
+                "timeout": 10
+              }
+            ]
+          },
+          {
+            "matcher": "compact",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" after-compact",
+                "timeout": 20
+              }
+            ]
+          }
+        ],
+        "Stop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" stop-check",
+                "timeout": 20
+              }
+            ]
+          }
+        ],
+        "PreToolUse": [
+          {
+            "matcher": "Bash|mcp__[0-9a-f]{8}-.*",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" delete-guard",
+                "timeout": 20
+              }
+            ]
+          },
+          {
+            "matcher": "Write|Edit|MultiEdit|NotebookEdit|Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" skills-guard",
+                "timeout": 20
+              }
+            ]
+          },
+          {
+            "matcher": "mcp__.*__(spaces_create_node|spaces_patch_node|images_generate|video_generate|partner_generate)",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" research-guard",
+                "timeout": 20
+              }
+            ]
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "Write|Edit|MultiEdit",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/llllloc_hooks.py\" chmod-command",
+                "timeout": 20
+              }
+            ]
+          },
+          {
+            "matcher": "Write|Edit|MultiEdit|mcp__.*",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -I -B \"${CLAUDE_PLUGIN_ROOT}/llllloc/1_Core rule/hooks/impeccable/impeccable_hook.py\"",
+                "timeout": 90
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

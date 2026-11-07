@@ -1,0 +1,1 @@
+- 16 Oct 2026, his pick "Words and lead-ins": 6 capital lead-ins and 3 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.

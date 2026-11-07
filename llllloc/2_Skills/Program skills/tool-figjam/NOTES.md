@@ -1,0 +1,2 @@
+- 16 Oct 2026, his pick "Words and lead-ins": 8 capital lead-ins and 0 lines with shouting words turned into plain case. Headers kept. Only letter case changed. Previous version in Old/261016_before_caps.
+- Built from the Mac v6 copy, which the installed skill did not have yet (flow is one big map).
