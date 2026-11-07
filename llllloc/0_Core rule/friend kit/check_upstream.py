@@ -108,9 +108,10 @@ def main():
         lines += ["## GitHub commits", "```", git("log", "--date=short", "--format=%h %ad %s", f"{state['commit']}..{head}").strip(), "```", "",
                   "## Changed files", "| What | Loc's file | Your file | Your copy |", "|---|---|---|---|"]
         for row in git("diff", "--name-status", f"{state['commit']}..{head}").splitlines():
-            st, path = row.split("\t")[0], row.split("\t")[-1]
-            mine = local(path)
-            old = show(state["commit"], path)
+            parts = row.split("\t")
+            st, was, path = parts[0], parts[1], parts[-1]  # a move (R) has the old path first
+            mine = local(path) if os.path.exists(local(path)) else local(was)
+            old = show(state["commit"], was)
             if path == "README.md":
                 yours = "the repo's front page, not part of your system: skip"
             elif not os.path.exists(mine):
@@ -119,7 +120,7 @@ def main():
                 yours = "untouched: safe to --take"
             else:
                 yours = "you changed it: merge by hand"
-            what = {"A": "new", "M": "changed", "D": "removed by Loc"}.get(st[0], st)
+            what = {"A": "new", "M": "changed", "D": "removed by Loc"}.get(st[0], f"moved by Loc from `{was}`" + (", and changed" if st != "R100" else ""))
             lines.append(f"| {what} | `{path}` | `{os.path.relpath(mine, BRAIN)}` | {yours} |")
         patch = swap(git("diff", f"{state['commit']}..{head}"))
         open(os.path.join(out, "upstream.patch"), "w", encoding="utf-8").write(patch)
